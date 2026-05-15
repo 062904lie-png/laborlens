@@ -377,9 +377,9 @@
     }
 
     function openAdmin(){
-      // Pass the API base URL to admin.html so the admin interface can prefill and initialize
-      const adminUrl = `admin.html?api=${encodeURIComponent(API)}`;
-      window.open(adminUrl, '_blank');
+      // Store API for admin page and navigate in the same tab
+      if(API) localStorage.setItem('admin_api', API);
+      window.location.href = 'admin.html';
     }
 
     async function loadSessions() {
