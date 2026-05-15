@@ -244,6 +244,28 @@
 
 <script>
 let API='', token=null, currentUser=null;
+// If opened from the main app, `api` may be passed as a query parameter.
+try{
+  const params = new URLSearchParams(window.location.search);
+  const apiParam = params.get('api');
+  if(apiParam) API = apiParam.replace(/\/$/, '');
+  // If a user is already logged in via the main app, reuse their token
+  const storedToken = localStorage.getItem('ll_token');
+  const storedUser = localStorage.getItem('ll_user');
+  if(storedToken && storedUser){
+    token = storedToken;
+    currentUser = JSON.parse(storedUser);
+  }
+  // Prefill API input if available
+  if(API){
+    const apiInput = document.getElementById('api-url');
+    if(apiInput) apiInput.value = API;
+  }
+  // Auto-initialize dashboard if we have an admin token
+  if(token && currentUser && currentUser.role === 'admin'){
+    initDashboard();
+  }
+}catch(e){console.warn('Auto-init skipped:', e.message)}
 
 function toast(msg,err=false){
   const t=document.getElementById('toast');
