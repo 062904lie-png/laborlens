@@ -1,894 +1,785 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LaborLens — Philippine Labor Code AI Assistant</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LaborLens – Philippine Labor Law Advisor</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --gold-dim: rgba(201,168,76,0.15);
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #1c2330;
+      --border: rgba(201,168,76,0.2);
+      --border-soft: rgba(255,255,255,0.06);
+      --text: #e6edf3;
+      --text-muted: #7d8590;
+      --text-dim: #4a5568;
+      --red: #f85149;
+      --green: #3fb950;
+      --blue: #58a6ff;
+      --radius: 14px;
+      --font-serif: 'DM Serif Display', Georgia, serif;
+      --font-sans: 'DM Sans', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
 
-  :root {
-    --gold: #C9A84C;
-    --gold-light: #F0DFA0;
-    --gold-dark: #8B6914;
-    --navy: #0D1B2A;
-    --navy-mid: #1A2E45;
-    --navy-light: #243B55;
-    --cream: #FAF7F0;
-    --cream-dark: #F0EAD6;
-    --text-primary: #0D1B2A;
-    --text-secondary: #4A5568;
-    --text-muted: #7A8899;
-    --border: rgba(201, 168, 76, 0.25);
-    --border-strong: rgba(201, 168, 76, 0.5);
-    --bot-bubble: #FFFFFF;
-    --user-bubble: #0D1B2A;
-    --shadow: 0 4px 24px rgba(13, 27, 42, 0.08);
-    --radius: 18px;
-  }
+    body { font-family: var(--font-sans); background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--text-primary);
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
-  /* TOP BAR */
-  .topbar {
-    background: var(--navy);
-    padding: 0 24px;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-    border-bottom: 1px solid rgba(201, 168, 76, 0.3);
-  }
+    /* ── AUTH SCREEN ── */
+    .auth-screen {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-screen::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+      top: -100px; left: -100px;
+      pointer-events: none;
+    }
+    .auth-screen::after {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(88,166,255,0.05) 0%, transparent 70%);
+      bottom: -50px; right: -50px;
+      pointer-events: none;
+    }
 
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+    .auth-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 44px 40px;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.5s ease both;
+    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
 
-  .brand-icon {
-    width: 38px;
-    height: 38px;
-    background: linear-gradient(135deg, var(--gold) 0%, #E8C870 100%);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+    .auth-logo { text-align: center; margin-bottom: 32px; }
+    .auth-logo-mark {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 64px; height: 64px;
+      background: var(--gold-dim);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      font-size: 30px;
+      margin-bottom: 14px;
+    }
+    .auth-logo h1 {
+      font-family: var(--font-serif);
+      font-size: 30px;
+      color: var(--gold);
+      letter-spacing: 0.5px;
+    }
+    .auth-logo p { color: var(--text-muted); font-size: 13px; margin-top: 4px; font-weight: 300; }
 
-  .brand-icon svg { width: 22px; height: 22px; fill: var(--navy); }
+    .auth-tabs { display: flex; gap: 6px; margin-bottom: 24px; background: var(--bg); border-radius: 10px; padding: 4px; }
+    .tab-btn {
+      flex: 1; padding: 9px;
+      border: none; border-radius: 8px;
+      background: transparent; cursor: pointer;
+      font-weight: 500; font-size: 13px;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      font-family: var(--font-sans);
+    }
+    .tab-btn.active { background: var(--surface2); color: var(--gold); }
 
-  .brand-text { display: flex; flex-direction: column; }
-  .brand-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--gold);
-    line-height: 1;
-  }
-  .brand-sub {
-    font-size: 10px;
-    color: rgba(201, 168, 76, 0.6);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-top: 2px;
-  }
+    .auth-field { margin-bottom: 12px; }
+    .auth-field input, .auth-field select {
+      display: block; width: 100%;
+      padding: 12px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: var(--font-sans);
+      color: var(--text);
+      transition: border-color 0.2s;
+    }
+    .auth-field input::placeholder { color: var(--text-dim); }
+    .auth-field input:focus, .auth-field select:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
+    }
+    .auth-field select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%237d8590' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: calc(100% - 14px) center; }
 
-  .topbar-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+    .auth-submit {
+      width: 100%; padding: 13px;
+      background: var(--gold);
+      color: #0d1117;
+      border: none; border-radius: 10px;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      letter-spacing: 0.3px;
+      transition: all 0.2s;
+      margin-top: 4px;
+    }
+    .auth-submit:hover { background: var(--gold-light); }
 
-  .mode-toggle {
-    display: flex;
-    background: rgba(255,255,255,0.08);
-    border-radius: 8px;
-    padding: 3px;
-    gap: 2px;
-  }
+    .error-msg { color: var(--red); font-size: 12px; margin-top: 8px; text-align: center; min-height: 18px; }
 
-  .mode-btn {
-    padding: 5px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 500;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: rgba(201, 168, 76, 0.6);
-    background: transparent;
-  }
-  .mode-btn.active {
-    background: var(--gold);
-    color: var(--navy);
-  }
+    .admin-portal-link {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      margin-top: 20px; padding-top: 20px;
+      border-top: 1px solid var(--border-soft);
+      font-size: 12px; color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .admin-portal-link:hover { color: var(--gold); }
+    .admin-portal-link svg { opacity: 0.5; transition: opacity 0.2s; }
+    .admin-portal-link:hover svg { opacity: 1; }
 
-  .clear-btn {
-    padding: 6px 14px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 500;
-    border: 1px solid rgba(201, 168, 76, 0.3);
-    cursor: pointer;
-    background: transparent;
-    color: rgba(201, 168, 76, 0.7);
-    transition: all 0.2s;
-  }
-  .clear-btn:hover { background: rgba(201, 168, 76, 0.1); color: var(--gold); }
+    /* ── LAYOUT ── */
+    #app { display: flex; height: 100vh; }
 
-  /* MAIN LAYOUT */
-  .main {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-  }
+    /* ── SIDEBAR ── */
+    #sidebar {
+      width: 268px;
+      background: var(--surface);
+      display: flex; flex-direction: column;
+      border-right: 1px solid var(--border-soft);
+      flex-shrink: 0;
+      overflow: hidden;
+    }
 
-  /* SIDEBAR */
-  .sidebar {
-    width: 260px;
-    background: var(--navy-mid);
-    border-right: 1px solid rgba(201, 168, 76, 0.2);
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    overflow-y: auto;
-  }
+    .sidebar-top {
+      padding: 20px 16px 14px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .sidebar-brand {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 14px;
+    }
+    .brand-mark {
+      width: 34px; height: 34px;
+      background: var(--gold-dim);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px;
+    }
+    .brand-name { font-family: var(--font-serif); font-size: 18px; color: var(--gold); }
 
-  .sidebar-section {
-    padding: 16px 16px 8px;
-  }
+    .new-chat-btn {
+      width: 100%; padding: 10px 14px;
+      background: var(--gold-dim);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 13px; font-weight: 500;
+      cursor: pointer; color: var(--gold);
+      font-family: var(--font-sans);
+      display: flex; align-items: center; gap: 8px;
+      transition: all 0.2s;
+    }
+    .new-chat-btn:hover { background: rgba(201,168,76,0.25); }
 
-  .sidebar-label {
-    font-size: 9px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgba(201, 168, 76, 0.5);
-    margin-bottom: 8px;
-  }
+    #session-list { flex: 1; overflow-y: auto; padding: 12px 10px; }
+    .session-label { font-size: 10px; font-weight: 600; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; padding: 0 6px; margin-bottom: 6px; }
+    .session-item {
+      padding: 9px 12px; border-radius: 8px;
+      cursor: pointer; color: var(--text-muted);
+      font-size: 13px; margin-bottom: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+    .session-item:hover { background: var(--surface2); color: var(--text); }
+    .session-item.active { background: var(--gold-dim); border-color: var(--border); color: var(--gold); }
 
-  .quick-btn {
-    display: block;
-    width: 100%;
-    text-align: left;
-    padding: 9px 12px;
-    border-radius: 8px;
-    font-size: 12.5px;
-    color: rgba(255,255,255,0.7);
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    transition: all 0.15s;
-    line-height: 1.4;
-    margin-bottom: 3px;
-  }
-  .quick-btn:hover {
-    background: rgba(201, 168, 76, 0.12);
-    color: var(--gold);
-  }
-  .quick-btn .emoji { font-size: 14px; margin-right: 7px; }
+    .sidebar-footer {
+      padding: 14px 16px;
+      border-top: 1px solid var(--border-soft);
+    }
+    .connection-status { display: flex; align-items: center; gap: 7px; margin-bottom: 12px; }
+    .status-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      flex-shrink: 0;
+      animation: glow 2s infinite;
+    }
+    @keyframes glow { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .status-label { font-family: var(--font-mono); font-size: 11px; color: #3fb950; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
 
-  .sidebar-divider {
-    border: none;
-    border-top: 1px solid rgba(201, 168, 76, 0.15);
-    margin: 8px 16px;
-  }
+    .user-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .user-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--gold-dim); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 600; color: var(--gold);
+      flex-shrink: 0;
+    }
+    #user-display { color: var(--text); font-size: 13px; font-weight: 500; flex: 1; }
+    .logout-btn {
+      padding: 5px 10px;
+      background: rgba(248,81,73,0.1); color: #f85149;
+      border: 1px solid rgba(248,81,73,0.2); border-radius: 6px;
+      font-size: 11px; cursor: pointer; font-family: var(--font-sans);
+      transition: all 0.2s;
+    }
+    .logout-btn:hover { background: rgba(248,81,73,0.2); }
 
-  .status-pill {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 12px 16px;
-    font-size: 11px;
-    color: rgba(255,255,255,0.4);
-  }
-  .status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #4ADE80;
-    flex-shrink: 0;
-  }
+    #lang-selector {
+      width: 100%; padding: 8px 10px;
+      background: var(--bg); border: 1px solid var(--border-soft);
+      border-radius: 8px; color: var(--text-muted);
+      font-size: 12px; font-family: var(--font-sans);
+    }
 
-  /* CHAT AREA */
-  .chat-wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
+    /* ── CHAT AREA ── */
+    #chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
 
-  .messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 28px 0;
-    scroll-behavior: smooth;
-  }
-  .messages::-webkit-scrollbar { width: 4px; }
-  .messages::-webkit-scrollbar-track { background: transparent; }
-  .messages::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); border-radius: 4px; }
+    #chat-header {
+      padding: 16px 28px;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex; align-items: center; gap: 12px;
+      background: var(--surface);
+    }
+    #chat-title { font-family: var(--font-serif); font-size: 18px; color: var(--text); }
+    .intent-badge {
+      padding: 3px 10px; border-radius: 20px;
+      background: var(--gold-dim); color: var(--gold);
+      font-size: 11px; font-weight: 500; border: 1px solid var(--border);
+      letter-spacing: 0.3px;
+    }
 
-  /* WELCOME */
-  .welcome {
-    max-width: 600px;
-    margin: 20px auto 40px;
-    padding: 0 24px;
-    text-align: center;
-  }
-  .welcome-crest {
-    width: 72px;
-    height: 72px;
-    background: linear-gradient(135deg, var(--gold) 0%, #E8C870 100%);
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 20px;
-  }
-  .welcome-crest svg { width: 40px; height: 40px; fill: var(--navy); }
-  .welcome h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 26px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 8px;
-  }
-  .welcome p {
-    font-size: 14px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    margin-bottom: 20px;
-  }
+    #messages-container {
+      flex: 1; overflow-y: auto;
+      padding: 28px 28px 16px;
+      display: flex; flex-direction: column; gap: 20px;
+    }
 
-  .suggestion-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    text-align: left;
-  }
+    /* Welcome */
+    .welcome { text-align: center; margin: auto; max-width: 520px; padding: 20px 0; }
+    .welcome-emblem {
+      width: 80px; height: 80px; border-radius: 20px;
+      background: var(--gold-dim); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 38px; margin: 0 auto 20px;
+    }
+    .welcome h2 {
+      font-family: var(--font-serif); font-size: 28px;
+      color: var(--text); margin-bottom: 8px;
+    }
+    .welcome p { color: var(--text-muted); font-size: 14px; font-weight: 300; margin-bottom: 28px; line-height: 1.6; }
+    .quick-topics { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .quick-topics button {
+      padding: 8px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: 20px; font-size: 13px;
+      cursor: pointer; color: var(--text-muted);
+      font-family: var(--font-sans);
+      transition: all 0.2s;
+    }
+    .quick-topics button:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
 
-  .suggestion-card {
-    padding: 12px 14px;
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 12.5px;
-    color: var(--text-secondary);
-    line-height: 1.4;
-  }
-  .suggestion-card:hover {
-    border-color: var(--gold);
-    background: #FEFCF5;
-    color: var(--text-primary);
-  }
-  .suggestion-card strong {
-    display: block;
-    font-size: 13px;
-    color: var(--text-primary);
-    margin-bottom: 2px;
-  }
+    /* Messages */
+    .message-row { display: flex; gap: 12px; max-width: 800px; }
+    .message-row.user { margin-left: auto; flex-direction: row-reverse; }
+    .message-row.bot { margin-right: auto; }
 
-  /* MESSAGES */
-  .msg-row {
-    display: flex;
-    padding: 6px 24px;
-    gap: 12px;
-    max-width: 760px;
-    margin: 0 auto;
-    width: 100%;
-    animation: fadeUp 0.25s ease;
-  }
+    .avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; flex-shrink: 0;
+    }
+    .bot .avatar { background: var(--gold-dim); border: 1px solid var(--border); }
+    .user .avatar { background: var(--surface2); border: 1px solid var(--border-soft); font-size: 12px; font-weight: 600; color: var(--gold); }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+    .bubble {
+      padding: 14px 18px; border-radius: 14px;
+      max-width: 640px; font-size: 14px; line-height: 1.65;
+    }
+    .bot .bubble {
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-bottom-left-radius: 4px;
+      color: var(--text);
+    }
+    .user .bubble {
+      background: var(--gold-dim);
+      border: 1px solid var(--border);
+      border-bottom-right-radius: 4px;
+      color: var(--text);
+    }
+    .sources {
+      margin-top: 12px; padding-top: 12px;
+      border-top: 1px solid var(--border-soft);
+      font-size: 11px; color: var(--text-dim);
+    }
+    .source-tag {
+      display: inline-block; padding: 2px 8px;
+      background: var(--bg); border: 1px solid var(--border-soft);
+      border-radius: 4px; margin: 2px; font-size: 11px;
+      font-family: var(--font-mono); color: var(--text-muted);
+    }
+    .follow-ups { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .follow-up-btn {
+      padding: 5px 12px;
+      background: var(--bg); border: 1px solid var(--border-soft);
+      border-radius: 14px; font-size: 12px;
+      cursor: pointer; color: var(--text-muted);
+      font-family: var(--font-sans);
+      transition: all 0.15s;
+    }
+    .follow-up-btn:hover { border-color: var(--gold); color: var(--gold); }
 
-  .msg-row.user { flex-direction: row-reverse; }
+    .bubble strong { font-weight: 600; color: var(--gold-light); }
+    .bubble h3, .bubble h2 { margin: 10px 0 5px; font-weight: 600; font-family: var(--font-serif); }
+    .bubble ul, .bubble ol { padding-left: 20px; margin: 6px 0; }
+    .bubble code { background: var(--bg); padding: 1px 6px; border-radius: 4px; font-size: 12px; font-family: var(--font-mono); color: var(--gold-light); }
+    .bubble li { margin: 3px 0; }
 
-  .avatar {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 13px;
-    font-weight: 600;
-    margin-top: 2px;
-  }
-  .avatar.bot {
-    background: linear-gradient(135deg, var(--gold) 0%, #E8C870 100%);
-    color: var(--navy);
-  }
-  .avatar.user {
-    background: var(--navy);
-    color: var(--gold);
-  }
+    /* Typing */
+    #typing-indicator {
+      display: flex; align-items: center; gap: 10px;
+      padding: 6px 28px; color: var(--text-muted); font-size: 13px;
+    }
+    .typing-dots { display: flex; gap: 5px; }
+    .typing-dots span {
+      width: 7px; height: 7px; background: var(--gold);
+      border-radius: 50%; animation: tdot 1.4s infinite ease-in-out;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes tdot { 0%,80%,100%{transform:scale(0.6);opacity:0.3} 40%{transform:scale(1);opacity:1} }
 
-  .bubble {
-    max-width: 78%;
-    padding: 13px 17px;
-    border-radius: 18px;
-    font-size: 14px;
-    line-height: 1.65;
-  }
+    /* Input area */
+    #input-area {
+      display: flex; gap: 10px;
+      padding: 14px 24px;
+      background: var(--surface);
+      border-top: 1px solid var(--border-soft);
+      align-items: flex-end;
+    }
+    #message-input {
+      flex: 1; padding: 12px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      font-size: 14px; resize: none;
+      font-family: var(--font-sans);
+      color: var(--text);
+      transition: border-color 0.2s;
+      max-height: 150px;
+    }
+    #message-input::placeholder { color: var(--text-dim); }
+    #message-input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.06); }
 
-  .bubble.bot {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 18px 18px 18px 4px;
-    color: var(--text-primary);
-    box-shadow: var(--shadow);
-  }
+    #send-btn {
+      padding: 12px 16px;
+      background: var(--gold);
+      color: #0d1117;
+      border: none; border-radius: 12px;
+      cursor: pointer;
+      display: flex; align-items: center;
+      transition: all 0.2s;
+    }
+    #send-btn:hover { background: var(--gold-light); }
+    #send-btn:disabled { background: var(--surface2); color: var(--text-dim); cursor: not-allowed; }
 
-  .bubble.user {
-    background: var(--navy);
-    color: white;
-    border-radius: 18px 18px 4px 18px;
-  }
+    .disclaimer {
+      text-align: center; font-size: 11px; color: var(--text-dim);
+      padding: 5px 24px 10px; background: var(--surface);
+    }
 
-  .bubble.bot p { margin-bottom: 8px; }
-  .bubble.bot p:last-child { margin-bottom: 0; }
-  .bubble.bot ul, .bubble.bot ol { padding-left: 18px; margin: 6px 0; }
-  .bubble.bot li { margin: 4px 0; }
-  .bubble.bot strong { color: var(--gold-dark); }
-  .bubble.bot a { color: var(--gold-dark); text-decoration: underline; }
-  .bubble.bot code {
-    background: var(--cream-dark);
-    padding: 1px 5px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-family: monospace;
-  }
-  .bubble.bot blockquote {
-    border-left: 3px solid var(--gold);
-    padding-left: 12px;
-    margin: 8px 0;
-    color: var(--text-secondary);
-    font-style: italic;
-  }
-
-  /* Source tag */
-  .source-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    margin-top: 10px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    color: var(--gold-dark);
-    background: rgba(201, 168, 76, 0.1);
-    border: 1px solid rgba(201, 168, 76, 0.3);
-  }
-  .source-tag svg { width: 11px; height: 11px; fill: var(--gold-dark); }
-
-  /* Typing indicator */
-  .typing-row { animation: fadeUp 0.2s ease; }
-  .typing-bubble {
-    padding: 13px 17px;
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 18px 18px 18px 4px;
-    display: inline-flex;
-    gap: 5px;
-    align-items: center;
-    box-shadow: var(--shadow);
-  }
-  .typing-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--gold);
-    animation: bounce 1.2s infinite;
-  }
-  .typing-dot:nth-child(2) { animation-delay: 0.15s; }
-  .typing-dot:nth-child(3) { animation-delay: 0.3s; }
-  @keyframes bounce {
-    0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
-    30% { transform: translateY(-5px); opacity: 1; }
-  }
-
-  /* ARTICLE CARD */
-  .article-card {
-    background: var(--cream-dark);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--gold);
-    border-radius: 10px;
-    padding: 10px 14px;
-    margin: 8px 0 4px;
-    font-size: 12.5px;
-  }
-  .article-card .art-num {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--gold-dark);
-  }
-  .article-card .art-title {
-    font-weight: 600;
-    color: var(--text-primary);
-    margin: 2px 0 4px;
-    font-size: 13px;
-  }
-  .article-card .art-text {
-    color: var(--text-secondary);
-    line-height: 1.55;
-  }
-
-  /* INPUT AREA */
-  .input-area {
-    border-top: 1px solid var(--border);
-    background: white;
-    padding: 16px 24px 20px;
-    flex-shrink: 0;
-  }
-
-  .input-wrap {
-    max-width: 760px;
-    margin: 0 auto;
-    display: flex;
-    gap: 10px;
-    align-items: flex-end;
-  }
-
-  .input-box {
-    flex: 1;
-    border: 1.5px solid var(--border-strong);
-    border-radius: 14px;
-    background: var(--cream);
-    padding: 12px 16px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    color: var(--text-primary);
-    resize: none;
-    outline: none;
-    max-height: 130px;
-    min-height: 48px;
-    overflow-y: auto;
-    line-height: 1.5;
-    transition: border-color 0.2s;
-  }
-  .input-box:focus { border-color: var(--gold); }
-  .input-box::placeholder { color: var(--text-muted); }
-
-  .send-btn {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: var(--navy);
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    flex-shrink: 0;
-  }
-  .send-btn:hover { background: var(--navy-light); transform: scale(1.04); }
-  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-  .send-btn svg { width: 20px; height: 20px; fill: var(--gold); }
-
-  .input-hint {
-    text-align: center;
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 8px;
-    max-width: 760px;
-    margin-inline: auto;
-  }
-
-  /* MODE BADGE */
-  .mode-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 20px;
-    margin-bottom: 6px;
-  }
-  .mode-badge.ai { background: rgba(201,168,76,0.12); color: var(--gold-dark); }
-  .mode-badge.nlp { background: rgba(13,27,42,0.08); color: var(--navy-mid); }
-
-  /* RESPONSIVE */
-  @media (max-width: 700px) {
-    .sidebar { display: none; }
-    .suggestion-grid { grid-template-columns: 1fr; }
-    .bubble { max-width: 92%; }
-  }
-</style>
+    @media (max-width: 640px) {
+      #sidebar { width: 200px; }
+      .bubble { max-width: 90vw; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
-<div class="topbar">
-  <div class="brand">
-    <div class="brand-icon">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2zm-1 14H9v-5h2v5zm4 0h-2v-5h2v5zm0-7H9V7h6v2z"/>
-      </svg>
-    </div>
-    <div class="brand-text">
-      <span class="brand-name">LaborLens</span>
-      <span class="brand-sub">Philippine Labor Code Assistant</span>
-    </div>
-  </div>
-  <div class="topbar-actions">
-    <div class="mode-toggle">
-      <button class="mode-btn active" id="btn-ai" onclick="setMode('ai')">✦ AI Mode</button>
-      <button class="mode-btn" id="btn-nlp" onclick="setMode('nlp')">⟁ NLP Mode</button>
-    </div>
-    <button class="clear-btn" onclick="clearChat()">Clear</button>
-  </div>
-</div>
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="auth-logo-mark">⚖️</div>
+        <h1>LaborLens</h1>
+        <p>AI-Powered Philippine Labour &amp; Employment Law Advisor</p>
+      </div>
 
-<!-- MAIN -->
-<div class="main">
+      <div class="auth-tabs" id="auth-tabs">
+        <button class="tab-btn active" onclick="showTab('login')">Sign In</button>
+        <button class="tab-btn" onclick="showTab('register')">Register</button>
+      </div>
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="sidebar-section">
-      <div class="sidebar-label">Common Questions</div>
-      <button class="quick-btn" onclick="sendQuick('What is the minimum wage in the Philippines?')">
-        <span class="emoji">💰</span>Minimum wage rates
-      </button>
-      <button class="quick-btn" onclick="sendQuick('What are the legal working hours per day?')">
-        <span class="emoji">🕐</span>Working hours rules
-      </button>
-      <button class="quick-btn" onclick="sendQuick('What are the rules on overtime pay?')">
-        <span class="emoji">⏰</span>Overtime pay rules
-      </button>
-      <button class="quick-btn" onclick="sendQuick('How many days is maternity leave in the Philippines?')">
-        <span class="emoji">🤱</span>Maternity leave
-      </button>
-      <button class="quick-btn" onclick="sendQuick('What are the legal grounds for termination of employment?')">
-        <span class="emoji">📋</span>Termination grounds
-      </button>
-      <button class="quick-btn" onclick="sendQuick('What is the 13th month pay rule?')">
-        <span class="emoji">📅</span>13th month pay
-      </button>
-    </div>
-
-    <hr class="sidebar-divider">
-
-    <div class="sidebar-section">
-      <div class="sidebar-label">Labor Code Chapters</div>
-      <button class="quick-btn" onclick="sendQuick('Explain Book I of the Labor Code on Pre-Employment')">
-        <span class="emoji">📖</span>Book I – Pre-Employment
-      </button>
-      <button class="quick-btn" onclick="sendQuick('Explain Book II of the Labor Code on Human Resources')">
-        <span class="emoji">📖</span>Book II – Human Resources
-      </button>
-      <button class="quick-btn" onclick="sendQuick('Explain Book III on Conditions of Employment')">
-        <span class="emoji">📖</span>Book III – Conditions
-      </button>
-      <button class="quick-btn" onclick="sendQuick('Explain Book IV on Health, Safety and Social Welfare')">
-        <span class="emoji">📖</span>Book IV – Health & Safety
-      </button>
-      <button class="quick-btn" onclick="sendQuick('Explain Book V on Labor Relations')">
-        <span class="emoji">📖</span>Book V – Labor Relations
-      </button>
-    </div>
-
-    <hr class="sidebar-divider">
-
-    <div class="sidebar-section">
-      <div class="sidebar-label">Quick Lookup</div>
-      <button class="quick-btn" onclick="sendQuick('What does Article 82 of the Labor Code say?')">
-        <span class="emoji">🔍</span>Lookup Article 82
-      </button>
-      <button class="quick-btn" onclick="sendQuick('What are my rights as a contractual employee?')">
-        <span class="emoji">⚖️</span>Contractual rights
-      </button>
-      <button class="quick-btn" onclick="sendQuick('What is DOLE and what does it do?')">
-        <span class="emoji">🏛️</span>About DOLE
-      </button>
-    </div>
-
-    <hr class="sidebar-divider">
-    <div class="status-pill">
-      <div class="status-dot"></div>
-      Powered by Claude AI + PH Labor Code
-    </div>
-  </div>
-
-  <!-- CHAT -->
-  <div class="chat-wrapper">
-    <div class="messages" id="messages">
-
-      <!-- Welcome screen -->
-      <div id="welcome" class="welcome">
-        <div class="welcome-crest">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2zm-1 14H9v-5h2v5zm4 0h-2v-5h2v5zm0-7H9V7h6v2z"/>
-          </svg>
+      <div id="login-form">
+        <div class="auth-field"><input type="email" id="login-email" placeholder="Email address"/></div>
+        <div class="auth-field"><input type="password" id="login-password" placeholder="Password"/></div>
+        <div class="auth-field">
+          <select id="login-lang">
+            <option value="en">🇬🇧 English</option>
+            <option value="fil">🇵🇭 Filipino</option>
+            <option value="hil">Hiligaynon</option>
+          </select>
         </div>
-        <h1>Welcome to LaborLens</h1>
-        <p>Your AI-powered guide to the Philippine Labor Code (P.D. 442, as renumbered 2022). Ask about your rights, employer obligations, wages, leave benefits, and more.</p>
-        <div class="suggestion-grid">
-          <div class="suggestion-card" onclick="sendQuick('What are the minimum wage rates in the Philippines?')">
-            <strong>Minimum Wage</strong>
-            Current rates and regions
-          </div>
-          <div class="suggestion-card" onclick="sendQuick('What are the rules on rest days and holidays?')">
-            <strong>Rest Days & Holidays</strong>
-            Pay rules and entitlements
-          </div>
-          <div class="suggestion-card" onclick="sendQuick('What is the process for filing a labor complaint?')">
-            <strong>File a Complaint</strong>
-            NLRC and DOLE process
-          </div>
-          <div class="suggestion-card" onclick="sendQuick('What are the rights of employees under illegal dismissal?')">
-            <strong>Illegal Dismissal</strong>
-            Remedies and rights
+        <button class="auth-submit" onclick="doLogin()">Sign In</button>
+        <p id="login-error" class="error-msg"></p>
+      </div>
+
+      <div id="register-form" style="display:none;">
+        <div class="auth-field"><input type="text" id="reg-username" placeholder="Username"/></div>
+        <div class="auth-field"><input type="email" id="reg-email" placeholder="Email address"/></div>
+        <div class="auth-field"><input type="password" id="reg-password" placeholder="Password"/></div>
+        <div class="auth-field">
+          <select id="reg-lang">
+            <option value="en">🇬🇧 English</option>
+            <option value="fil">🇵🇭 Filipino</option>
+            <option value="hil">Hiligaynon</option>
+          </select>
+        </div>
+        <button class="auth-submit" onclick="doRegister()">Create Account</button>
+        <p id="reg-error" class="error-msg"></p>
+      </div>
+
+      <a href="admin.html" class="admin-portal-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        Admin Portal
+      </a>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="app" style="display:none;">
+    <aside id="sidebar">
+      <div class="sidebar-top">
+        <div class="sidebar-brand">
+          <div class="brand-mark">⚖️</div>
+          <span class="brand-name">LaborLens</span>
+        </div>
+        <button class="new-chat-btn" onclick="startNewChat()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Chat
+        </button>
+      </div>
+
+      <div id="session-list">
+        <div class="session-label">Recent</div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="connection-status">
+          <span class="status-dot"></span>
+          <span id="backend-url-badge" class="status-label"></span>
+        </div>
+        <div class="user-row">
+          <div class="user-avatar" id="user-avatar-letter">U</div>
+          <span id="user-display">User</span>
+          <button onclick="doLogout()" class="logout-btn">Logout</button>
+        </div>
+        <select id="lang-selector" onchange="setLanguage(this.value)">
+          <option value="en">🇬🇧 English</option>
+          <option value="fil">🇵🇭 Filipino</option>
+          <option value="hil">Hiligaynon</option>
+        </select>
+      </div>
+    </aside>
+
+    <main id="chat-area">
+      <div id="chat-header">
+        <h2 id="chat-title">LaborLens Assistant</h2>
+        <span id="chat-intent-badge" class="intent-badge" style="display:none;"></span>
+      </div>
+      <div id="messages-container">
+        <div id="welcome-message" class="welcome">
+          <div class="welcome-emblem">⚖️</div>
+          <h2>Welcome to LaborLens</h2>
+          <p>Your AI guide to Philippine Labour Law.<br/>Ask anything about your rights and entitlements.</p>
+          <div class="quick-topics">
+            <button onclick="sendQuick('What is the minimum wage in the Philippines?')">Minimum Wage</button>
+            <button onclick="sendQuick('How is 13th month pay computed?')">13th Month Pay</button>
+            <button onclick="sendQuick('What are my leave benefits?')">Leave Benefits</button>
+            <button onclick="sendQuick('What are the grounds for termination?')">Termination Rights</button>
+            <button onclick="sendQuick('What is separation pay?')">Separation Pay</button>
+            <button onclick="sendQuick('Am I entitled to overtime pay?')">Overtime Pay</button>
           </div>
         </div>
       </div>
-
-    </div>
-
-    <!-- INPUT -->
-    <div class="input-area">
-      <div class="input-wrap">
-        <textarea
-          class="input-box"
-          id="userInput"
-          placeholder="Ask about Philippine labor law... (e.g. 'What is separation pay?')"
-          rows="1"
-          onkeydown="handleKey(event)"
-          oninput="autoResize(this)"
-        ></textarea>
-        <button class="send-btn" id="sendBtn" onclick="sendMessage()">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <div id="typing-indicator" style="display:none;">
+        <div class="typing-dots"><span></span><span></span><span></span></div>
+        <span>LaborLens is thinking…</span>
+      </div>
+      <div id="input-area">
+        <textarea id="message-input"
+          placeholder="Ask about your rights, wages, benefits, termination, and more…"
+          rows="2" onkeydown="handleKeyDown(event)"></textarea>
+        <button id="send-btn" onclick="sendMessage()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
             <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
           </svg>
         </button>
       </div>
-      <div class="input-hint">LaborLens uses the Philippine Labor Code (P.D. 442, 2022 Renumbered Edition) · Not legal advice</div>
-    </div>
+      <p class="disclaimer">⚠️ For informational purposes only. Consult a lawyer or DOLE for official legal advice.</p>
+    </main>
   </div>
 
-</div>
+  <script>
+    const API = 'https://plaster-multiply-tint.ngrok-free.dev/api';
 
-<script>
-let currentMode = 'ai';
-let conversationHistory = [];
-let isTyping = false;
+    let token            = localStorage.getItem('ll_token');
+    let currentUser      = JSON.parse(localStorage.getItem('ll_user') || 'null');
+    let currentSessionId = null;
+    let selectedLanguage = 'en';
 
-function setMode(mode) {
-  currentMode = mode;
-  document.getElementById('btn-ai').classList.toggle('active', mode === 'ai');
-  document.getElementById('btn-nlp').classList.toggle('active', mode === 'nlp');
-}
-
-function clearChat() {
-  conversationHistory = [];
-  const msgs = document.getElementById('messages');
-  msgs.innerHTML = '';
-  document.getElementById('welcome') && null; // already cleared
-  addWelcome();
-}
-
-function addWelcome() {
-  const msgs = document.getElementById('messages');
-  msgs.innerHTML = `
-    <div id="welcome" class="welcome">
-      <div class="welcome-crest">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2zm-1 14H9v-5h2v5zm4 0h-2v-5h2v5zm0-7H9V7h6v2z"/>
-        </svg>
-      </div>
-      <h1>Welcome to LaborLens</h1>
-      <p>Your AI-powered guide to the Philippine Labor Code. Ask anything about worker rights, wages, benefits, and employer obligations.</p>
-      <div class="suggestion-grid">
-        <div class="suggestion-card" onclick="sendQuick('What are the minimum wage rates in the Philippines?')">
-          <strong>Minimum Wage</strong>Current rates and regions</div>
-        <div class="suggestion-card" onclick="sendQuick('What are the rules on rest days and holidays?')">
-          <strong>Rest Days & Holidays</strong>Pay rules and entitlements</div>
-        <div class="suggestion-card" onclick="sendQuick('What is the process for filing a labor complaint?')">
-          <strong>File a Complaint</strong>NLRC and DOLE process</div>
-        <div class="suggestion-card" onclick="sendQuick('What are the rights of employees under illegal dismissal?')">
-          <strong>Illegal Dismissal</strong>Remedies and rights</div>
-      </div>
-    </div>`;
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 130) + 'px';
-}
-
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-}
-
-function sendQuick(text) {
-  document.getElementById('userInput').value = text;
-  sendMessage();
-}
-
-function removeWelcome() {
-  const w = document.getElementById('welcome');
-  if (w) w.remove();
-}
-
-function appendMessage(role, content) {
-  removeWelcome();
-  const msgs = document.getElementById('messages');
-  const row = document.createElement('div');
-  row.className = `msg-row ${role}`;
-
-  const avatarHTML = role === 'user'
-    ? `<div class="avatar user">U</div>`
-    : `<div class="avatar bot"><svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:var(--navy)"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2zm-1 14H9v-5h2v5zm4 0h-2v-5h2v5zm0-7H9V7h6v2z"/></svg></div>`;
-
-  const bubbleContent = role === 'bot' ? formatMarkdown(content) : escapeHtml(content);
-  const modeTag = role === 'bot' ? `<div class="mode-badge ${currentMode}">${currentMode === 'ai' ? '✦ AI Mode' : '⟁ NLP Mode'}</div>` : '';
-  const sourceTag = role === 'bot' ? `<div class="source-tag"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2 5 5h-5V4zM7 18v-2h10v2H7zm0-4v-2h10v2H7zm0-4V8h4v2H7z"/></svg>P.D. 442 — Philippine Labor Code</div>` : '';
-
-  row.innerHTML = `
-    ${avatarHTML}
-    <div>
-      ${modeTag}
-      <div class="bubble ${role}">${bubbleContent}</div>
-      ${sourceTag}
-    </div>`;
-
-  msgs.appendChild(row);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function showTyping() {
-  removeWelcome();
-  const msgs = document.getElementById('messages');
-  const row = document.createElement('div');
-  row.className = 'msg-row typing-row';
-  row.id = 'typing-indicator';
-  row.innerHTML = `
-    <div class="avatar bot"><svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:var(--navy)"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2zm-1 14H9v-5h2v5zm4 0h-2v-5h2v5zm0-7H9V7h6v2z"/></svg></div>
-    <div class="typing-bubble">
-      <div class="typing-dot"></div>
-      <div class="typing-dot"></div>
-      <div class="typing-dot"></div>
-    </div>`;
-  msgs.appendChild(row);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function removeTyping() {
-  const t = document.getElementById('typing-indicator');
-  if (t) t.remove();
-}
-
-function formatMarkdown(text) {
-  text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
-  text = text.replace(/`(.+?)`/g, '<code>$1</code>');
-  text = text.replace(/^### (.+)$/gm, '<h4 style="font-size:14px;font-weight:600;margin:10px 0 4px;color:var(--navy)">$1</h4>');
-  text = text.replace(/^## (.+)$/gm, '<h3 style="font-size:15px;font-weight:600;margin:12px 0 5px;color:var(--navy)">$1</h3>');
-  text = text.replace(/^# (.+)$/gm, '<h2 style="font-size:17px;font-weight:600;margin:12px 0 6px;color:var(--navy)">$1</h2>');
-
-  // Article highlighting: "Article XX" or "Art. XX"
-  text = text.replace(/(Art(?:icle|\.)?\s+\d+[A-Z]?)/gi, '<strong style="color:var(--gold-dark)">$1</strong>');
-
-  const lines = text.split('\n');
-  let html = '';
-  let inUl = false, inOl = false;
-
-  lines.forEach(line => {
-    const trimmed = line.trim();
-    if (/^[\*\-•]\s+/.test(trimmed)) {
-      if (!inUl) { html += '<ul>'; inUl = true; }
-      html += `<li>${trimmed.replace(/^[\*\-•]\s+/, '')}</li>`;
-    } else if (/^\d+\.\s+/.test(trimmed)) {
-      if (!inOl) { html += '<ol>'; inOl = true; }
-      html += `<li>${trimmed.replace(/^\d+\.\s+/, '')}</li>`;
-    } else {
-      if (inUl) { html += '</ul>'; inUl = false; }
-      if (inOl) { html += '</ol>'; inOl = false; }
-      if (trimmed) html += `<p>${trimmed}</p>`;
+    // ── AUTH ──────────────────────────────────────────────────────────────────
+    function showTab(tab) {
+      document.getElementById('login-form').style.display    = tab === 'login'    ? 'block' : 'none';
+      document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+      document.querySelectorAll('.tab-btn').forEach((b, i) =>
+        b.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='register')));
     }
-  });
 
-  if (inUl) html += '</ul>';
-  if (inOl) html += '</ol>';
-  return html;
-}
+    async function doLogin() {
+      const email    = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      selectedLanguage = document.getElementById('login-lang').value;
+      document.getElementById('login-error').textContent = '';
+      try {
+        const res  = await fetch(`${API}/auth/login`, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({email, password})
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Login failed');
+        saveAuth(data);
+      } catch(e) { document.getElementById('login-error').textContent = e.message; }
+    }
 
-function escapeHtml(text) {
-  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
+    async function doRegister() {
+      const username = document.getElementById('reg-username').value.trim();
+      const email    = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value;
+      selectedLanguage = document.getElementById('reg-lang').value;
+      document.getElementById('reg-error').textContent = '';
+      try {
+        const res  = await fetch(`${API}/auth/register`, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({username, email, password, language_preference: selectedLanguage})
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Registration failed');
+        saveAuth(data);
+      } catch(e) { document.getElementById('reg-error').textContent = e.message; }
+    }
 
-async function sendMessage() {
-  if (isTyping) return;
-  const input = document.getElementById('userInput');
-  const text = input.value.trim();
-  if (!text) return;
+    function saveAuth(data) {
+      token       = data.access_token;
+      currentUser = {id: data.user_id, username: data.username, role: data.role};
+      localStorage.setItem('ll_token', token);
+      localStorage.setItem('ll_user', JSON.stringify(currentUser));
+      initApp();
+    }
 
-  input.value = '';
-  input.style.height = 'auto';
-  appendMessage('user', text);
-  isTyping = true;
-  document.getElementById('sendBtn').disabled = true;
-  showTyping();
+    function doLogout() {
+      localStorage.removeItem('ll_token'); localStorage.removeItem('ll_user');
+      token = null; currentUser = null; currentSessionId = null;
+      document.getElementById('app').style.display = 'none';
+      document.getElementById('login-screen').style.display = 'flex';
+    }
 
-  conversationHistory.push({ role: 'user', content: text });
+    // ── APP ───────────────────────────────────────────────────────────────────
+    function initApp() {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+      document.getElementById('user-display').textContent = currentUser.username;
+      document.getElementById('user-avatar-letter').textContent = (currentUser.username?.[0] || 'U').toUpperCase();
+      const badge = document.getElementById('backend-url-badge');
+      try { badge.textContent = new URL(API).hostname; badge.style.display = 'inline'; } catch(_){}
+      loadSessions();
+    }
 
-  try {
-    const reply = await callLaborLensAPI(text);
-    removeTyping();
-    appendMessage('bot', reply);
-    conversationHistory.push({ role: 'assistant', content: reply });
-  } catch (err) {
-    removeTyping();
-    appendMessage('bot', 'Sorry, I encountered an error. Please try again.');
-    console.error(err);
-  }
+    function setLanguage(lang) { selectedLanguage = lang; }
 
-  isTyping = false;
-  document.getElementById('sendBtn').disabled = false;
-}
+    // ── SESSIONS ──────────────────────────────────────────────────────────────
+    async function loadSessions() {
+      try {
+        const sessions = await (await authFetch('/chat/sessions')).json();
+        const list = document.getElementById('session-list');
+        list.innerHTML = sessions.length ? '<div class="session-label">Recent</div>' : '';
+        sessions.forEach(s => {
+          const d = document.createElement('div');
+          d.className   = 'session-item' + (s.id === currentSessionId ? ' active' : '');
+          d.textContent = s.title || 'Chat';
+          d.onclick     = () => loadSession(s.id, s.title);
+          list.appendChild(d);
+        });
+      } catch(e) { console.error(e); }
+    }
 
-async function callLaborLensAPI(userMessage) {
-  // Determine current mode (AI or NLP)
-  const mode = currentMode === 'ai' ? 'ai' : 'nlp';
-  
-  // Get the last intent for context-aware follow-ups
-  const lastIntent = conversationHistory.length > 2 
-    ? conversationHistory[conversationHistory.length - 2]?.intent 
-    : null;
+    async function loadSession(id, title) {
+      currentSessionId = id;
+      document.getElementById('chat-title').textContent = title || 'Chat';
+      document.getElementById('messages-container').innerHTML = '';
+      try {
+        const msgs = await (await authFetch(`/chat/sessions/${id}/messages`)).json();
+        msgs.forEach(m => {
+          const src = (() => { try { return JSON.parse(m.sources||'[]'); } catch{return[];} })();
+          appendMessage(m.role, m.content, src, []);
+        });
+        scrollBottom(); loadSessions();
+      } catch(e) { console.error(e); }
+    }
 
-  const payload = {
-    mode: mode,
-    message: userMessage,
-    history: conversationHistory.slice(-10),
-    last_intent: lastIntent
-  };
+    function startNewChat() {
+      currentSessionId = null;
+      document.getElementById('messages-container').innerHTML = welcomeHTML();
+      document.getElementById('chat-title').textContent = 'LaborLens Assistant';
+      const ib = document.getElementById('chat-intent-badge');
+      ib.textContent = ''; ib.style.display = 'none';
+      loadSessions();
+    }
 
-  const response = await fetch('api_laborlens.php', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
+    function welcomeHTML() {
+      return `<div id="welcome-message" class="welcome">
+        <div class="welcome-emblem">⚖️</div>
+        <h2>Welcome to LaborLens</h2>
+        <p>Your AI guide to Philippine Labour Law.<br/>Ask anything about your rights and entitlements.</p>
+        <div class="quick-topics">
+          <button onclick="sendQuick('What is the minimum wage in the Philippines?')">Minimum Wage</button>
+          <button onclick="sendQuick('How is 13th month pay computed?')">13th Month Pay</button>
+          <button onclick="sendQuick('What are my leave benefits?')">Leave Benefits</button>
+          <button onclick="sendQuick('What are the grounds for termination?')">Termination Rights</button>
+          <button onclick="sendQuick('What is separation pay?')">Separation Pay</button>
+          <button onclick="sendQuick('Am I entitled to overtime pay?')">Overtime Pay</button>
+        </div>
+      </div>`;
+    }
 
-  if (!response.ok) {
-    throw new Error(`API error ${response.status}`);
-  }
+    // ── MESSAGING ─────────────────────────────────────────────────────────────
+    function sendQuick(text) {
+      document.getElementById('message-input').value = text;
+      sendMessage();
+    }
 
-  const data = await response.json();
-  
-  if (data.error) {
-    throw new Error(data.error);
-  }
+    function handleKeyDown(e) {
+      if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    }
 
-  // Store intent for context awareness in follow-up questions
-  if (data.intent) {
-    conversationHistory[conversationHistory.length - 1].intent = data.intent;
-  }
+    async function sendMessage() {
+      const input = document.getElementById('message-input');
+      const text  = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      const w = document.getElementById('welcome-message');
+      if (w) w.style.display = 'none';
+      appendMessage('user', text, [], []);
+      document.getElementById('typing-indicator').style.display = 'flex';
+      document.getElementById('send-btn').disabled = true;
+      try {
+        const res  = await authFetch('/chat/message', {
+          method:'POST',
+          body: JSON.stringify({message:text, session_id:currentSessionId, language:selectedLanguage})
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Server error');
+        currentSessionId = data.session_id;
+        const ib = document.getElementById('chat-intent-badge');
+        ib.textContent = data.intent.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+        ib.style.display = 'inline';
+        appendMessage('assistant', data.answer, data.sources, data.follow_up_questions);
+        loadSessions();
+      } catch(e) {
+        appendMessage('assistant',
+          `❌ **Error:** ${e.message}\n\nIs FastAPI running? Is ngrok active?`,
+          [], []);
+      } finally {
+        document.getElementById('typing-indicator').style.display = 'none';
+        document.getElementById('send-btn').disabled = false;
+        scrollBottom();
+      }
+    }
 
-  return data.text || data.response || 'No response generated.';
-}
-</script>
+    function appendMessage(role, content, sources=[], followUps=[]) {
+      const container = document.getElementById('messages-container');
+      const row = document.createElement('div');
+      row.className = `message-row ${role==='user'?'user':'bot'}`;
+      const avatar = document.createElement('div');
+      avatar.className = 'avatar';
+      avatar.textContent = role==='user' ? (currentUser?.username?.[0]?.toUpperCase()||'U') : '⚖️';
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.innerHTML = mdToHTML(content);
+      if (sources?.length) {
+        const s = document.createElement('div');
+        s.className = 'sources';
+        s.innerHTML = '📚 Sources: ' + sources.filter(x=>x.source)
+          .map(x=>`<span class="source-tag">${x.source}${x.page?', p.'+x.page:''}</span>`).join('');
+        bubble.appendChild(s);
+      }
+      if (followUps?.length) {
+        const f = document.createElement('div');
+        f.className = 'follow-ups';
+        followUps.forEach(q => {
+          const b = document.createElement('button');
+          b.className = 'follow-up-btn'; b.textContent = q;
+          b.onclick = () => sendQuick(q);
+          f.appendChild(b);
+        });
+        bubble.appendChild(f);
+      }
+      row.appendChild(avatar); row.appendChild(bubble);
+      container.appendChild(row);
+      scrollBottom();
+    }
 
+    function mdToHTML(t) {
+      return t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+               .replace(/\*(.+?)\*/g,'<em>$1</em>')
+               .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+               .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+               .replace(/^- (.+)$/gm,'<li>$1</li>')
+               .replace(/`([^`]+)`/g,'<code>$1</code>')
+               .replace(/\n/g,'<br>');
+    }
+
+    function scrollBottom() {
+      const c = document.getElementById('messages-container');
+      c.scrollTop = c.scrollHeight;
+    }
+
+    async function authFetch(path, opts={}) {
+      return fetch(`${API}${path}`, {
+        ...opts,
+        headers: {'Content-Type':'application/json','Authorization':`Bearer ${token}`, ...(opts.headers||{})}
+      });
+    }
+
+    // ── STARTUP ───────────────────────────────────────────────────────────────
+    if (token && currentUser) {
+      document.getElementById('login-screen').style.display = 'none';
+      initApp();
+    } else {
+      document.getElementById('login-screen').style.display = 'flex';
+    }
+  </script>
 </body>
 </html>
