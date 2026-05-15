@@ -39,16 +39,22 @@
     .screen { position: fixed; inset: 0; z-index: 100; display: flex; }
     .screen.hidden { display: none; }
 
+    /* ─── SHARED BG IMAGE ─── */
+    .bg-dole {
+      background-color: var(--navy);
+      background-image:
+        linear-gradient(rgba(11,37,69,.72), rgba(6,22,50,.88)),
+        url('https://pia.gov.ph/wp-content/uploads/2025/12/dole.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
     /* ─── LANDING ─── */
     #landing {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: var(--navy);
-      background-image:
-        radial-gradient(ellipse 70% 60% at 50% 0%, rgba(201,150,42,.18) 0%, transparent 70%),
-        repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(255,255,255,.025) 80px),
-        repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(255,255,255,.025) 80px);
       padding: 24px;
       text-align: center;
     }
@@ -60,7 +66,7 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 40px;
       margin: 0 auto 28px;
-      box-shadow: 0 0 0 12px rgba(201,150,42,.12), 0 0 0 24px rgba(201,150,42,.06);
+      box-shadow: 0 0 0 12px rgba(201,150,42,.18), 0 0 0 24px rgba(201,150,42,.08), 0 8px 32px rgba(0,0,0,.4);
       animation: pulse-seal 3s ease-in-out infinite;
     }
 
@@ -133,8 +139,6 @@
       align-items: center;
       justify-content: center;
       padding: 20px;
-      background: var(--navy);
-      background-image: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(201,150,42,.15) 0%, transparent 60%);
     }
 
     .auth-wrap {
@@ -389,21 +393,24 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      background: var(--cream);
+      background-color: var(--cream);
       background-image:
-        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(201,150,42,.06) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(11,37,69,.04) 0%, transparent 60%);
+        linear-gradient(rgba(247,244,239,.92), rgba(247,244,239,.92)),
+        url('https://pia.gov.ph/wp-content/uploads/2025/12/dole.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
     }
 
     #chat-header {
       padding: 16px 32px;
-      background: rgba(247,244,239,.9);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border);
+      background: rgba(11,37,69,.82);
+      backdrop-filter: blur(12px);
+      border-bottom: 2px solid rgba(201,150,42,.4);
       display: flex; align-items: center; gap: 12px;
       flex-shrink: 0;
     }
-    #chat-title { font-family: var(--serif); font-size: 18px; color: var(--navy); flex: 1; }
+    #chat-title { font-family: var(--serif); font-size: 18px; color: var(--white); flex: 1; }
 
     #msgs {
       flex: 1;
@@ -583,7 +590,7 @@
 <body>
 
 <!-- ═══ LANDING ═══ -->
-<div class="screen" id="landing">
+<div class="screen bg-dole" id="landing">
   <div style="max-width:640px; width:100%; margin:0 auto; padding:24px;">
     <div class="land-seal">⚖️</div>
     <h1 class="land-title">Labor<em>Lens</em></h1>
@@ -607,7 +614,7 @@
 </div>
 
 <!-- ═══ AUTH ═══ -->
-<div class="screen hidden" id="auth-screen">
+<div class="screen hidden bg-dole" id="auth-screen">
   <div class="auth-wrap">
     <div class="auth-top">
       <span class="auth-logo">⚖️</span>
@@ -723,7 +730,7 @@
     <main id="chat-area">
       <div id="chat-header">
         <h2 id="chat-title">LaborLens Assistant</h2>
-        <div style="font-size:12px; color:var(--muted);">Philippine Labor Code · DOLE Issuances · Jurisprudence</div>
+        <div style="font-size:12px; color:rgba(255,255,255,.55);">Philippine Labor Code · DOLE Issuances · Jurisprudence</div>
       </div>
 
       <div id="msgs">
