@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>LaborLens – Administration</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -23,288 +22,1006 @@
       --border:    #E5E0D8;
       --green:     #0D7A55;
       --green-bg:  #ECFDF5;
-      --amber:     #B45309;
+      --red:       #C0392B;
+      --red-bg:    #FEF2F2;
+      --amber:     #D97706;
       --amber-bg:  #FFFBEB;
-      --radius:    10px;
+      --sidebar-bg: #0D1B35;
+      --sidebar-w:  260px;
+      --topbar-h:   64px;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans:  'DM Sans', system-ui, sans-serif;
+      --shadow:    0 2px 12px rgba(11,37,69,.08);
+      --shadow-md: 0 8px 32px rgba(11,37,69,.12);
+      --shadow-lg: 0 24px 60px rgba(11,37,69,.18);
     }
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background-color: var(--cream);
-      color: var(--text);
-      display: flex;
-      min-height: 100vh;
-    }
+    html, body { height: 100%; font-family: var(--sans); color: var(--text); background: var(--cream); -webkit-font-smoothing: antialiased; overflow: hidden; }
 
-    /* ── LOGIN ── */
-    #admin-login {
-      flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem;
+    /* ═══════════════════════════════════════════
+       LOGIN SCREEN
+    ═══════════════════════════════════════════ */
+    #login-screen {
+      position: fixed; inset: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      background-color: var(--navy);
+      background-image:
+        linear-gradient(rgba(11,37,69,.75), rgba(6,22,50,.90)),
+        url('https://pia.gov.ph/wp-content/uploads/2025/12/dole.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
     }
+    #login-screen.gone { display: none; }
+
     .login-card {
-      background: var(--white); padding: 3rem; border-radius: 16px;
-      width: 100%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-      border: 1px solid var(--border);
+      width: 100%; max-width: 460px;
+      background: var(--white);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      animation: fadeUp .4s ease;
     }
-    .login-card h1 { font-family: 'DM Serif Display', serif; font-size: 2rem; margin-bottom: 2rem; color: var(--navy); }
 
-    .input-grp { margin-bottom: 1.5rem; }
-    .input-grp label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; }
-    .input-grp input {
-      width: 100%; padding: 0.85rem; border: 1.5px solid var(--border);
-      border-radius: 8px; font-size: 1rem; transition: 0.2s;
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);} }
+
+    .lc-header {
+      background: var(--navy);
+      padding: 36px 36px 28px;
+      text-align: center;
+      border-bottom: 3px solid var(--gold);
+      position: relative;
     }
-    .input-grp input:focus { outline: none; border-color: var(--gold); }
-
-    .btn {
-      cursor: pointer; border: none; font-weight: 700; border-radius: 8px;
-      transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
+    .lc-seal {
+      width: 64px; height: 64px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; margin: 0 auto 14px;
+      box-shadow: 0 0 0 8px rgba(201,150,42,.15), 0 0 0 16px rgba(201,150,42,.07);
     }
-    .btn-primary { background: var(--navy); color: var(--white); padding: 1rem 2rem; width: 100%; justify-content: center; }
-    .btn-primary:hover { background: var(--navy-3); }
-
-    /* ── DASHBOARD ── */
-    #admin-dashboard { display: none; flex: 1; flex-direction: column; }
-
-    header {
-      background: var(--white); padding: 1.25rem 2.5rem;
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
+    .lc-title { font-family: var(--serif); font-size: 26px; color: var(--white); }
+    .lc-title em { color: var(--gold-lt); font-style: italic; }
+    .lc-sub { font-size: 12px; color: rgba(255,255,255,.45); margin-top: 4px; letter-spacing: .5px; }
+    .admin-badge {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 4px 14px;
+      background: rgba(201,150,42,.2);
+      border: 1px solid rgba(201,150,42,.35);
+      border-radius: 100px;
+      font-size: 10px; font-weight: 700;
+      color: var(--gold-lt);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
     }
-    .brand { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: var(--navy); }
-    /* Removed the ngrok-fre design from header */
 
-    main { padding: 2.5rem; max-width: 1400px; width: 100%; margin: 0 auto; }
+    .lc-body { padding: 32px 36px 36px; }
 
-    .stats-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.5rem; margin-bottom: 3rem;
+    .field { margin-bottom: 18px; }
+    .field label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .field input {
+      width: 100%; padding: 13px 16px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 14px; font-family: var(--sans);
+      background: var(--cream); color: var(--text);
+      transition: border-color .2s, box-shadow .2s;
     }
+    .field input:focus { outline: none; border-color: var(--gold); background: var(--white); box-shadow: 0 0 0 3px rgba(201,150,42,.12); }
+    .field .hint { font-size: 11px; color: var(--muted); margin-top: 5px; }
+
+    .login-btn {
+      width: 100%; padding: 14px;
+      background: var(--navy); color: var(--white);
+      border: none; border-radius: 10px;
+      font-size: 15px; font-weight: 600;
+      cursor: pointer; font-family: var(--sans);
+      transition: background .2s, transform .15s;
+      margin-top: 6px;
+    }
+    .login-btn:hover { background: var(--navy-2); transform: translateY(-1px); }
+
+    .return-link {
+      display: block; width: 100%; text-align: center; margin-top: 14px;
+      padding: 12px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      cursor: pointer; background: none; font-family: var(--sans);
+      transition: all .2s;
+    }
+    .return-link:hover { border-color: var(--navy); color: var(--navy); }
+
+    .login-err { color: var(--red); font-size: 13px; text-align: center; min-height: 18px; margin-top: 14px; font-weight: 500; }
+
+    /* ═══════════════════════════════════════════
+       DASHBOARD LAYOUT
+    ═══════════════════════════════════════════ */
+    #dashboard { display: none; height: 100vh; flex-direction: column; }
+    #dashboard.visible { display: flex; }
+
+    /* TOPBAR */
+    #topbar {
+      height: var(--topbar-h);
+      background-color: var(--navy);
+      background-image:
+        linear-gradient(rgba(11,37,69,.88), rgba(11,37,69,.88)),
+        url('https://pia.gov.ph/wp-content/uploads/2025/12/dole.jpg');
+      background-size: cover;
+      background-position: center top;
+      border-bottom: 2px solid var(--gold);
+      display: flex; align-items: center;
+      padding: 0 24px;
+      gap: 16px;
+      flex-shrink: 0;
+      z-index: 50;
+    }
+
+    .tb-seal {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .tb-name { font-family: var(--serif); font-size: 22px; color: var(--white); }
+    .tb-name em { color: var(--gold-lt); font-style: italic; }
+    .tb-label {
+      padding: 3px 10px;
+      background: rgba(201,150,42,.2);
+      border: 1px solid rgba(201,150,42,.3);
+      border-radius: 100px;
+      font-size: 10px; font-weight: 700;
+      color: var(--gold-lt); letter-spacing: 1.2px; text-transform: uppercase;
+    }
+
+    .tb-spacer { flex: 1; }
+
+    #tb-url {
+      font-size: 11px; color: #34d399;
+      font-family: 'Courier New', monospace;
+      background: rgba(52,211,153,.1);
+      border: 1px solid rgba(52,211,153,.2);
+      padding: 5px 12px; border-radius: 8px;
+      max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      font-weight: 600;
+    }
+
+    .tb-user-chip {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 100px;
+      padding: 5px 14px 5px 5px;
+    }
+    .tb-avatar {
+      width: 28px; height: 28px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: var(--navy);
+    }
+    #tb-user { font-size: 13px; color: rgba(255,255,255,.8); font-weight: 600; }
+
+    .end-btn {
+      padding: 8px 16px;
+      background: rgba(192,57,43,.15);
+      border: 1px solid rgba(192,57,43,.3);
+      border-radius: 8px;
+      color: #f87171; font-size: 12px; font-weight: 600;
+      cursor: pointer; font-family: var(--sans);
+      transition: background .2s;
+    }
+    .end-btn:hover { background: rgba(192,57,43,.28); }
+
+    /* BODY */
+    #body { display: flex; flex: 1; overflow: hidden; }
+
+    /* MAIN CONTENT */
+    #main {
+      flex: 1; overflow-y: auto;
+      background-color: var(--cream);
+      background-image:
+        linear-gradient(rgba(247,244,239,.93), rgba(247,244,239,.93)),
+        url('https://pia.gov.ph/wp-content/uploads/2025/12/dole.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    #left-nav {
+      width: var(--sidebar-w);
+      background: var(--sidebar-bg);
+      border-right: 1px solid rgba(255,255,255,.05);
+      display: flex; flex-direction: column;
+      flex-shrink: 0;
+      overflow-y: auto;
+      padding-bottom: 24px;
+    }
+
+    .nav-section-lbl {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: rgba(255,255,255,.22);
+      padding: 24px 20px 8px;
+    }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 18px;
+      cursor: pointer;
+      color: rgba(255,255,255,.45);
+      font-size: 13px; font-weight: 500;
+      border-left: 3px solid transparent;
+      transition: all .2s;
+    }
+    .nav-item:hover { color: rgba(255,255,255,.8); background: rgba(255,255,255,.03); }
+    .nav-item.active {
+      color: var(--gold-lt);
+      border-left-color: var(--gold);
+      background: rgba(201,150,42,.08);
+    }
+    .nav-icon { font-size: 16px; flex-shrink: 0; width: 20px; text-align: center; }
+
+    /* MAIN CONTENT */
+    #main {
+      flex: 1; overflow-y: auto;
+      background: var(--cream);
+    }
+    #main::-webkit-scrollbar { width: 5px; }
+    #main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .content-inner { padding: 36px; max-width: 1280px; }
+
+    /* PAGE HEADER */
+    .page-hdr {
+      margin-bottom: 32px;
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
+    }
+    .page-hdr-left h1 { font-family: var(--serif); font-size: 28px; color: var(--navy); }
+    .page-hdr-left p { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+    /* STAT CARDS */
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 36px; }
     .stat-card {
-      background: var(--white); padding: 1.75rem; border-radius: var(--radius);
-      border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+      background: var(--white);
+      border-radius: 14px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      position: relative; overflow: hidden;
+      transition: transform .25s, box-shadow .25s;
     }
-    .stat-card h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 0.5rem; }
-    .stat-card .val { font-size: 2rem; font-weight: 700; color: var(--navy); }
-
-    .section-title {
-        display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;
+    .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .stat-card::after {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: var(--navy);
     }
-    .section-title h2 { font-family: 'DM Serif Display', serif; font-size: 1.8rem; }
-    .section-subtitle { color: var(--muted); font-size: 0.95rem; margin-top: -1rem; margin-bottom: 1.5rem; }
+    .stat-card.gold::after { background: var(--gold); }
+    .stat-card.green::after { background: var(--green); }
+    .stat-card.red::after { background: var(--red); }
 
-    .card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; }
-    
-    table { width: 100%; border-collapse: collapse; }
-    th { text-align: left; background: #F9FAFB; padding: 1rem; font-size: 0.8rem; font-weight: 700; color: var(--muted); border-bottom: 1px solid var(--border); text-transform: uppercase; }
-    td { padding: 1.2rem 1rem; border-bottom: 1px solid #F3F4F6; font-size: 0.9rem; vertical-align: middle; }
+    .stat-icon { font-size: 28px; margin-bottom: 12px; display: block; }
+    .stat-lbl { font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .stat-val { font-family: var(--serif); font-size: 38px; color: var(--text); line-height: 1; }
+    .stat-sub { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+    /* PANELS */
+    .panel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .panel-hdr {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .panel-title {
+      font-family: var(--serif); font-size: 18px;
+      color: var(--navy); display: flex; align-items: center; gap: 10px;
+    }
+    .panel-body { padding: 24px; }
+
+    /* TWO-COL */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+    /* TABLES */
+    .tbl-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead tr { background: #FAFAFA; }
+    th {
+      padding: 12px 16px; text-align: left;
+      font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #F5F2EE;
+      color: #374151;
+      vertical-align: middle;
+    }
     tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #FAFAFA; }
+    .td-strong { font-weight: 600; color: var(--text); }
+    .td-mono { font-family: 'Courier New', monospace; font-size: 12px; }
 
-    .badge { padding: 0.25rem 0.6rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700; }
-    .badge-amber { background: var(--amber-bg); color: var(--amber); }
-    .badge-green { background: var(--green-bg); color: var(--green); }
-
-    .btn-sm { padding: 0.5rem 1rem; font-size: 0.8rem; }
-    .btn-success { background: var(--green); color: white; }
-    .btn-success:hover { background: #0b6647; }
-
-    .td-mono { font-family: monospace; color: var(--muted); }
-    .td-strong { font-weight: 600; color: var(--navy); }
-
-    /* FAQ List styling */
-    .faq-list { padding: 1.5rem; }
-    .faq-item { 
-        padding: 1rem; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 1rem; 
-        display: flex; justify-content: space-between; align-items: center;
+    /* BADGES */
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 4px 10px; border-radius: 100px;
+      font-size: 11px; font-weight: 700; letter-spacing: .4px;
     }
-    .faq-meta { font-size: 0.8rem; color: var(--muted); }
+    .badge-navy { background: rgba(11,37,69,.08); color: var(--navy); border: 1px solid rgba(11,37,69,.15); }
+    .badge-gray { background: #F1F5F9; color: #475569; border: 1px solid #E2E8F0; }
+    .badge-green { background: var(--green-bg); color: var(--green); border: 1px solid rgba(13,122,85,.2); }
+    .badge-red   { background: var(--red-bg);   color: var(--red);   border: 1px solid rgba(192,57,43,.2); }
+    .badge-gold  { background: var(--gold-bg);  color: var(--gold);  border: 1px solid rgba(201,150,42,.3); }
+    .badge-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(217,119,6,.2); }
 
-    .err-msg { color: #dc2626; background: #fef2f2; padding: 1rem; border-radius: 8px; font-weight: 600; }
+    /* BUTTONS */
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: var(--sans); transition: all .2s; white-space: nowrap; }
+    .btn-primary { background: var(--navy); color: var(--white); box-shadow: var(--shadow); }
+    .btn-primary:hover { background: var(--navy-2); transform: translateY(-1px); }
+    .btn-danger  { background: var(--red-bg); color: var(--red); border: 1px solid rgba(192,57,43,.2); }
+    .btn-danger:hover  { background: #FECACA; }
+    .btn-success { background: var(--green-bg); color: var(--green); border: 1px solid rgba(13,122,85,.2); }
+    .btn-success:hover { background: #BBF7D0; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
 
+    /* FORMS */
+    .form-grid { display: grid; gap: 14px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    .form-group label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 14px; font-family: var(--sans);
+      background: var(--cream); color: var(--text);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      outline: none; border-color: var(--gold); background: var(--white);
+      box-shadow: 0 0 0 3px rgba(201,150,42,.1);
+    }
+    .form-group textarea { resize: vertical; min-height: 110px; }
+
+    /* UPLOAD ZONE */
+    .upload-zone {
+      border: 2px dashed #D1CBB8;
+      border-radius: 14px;
+      padding: 48px 32px;
+      text-align: center;
+      cursor: pointer;
+      background: var(--cream);
+      transition: all .25s;
+    }
+    .upload-zone:hover { border-color: var(--gold); background: var(--gold-bg); }
+    .uz-icon { font-size: 48px; margin-bottom: 14px; display: block; }
+    .uz-title { font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+    .uz-sub { font-size: 13px; color: var(--muted); }
+
+    /* INFO BAR */
+    .info-bar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 16px;
+      background: rgba(201,150,42,.08);
+      border: 1px solid rgba(201,150,42,.2);
+      border-radius: 10px;
+      font-size: 13px; color: var(--amber);
+      font-weight: 500; margin-bottom: 20px;
+    }
+
+    /* TABS */
+    #tab-overview, #tab-users, #tab-knowledge, #tab-faqs, #tab-queries { display: none; }
+    .tab-active { display: block !important; }
+
+    /* UTILITIES */
+    .loading { text-align: center; padding: 48px 24px; color: var(--muted); font-size: 14px; }
+    .empty   { text-align: center; padding: 48px 24px; color: var(--muted); font-style: italic; }
+    .err-msg { padding: 16px; background: var(--red-bg); color: var(--red); border-radius: 10px; font-size: 13px; font-weight: 500; }
+
+    /* TOAST */
+    #toast {
+      position: fixed; bottom: 28px; right: 28px;
+      padding: 14px 20px;
+      background: var(--navy);
+      color: var(--white);
+      border-radius: 12px;
+      font-size: 14px; font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      display: none; z-index: 999;
+      border-left: 4px solid var(--gold);
+      max-width: 320px;
+    }
+    #toast.show { display: block; animation: fadeUp .4s ease; }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .two-col { grid-template-columns: 1fr; }
+      :root { --sidebar-w: 220px; }
+    }
     @media (max-width: 768px) {
-      header { padding: 1rem; }
-      main { padding: 1.5rem; }
+      #left-nav { display: none; }
+      .content-inner { padding: 20px 16px; }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+      .form-row { grid-template-columns: 1fr; }
+      .page-hdr { flex-direction: column; align-items: flex-start; }
+      #tb-url { display: none; }
+      .tb-label { display: none; }
+    }
+    @media (max-width: 480px) {
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+      .stat-val { font-size: 30px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Admin Login -->
-  <div id="admin-login">
-    <div class="login-card">
-      <h1>Portal Admin</h1>
-      <form onsubmit="doLogin(event)">
-        <div class="input-grp">
-          <label>Email</label>
-          <input type="email" id="adm-email" required placeholder="admin@laborlens.ph">
-        </div>
-        <div class="input-grp">
-          <label>Password</label>
-          <input type="password" id="adm-pass" required placeholder="••••••••">
-        </div>
-        <button type="submit" class="btn btn-primary">Authorize Access</button>
-      </form>
+<!-- ═══ LOGIN ═══ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="lc-header">
+      <div class="lc-seal">🛡️</div>
+      <div class="lc-title">Labor<em>Lens</em></div>
+      <div class="lc-sub">Philippine Labor Law Advisor</div>
+      <span class="admin-badge">Administration Portal</span>
+    </div>
+    <div class="lc-body">
+      <div class="field">
+        <label>Backend URL (ngrok)</label>
+        <input type="text" id="api-url" placeholder="https://xxxx.ngrok-free.app/api"/>
+        <div class="hint">Points to the active FastAPI instance.</div>
+      </div>
+      <div class="field">
+        <label>Administrator Email</label>
+        <input type="email" id="l-email" placeholder="admin@laborlens.local"/>
+      </div>
+      <div class="field">
+        <label>Master Password</label>
+        <input type="password" id="l-pass" placeholder="••••••••"/>
+      </div>
+      <button class="login-btn" onclick="doLogin()">Authenticate Session</button>
+      <button class="return-link" onclick="window.location.href='index.html'">← Return to User App</button>
+      <p class="login-err" id="login-err"></p>
     </div>
   </div>
+</div>
 
-  <!-- Admin Dashboard -->
-  <div id="admin-dashboard">
-    <header>
-      <div class="brand">LaborLens Admin</div>
-      <div style="display:flex; gap: 1rem; align-items: center;">
-          <span id="adm-name" style="font-weight:600; font-size: 0.9rem;">Administrator</span>
-          <button class="btn btn-sm" onclick="location.reload()" style="background:transparent; border:1px solid var(--border);">Logout</button>
-      </div>
-    </header>
+<!-- ═══ DASHBOARD ═══ -->
+<div id="dashboard">
 
-    <main>
-      <div class="stats-grid">
-        <div class="stat-card">
-          <h4>Total Queries</h4>
-          <div class="val" id="stat-total">0</div>
-        </div>
-        <div class="stat-card">
-          <h4>Avg. Response Time</h4>
-          <div class="val" id="stat-time">0ms</div>
-        </div>
-        <div class="stat-card">
-          <h4>Unique Users</h4>
-          <div class="val" id="stat-users">0</div>
-        </div>
-        <div class="stat-card">
-          <h4>Unresolved</h4>
-          <div class="val" id="stat-unresolved" style="color:var(--amber);">0</div>
-        </div>
-      </div>
-
-      <div class="section-title">
-          <h2>Unresolved System Gaps</h2>
-          <button class="btn btn-sm btn-primary" onclick="loadUnresolved()">Refresh Queries</button>
-      </div>
-      <p class="section-subtitle">Queries that were not found in the database and require manual intervention or knowledge base updates.</p>
-      
-      <div class="card" style="margin-bottom: 3rem;">
-        <table>
-          <thead>
-            <tr>
-              <th style="width:50px;">#</th>
-              <th>User</th>
-              <th>Query Description</th>
-              <th>System Intent</th>
-              <th>Perf</th>
-              <th>Date</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="unresolved-table">
-            <tr><td colspan="7" style="text-align:center; color:var(--muted); padding: 3rem;">Initializing system data...</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="section-title">
-          <h2>Dynamic FAQ Generation</h2>
-      </div>
-      <p class="section-subtitle">Auto-generated based on query volume and user frequency. Questions most frequently asked by users.</p>
-      
-      <div class="card">
-        <div class="faq-list" id="faq-container">
-            <div class="faq-item">
-                <div>
-                    <div style="font-weight: 600;">What is the minimum wage in Metro Manila?</div>
-                    <div class="faq-meta">Asked 152 times this week</div>
-                </div>
-                <span class="badge badge-green">High Demand</span>
-            </div>
-            <div class="faq-item">
-                <div>
-                    <div style="font-weight: 600;">How is separation pay calculated for redundancy?</div>
-                    <div class="faq-meta">Asked 89 times this week</div>
-                </div>
-                <span class="badge badge-green">High Demand</span>
-            </div>
-        </div>
-      </div>
-    </main>
+  <div id="topbar">
+    <div class="tb-seal">⚖️</div>
+    <span class="tb-name">Labor<em>Lens</em></span>
+    <span class="tb-label">Administration</span>
+    <div class="tb-spacer"></div>
+    <span id="tb-url"></span>
+    <div class="tb-user-chip">
+      <div class="tb-avatar" id="tb-avatar">A</div>
+      <span id="tb-user">Admin</span>
+    </div>
+    <button class="end-btn" onclick="doLogout()">End Session</button>
   </div>
 
-  <script>
-    const API = "https://plaster-multiply-tint.ngrok-free.app";
-    let admToken = "";
+  <div id="body">
+    <!-- LEFT NAV -->
+    <nav id="left-nav">
+      <div class="nav-section-lbl">Dashboard</div>
+      <div class="nav-item active" data-tab="overview" onclick="switchTab(this,'overview')">
+        <span class="nav-icon">📊</span> Metrics Overview
+      </div>
 
-    async function doLogin(e) {
-      e.preventDefault();
-      const email = document.getElementById('adm-email').value;
-      const password = document.getElementById('adm-pass').value;
+      <div class="nav-section-lbl">Management</div>
+      <div class="nav-item" data-tab="users" onclick="switchTab(this,'users')">
+        <span class="nav-icon">👥</span> User Directory
+      </div>
+      <div class="nav-item" data-tab="knowledge" onclick="switchTab(this,'knowledge')">
+        <span class="nav-icon">📚</span> Knowledge Base
+      </div>
+      <div class="nav-item" data-tab="faqs" onclick="switchTab(this,'faqs')">
+        <span class="nav-icon">❓</span> Managed FAQs
+      </div>
 
-      try {
-        const r = await fetch(`${API}/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-        const d = await r.json();
-        if(!r.ok) throw new Error(d.detail || 'Login failed');
-        if(!d.user.is_admin) throw new Error('Access Denied: Not an administrator.');
+      <div class="nav-section-lbl">Monitoring</div>
+      <div class="nav-item" data-tab="queries" onclick="switchTab(this,'queries')">
+        <span class="nav-icon">🔍</span> Unresolved Queries
+      </div>
+    </nav>
 
-        admToken = d.access_token;
-        document.getElementById('adm-name').innerText = d.user.username;
-        document.getElementById('admin-login').style.display = 'none';
-        document.getElementById('admin-dashboard').style.display = 'flex';
-        
-        loadStats();
-        loadUnresolved();
-      } catch(err) { alert(err.message); }
+    <!-- MAIN -->
+    <div id="main">
+      <div class="content-inner">
+
+        <!-- OVERVIEW -->
+        <div id="tab-overview" class="tab-active">
+          <div class="page-hdr">
+            <div class="page-hdr-left">
+              <h1>Metrics Overview</h1>
+              <p>System-wide analytics and consultation data.</p>
+            </div>
+          </div>
+
+          <div class="stat-grid" id="stat-grid">
+            <div class="loading">Loading metrics…</div>
+          </div>
+
+          <div class="two-col">
+            <div class="panel">
+              <div class="panel-hdr">
+                <div class="panel-title">🎯 Legal Intent Distribution</div>
+                <span style="font-size:12px; color:var(--muted);">Last 30 days</span>
+              </div>
+              <div class="panel-body" id="intent-chart">
+                <div class="loading">Loading…</div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-hdr">
+                <div class="panel-title">📈 Daily Consultation Volume</div>
+                <span style="font-size:12px; color:var(--muted);">Last 7 days</span>
+              </div>
+              <div class="panel-body" id="vol-table">
+                <div class="loading">Loading…</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- USERS -->
+        <div id="tab-users">
+          <div class="page-hdr">
+            <div class="page-hdr-left">
+              <h1>User Directory</h1>
+              <p>Manage registered accounts and access levels.</p>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-hdr">
+              <div class="panel-title">👥 Registered Accounts</div>
+            </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr><th>#</th><th>Name</th><th>Email</th><th>Role</th><th>Language</th><th>Joined</th><th>Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="users-tbody">
+                  <tr><td colspan="8" class="loading">Loading users…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- KNOWLEDGE BASE -->
+        <div id="tab-knowledge">
+          <div class="page-hdr">
+            <div class="page-hdr-left">
+              <h1>Knowledge Base</h1>
+              <p>Ingest and manage legal reference documents for AI indexing.</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-hdr">
+              <div class="panel-title">📤 Upload Legal Document</div>
+            </div>
+            <div class="panel-body">
+              <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+                <span class="uz-icon">📄</span>
+                <div class="uz-title">Click to select PDF or DOCX</div>
+                <p class="uz-sub">Upload Labor Code revisions, DOLE issuances, wage orders, or IRR updates.</p>
+              </div>
+              <input type="file" id="file-input" accept=".pdf,.docx,.doc" style="display:none" onchange="uploadFile(this)"/>
+              <div id="upload-msg"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-hdr">
+              <div class="panel-title">📚 Indexed Documents</div>
+            </div>
+            <div class="panel-body" style="padding-bottom:0;">
+              <div class="info-bar" id="kb-stats">Querying vector database…</div>
+            </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr><th>#</th><th>Document</th><th>Type</th><th>Size</th><th>Chunks</th><th>Status</th><th>Indexed</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="docs-tbody">
+                  <tr><td colspan="8" class="loading">Loading documents…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- FAQs -->
+        <div id="tab-faqs">
+          <div class="page-hdr">
+            <div class="page-hdr-left">
+              <h1>Managed FAQs</h1>
+              <p>Formulate and publish structured Q&A entries to the knowledge base.</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-hdr">
+              <div class="panel-title">➕ New FAQ Entry</div>
+            </div>
+            <div class="panel-body">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Question</label>
+                  <input type="text" id="faq-q" placeholder="e.g. How is separation pay calculated?"/>
+                </div>
+                <div class="form-group">
+                  <label>Answer</label>
+                  <textarea id="faq-a" placeholder="Enter a structured, legally-accurate answer based on DOLE guidelines…"></textarea>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Category</label>
+                    <input type="text" id="faq-cat" placeholder="e.g. Wages, Leave, Termination"/>
+                  </div>
+                  <div class="form-group">
+                    <label>Language</label>
+                    <select id="faq-lang">
+                      <option value="en">English</option>
+                      <option value="fil">Filipino</option>
+                      <option value="hil">Hiligaynon</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <button class="btn btn-primary" onclick="addFAQ()">➕ Publish to Knowledge Base</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-hdr">
+              <div class="panel-title">📋 Published FAQs</div>
+            </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr><th>#</th><th>Question</th><th>Answer Snippet</th><th>Category</th><th>Language</th><th>Views</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="faqs-tbody">
+                  <tr><td colspan="7" class="loading">Loading FAQs…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- UNRESOLVED QUERIES -->
+        <div id="tab-queries">
+          <div class="page-hdr">
+            <div class="page-hdr-left">
+              <h1>Unresolved Queries</h1>
+              <p>Queries where AI confidence was low or no legal match was found. Review and resolve manually.</p>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-hdr">
+              <div class="panel-title">🔍 Pending Review</div>
+            </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr><th>#</th><th>User</th><th>Query</th><th>Intent</th><th>Response Time</th><th>Date</th><th>Action</th></tr>
+                </thead>
+                <tbody id="queries-tbody">
+                  <tr><td colspan="7" class="loading">Scanning logs…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /content-inner -->
+    </div><!-- /main -->
+  </div><!-- /body -->
+</div><!-- /dashboard -->
+
+<div id="toast"></div>
+
+<script>
+let API = '', token = null, currentUser = null;
+
+// ── Toast ──
+function toast(msg, err=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.borderLeftColor = err ? 'var(--red)' : 'var(--gold)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+// ── API ──
+async function apiFetch(path, opts={}) {
+  return fetch(`${API}${path}`, { ...opts, headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+    'ngrok-skip-browser-warning': 'true',
+    ...(opts.headers || {})
+  }});
+}
+
+// ── Login ──
+async function doLogin() {
+  API = document.getElementById('api-url').value.trim().replace(/\/$/, '');
+  const email = document.getElementById('l-email').value.trim();
+  const pass  = document.getElementById('l-pass').value;
+  const errEl = document.getElementById('login-err');
+  if (!API) { errEl.textContent = 'Backend URL is required.'; return; }
+  errEl.textContent = 'Authenticating…';
+  try {
+    const r = await fetch(`${API}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
+      body: JSON.stringify({ email, password: pass })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Authentication failed.');
+    if (d.role !== 'admin') throw new Error('Access denied: insufficient privileges.');
+    token = d.access_token;
+    currentUser = { id: d.user_id, username: d.username, role: d.role };
+    initDashboard();
+  } catch(e) { errEl.textContent = e.message; }
+}
+
+function doLogout() {
+  token = null; currentUser = null;
+  document.getElementById('dashboard').classList.remove('visible');
+  document.getElementById('login-screen').classList.remove('gone');
+}
+
+function initDashboard() {
+  document.getElementById('login-screen').classList.add('gone');
+  document.getElementById('dashboard').classList.add('visible');
+  const uname = currentUser.username;
+  document.getElementById('tb-user').textContent = uname;
+  document.getElementById('tb-avatar').textContent = uname.charAt(0).toUpperCase();
+  try { document.getElementById('tb-url').textContent = '● ' + new URL(API).hostname; } catch(_) {}
+  loadOverview(); loadUsers(); loadDocuments(); loadFAQs(); loadUnresolved();
+}
+
+// ── Tab switching ──
+function switchTab(el, name) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#tab-overview,#tab-users,#tab-knowledge,#tab-faqs,#tab-queries').forEach(t => t.classList.remove('tab-active'));
+  document.getElementById(`tab-${name}`).classList.add('tab-active');
+}
+
+// ── Overview ──
+async function loadOverview() {
+  try {
+    const r = await apiFetch('/admin/dashboard');
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Failed');
+    const t = d.totals || {};
+    document.getElementById('stat-grid').innerHTML = `
+      <div class="stat-card">
+        <span class="stat-icon">👥</span>
+        <div class="stat-lbl">Total Users</div>
+        <div class="stat-val">${t.users ?? 0}</div>
+        <div class="stat-sub">Registered accounts</div>
+      </div>
+      <div class="stat-card green">
+        <span class="stat-icon">💬</span>
+        <div class="stat-lbl">Consultations</div>
+        <div class="stat-val">${t.messages ?? 0}</div>
+        <div class="stat-sub">Legal queries processed</div>
+      </div>
+      <div class="stat-card gold">
+        <span class="stat-icon">📚</span>
+        <div class="stat-lbl">Knowledge Docs</div>
+        <div class="stat-val">${t.docs ?? t.indexed_documents ?? 0}</div>
+        <div class="stat-sub">Indexed reference files</div>
+      </div>
+      <div class="stat-card red">
+        <span class="stat-icon">❓</span>
+        <div class="stat-lbl">Unresolved</div>
+        <div class="stat-val">${d.unresolved ?? d.unresolved_queries ?? 0}</div>
+        <div class="stat-sub">Pending manual review</div>
+      </div>`;
+
+    const ii = d.intent_distribution || [];
+    document.getElementById('intent-chart').innerHTML = ii.length
+      ? `<div class="tbl-wrap"><table>
+          <thead><tr><th>Intent</th><th>Count</th></tr></thead>
+          <tbody>${ii.map(i=>`<tr><td class="td-strong">${(i.intent||'').replace(/_/g,' ').toUpperCase()}</td><td><span class="badge badge-navy">${i.count}</span></td></tr>`).join('')}</tbody>
+        </table></div>`
+      : '<div class="empty">No query data available.</div>';
+
+    const vv = d.daily_volume || [];
+    document.getElementById('vol-table').innerHTML = vv.length
+      ? `<div class="tbl-wrap"><table>
+          <thead><tr><th>Date</th><th>Queries</th></tr></thead>
+          <tbody>${vv.map(v=>`<tr><td class="td-mono">${v.date||v.DATE}</td><td><strong>${v.count}</strong></td></tr>`).join('')}</tbody>
+        </table></div>`
+      : '<div class="empty">No volume data available.</div>';
+  } catch(e) {
+    ['stat-grid','intent-chart','vol-table'].forEach(id=>{
+      document.getElementById(id).innerHTML = `<div class="err-msg">❌ ${e.message}</div>`;
+    });
+  }
+}
+
+// ── Users ──
+async function loadUsers() {
+  const tb = document.getElementById('users-tbody');
+  try {
+    const r = await apiFetch('/admin/users');
+    const users = await r.json();
+    if (!r.ok) throw new Error(users.detail || 'Failed');
+    if (!users.length) { tb.innerHTML = '<tr><td colspan="8" class="empty">No users found.</td></tr>'; return; }
+    tb.innerHTML = users.map((u,i) => `<tr>
+      <td class="td-mono">${i+1}</td>
+      <td class="td-strong">${u.username}</td>
+      <td>${u.email}</td>
+      <td><span class="badge ${u.role==='admin'?'badge-navy':'badge-gray'}">${u.role.toUpperCase()}</span></td>
+      <td>${u.language_preference.toUpperCase()}</td>
+      <td class="td-mono">${new Date(u.created_at).toLocaleDateString()}</td>
+      <td><span class="badge ${u.is_active?'badge-green':'badge-red'}">${u.is_active?'ACTIVE':'SUSPENDED'}</span></td>
+      <td><button class="btn btn-sm ${u.role==='admin'?'btn-danger':'btn-success'}" onclick="toggleRole(${u.id},'${u.role}')">${u.role==='admin'?'Revoke Admin':'Grant Admin'}</button></td>
+    </tr>`).join('');
+  } catch(e) { tb.innerHTML = `<tr><td colspan="8"><div class="err-msg">❌ ${e.message}</div></td></tr>`; }
+}
+
+async function toggleRole(id, cur) {
+  const next = cur === 'admin' ? 'user' : 'admin';
+  if (!confirm(`Update user privileges to "${next.toUpperCase()}"?`)) return;
+  try {
+    const r = await apiFetch(`/admin/users/${id}/role?role=${next}`, {method:'PUT'});
+    if (!r.ok) throw new Error('Update failed.');
+    toast(`Privileges updated to ${next.toUpperCase()}`); loadUsers();
+  } catch(e) { toast(e.message, true); }
+}
+
+// ── Documents ──
+async function loadDocuments() {
+  const tb = document.getElementById('docs-tbody');
+  try {
+    const sr = await apiFetch('/kb/stats');
+    if (sr.ok) {
+      const s = await sr.json();
+      document.getElementById('kb-stats').innerHTML = `📊 <strong>${s.chroma?.total_chunks ?? 0} legal segments</strong> currently indexed in the vector database.`;
     }
+    const dr = await apiFetch('/kb/documents');
+    const docs = await dr.json();
+    if (!dr.ok) throw new Error(docs.detail || 'Failed');
+    if (!docs.length) { tb.innerHTML = '<tr><td colspan="8" class="empty">Knowledge base is empty. Upload files above.</td></tr>'; return; }
+    tb.innerHTML = docs.map((d,i) => `<tr>
+      <td class="td-mono">${i+1}</td>
+      <td class="td-strong">${d.original_filename}</td>
+      <td><span class="badge badge-gray">${d.file_type?.includes('pdf')?'PDF':'DOCX'}</span></td>
+      <td>${d.file_size ? (d.file_size/1048576).toFixed(2)+' MB' : '—'}</td>
+      <td><strong>${d.chunk_count ?? 0}</strong></td>
+      <td><span class="badge ${d.status==='indexed'?'badge-green':'badge-amber'}">${d.status.toUpperCase()}</span></td>
+      <td class="td-mono">${new Date(d.created_at).toLocaleDateString()}</td>
+      <td><button class="btn btn-sm btn-danger" onclick="deleteDoc(${d.id},'${d.original_filename}')">Purge</button></td>
+    </tr>`).join('');
+  } catch(e) { tb.innerHTML = `<tr><td colspan="8"><div class="err-msg">❌ ${e.message}</div></td></tr>`; }
+}
 
-    async function apiFetch(path, opts={}) {
-      return fetch(`${API}${path}`, { ...opts,
-        headers: { 'Authorization': `Bearer ${admToken}`, 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true', ...(opts.headers||{}) }
-      });
-    }
+async function uploadFile(input) {
+  const file = input.files[0]; if (!file) return;
+  const msg = document.getElementById('upload-msg');
+  msg.innerHTML = `<div style="margin-top:14px;padding:14px 16px;background:var(--amber-bg);color:var(--amber);border-radius:10px;border:1px solid rgba(217,119,6,.2);font-size:13px;font-weight:600;">⏳ Transmitting <strong>${file.name}</strong>… Please wait.</div>`;
+  try {
+    const form = new FormData(); form.append('file', file);
+    const r = await fetch(`${API}/kb/upload`, {method:'POST',
+      headers:{'Authorization':`Bearer ${token}`,'ngrok-skip-browser-warning':'true'},body:form});
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Upload failed');
+    msg.innerHTML = `<div style="margin-top:14px;padding:14px 16px;background:var(--green-bg);color:var(--green);border-radius:10px;border:1px solid rgba(13,122,85,.2);font-size:13px;font-weight:600;">✅ <strong>${file.name}</strong> successfully ingested into the vector database.</div>`;
+    toast('Document ingested successfully'); setTimeout(loadDocuments, 2000);
+  } catch(e) {
+    msg.innerHTML = `<div style="margin-top:14px;padding:14px 16px;background:var(--red-bg);color:var(--red);border-radius:10px;border:1px solid rgba(192,57,43,.2);font-size:13px;font-weight:600;">❌ ${e.message}</div>`;
+    toast(e.message, true);
+  }
+  input.value = '';
+}
 
-    async function loadStats() {
-      try {
-        const r = await apiFetch('/admin/stats');
-        const s = await r.json();
-        if(r.ok) {
-          document.getElementById('stat-total').innerText = s.total_queries || 0;
-          document.getElementById('stat-time').innerText = (s.avg_response_time_ms?.toFixed(0) || 0) + 'ms';
-          document.getElementById('stat-users').innerText = s.unique_users || 0;
-          document.getElementById('stat-unresolved').innerText = s.unresolved_count || 0;
-        }
-      } catch(e) { console.error(e); }
-    }
+async function deleteDoc(id, name) {
+  if (!confirm(`Purge "${name}" and all associated vectors from the database?`)) return;
+  try {
+    const r = await apiFetch(`/kb/documents/${id}`, {method:'DELETE'});
+    if (!r.ok) throw new Error('Deletion failed.');
+    toast('Document purged.'); loadDocuments();
+  } catch(e) { toast(e.message, true); }
+}
 
-    async function loadUnresolved() {
-      const tb = document.getElementById('unresolved-table');
-      try {
-        const r = await apiFetch('/admin/unresolved-queries');
-        const qs = await r.json();
-        if (!r.ok) throw new Error(qs.detail || 'Failed');
-        if (!qs.length) {
-          tb.innerHTML = '<tr><td colspan="7" class="empty" style="text-align:center; padding: 3rem; color:var(--green);font-weight:600;">✅ System Optimized — No gaps found in the database.</td></tr>';
-          return;
-        }
-        tb.innerHTML = qs.map((q,i) => `<tr>
-          <td class="td-mono">${i+1}</td>
-          <td class="td-strong">${q.username||'—'}</td>
-          <td style="max-width:280px;font-size:13px;">${q.query_text}</td>
-          <td><span class="badge badge-amber">${(q.intent||'Gap Identified').replace(/_/g,' ').toUpperCase()}</span></td>
-          <td class="td-mono">${q.response_time_ms ?? 0}ms</td>
-          <td class="td-mono">${new Date(q.created_at).toLocaleDateString()}</td>
-          <td><button class="btn btn-sm btn-success" onclick="resolveQ(${q.id})">Mark Resolved</button></td>
-        </tr>`).join('');
-      } catch(e) { tb.innerHTML = `<tr><td colspan="7"><div class="err-msg">❌ ${e.message}</div></td></tr>`; }
-    }
+// ── FAQs ──
+async function loadFAQs() {
+  const tb = document.getElementById('faqs-tbody');
+  try {
+    const r = await apiFetch('/admin/faqs');
+    const faqs = await r.json();
+    if (!r.ok) throw new Error(faqs.detail || 'Failed');
+    if (!faqs.length) { tb.innerHTML = '<tr><td colspan="7" class="empty">No FAQs published yet.</td></tr>'; return; }
+    tb.innerHTML = faqs.map((f,i) => `<tr>
+      <td class="td-mono">${i+1}</td>
+      <td style="max-width:240px;" class="td-strong">${f.question}</td>
+      <td style="max-width:260px;font-size:12px;color:var(--muted);">${(f.answer||'').substring(0,80)}…</td>
+      <td><span class="badge badge-gray">${f.category||'General'}</span></td>
+      <td><span class="badge badge-gold">${f.language.toUpperCase()}</span></td>
+      <td><strong>${f.view_count}</strong></td>
+      <td><button class="btn btn-sm btn-danger" onclick="deleteFAQ(${f.id})">Delete</button></td>
+    </tr>`).join('');
+  } catch(e) { tb.innerHTML = `<tr><td colspan="7"><div class="err-msg">❌ ${e.message}</div></td></tr>`; }
+}
 
-    async function resolveQ(id) {
-      try {
-        const r = await apiFetch(`/admin/unresolved-queries/${id}/resolve`, {method:'PUT'});
-        if (!r.ok) throw new Error('Resolution failed');
-        loadUnresolved();
-        loadStats();
-      } catch(e) { alert(e.message); }
+async function addFAQ() {
+  const q = document.getElementById('faq-q').value.trim();
+  const a = document.getElementById('faq-a').value.trim();
+  if (!q || !a) { toast('Question and answer are required.', true); return; }
+  try {
+    const r = await apiFetch('/admin/faqs', {method:'POST',
+      body: JSON.stringify({question:q, answer:a, category:document.getElementById('faq-cat').value.trim(), language:document.getElementById('faq-lang').value})});
+    if (!r.ok) throw new Error('Publish failed.');
+    ['faq-q','faq-a','faq-cat'].forEach(id => document.getElementById(id).value = '');
+    toast('FAQ published to knowledge base.'); loadFAQs();
+  } catch(e) { toast(e.message, true); }
+}
+
+async function deleteFAQ(id) {
+  if (!confirm('Permanently delete this FAQ entry?')) return;
+  try {
+    const r = await apiFetch(`/admin/faqs/${id}`, {method:'DELETE'});
+    if (!r.ok) throw new Error('Deletion failed.');
+    toast('FAQ deleted.'); loadFAQs();
+  } catch(e) { toast(e.message, true); }
+}
+
+// ── Unresolved ──
+async function loadUnresolved() {
+  const tb = document.getElementById('queries-tbody');
+  try {
+    const r = await apiFetch('/admin/unresolved-queries');
+    const qs = await r.json();
+    if (!r.ok) throw new Error(qs.detail || 'Failed');
+    if (!qs.length) {
+      tb.innerHTML = '<tr><td colspan="7" class="empty" style="color:var(--green);font-weight:600;">✅ All clear — no unresolved queries.</td></tr>';
+      return;
     }
-  </script>
+    tb.innerHTML = qs.map((q,i) => `<tr>
+      <td class="td-mono">${i+1}</td>
+      <td class="td-strong">${q.username||'—'}</td>
+      <td style="max-width:280px;font-size:13px;">${q.query_text}</td>
+      <td><span class="badge badge-amber">${(q.intent||'').replace(/_/g,' ').toUpperCase()}</span></td>
+      <td class="td-mono">${q.response_time_ms ?? 0}ms</td>
+      <td class="td-mono">${new Date(q.created_at).toLocaleDateString()}</td>
+      <td><button class="btn btn-sm btn-success" onclick="resolveQ(${q.id})">Resolve</button></td>
+    </tr>`).join('');
+  } catch(e) { tb.innerHTML = `<tr><td colspan="7"><div class="err-msg">❌ ${e.message}</div></td></tr>`; }
+}
+
+async function resolveQ(id) {
+  try {
+    const r = await apiFetch(`/admin/unresolved-queries/${id}/resolve`, {method:'PUT'});
+    if (!r.ok) throw new Error('Update failed.');
+    toast('Query marked as resolved.'); loadUnresolved(); loadOverview();
+  } catch(e) { toast(e.message, true); }
+}
+
+// ── Key listeners ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !document.getElementById('login-screen').classList.contains('gone')) doLogin();
+});
+</script>
 </body>
 </html>
