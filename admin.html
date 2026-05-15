@@ -45,11 +45,13 @@
       position: fixed; inset: 0; z-index: 200;
       display: flex; align-items: center; justify-content: center;
       padding: 20px;
-      background: var(--navy);
+      background-color: var(--navy);
       background-image:
-        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(201,150,42,.2) 0%, transparent 60%),
-        repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(255,255,255,.02) 60px),
-        repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255,255,255,.02) 60px);
+        linear-gradient(rgba(11,37,69,.75), rgba(6,22,50,.90)),
+        url('https://pia.gov.ph/wp-content/uploads/2025/12/dole.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
     }
     #login-screen.gone { display: none; }
 
@@ -141,7 +143,12 @@
     /* TOPBAR */
     #topbar {
       height: var(--topbar-h);
-      background: var(--navy);
+      background-color: var(--navy);
+      background-image:
+        linear-gradient(rgba(11,37,69,.88), rgba(11,37,69,.88)),
+        url('https://pia.gov.ph/wp-content/uploads/2025/12/dole.jpg');
+      background-size: cover;
+      background-position: center top;
       border-bottom: 2px solid var(--gold);
       display: flex; align-items: center;
       padding: 0 24px;
@@ -210,7 +217,17 @@
     /* BODY */
     #body { display: flex; flex: 1; overflow: hidden; }
 
-    /* LEFT NAV */
+    /* MAIN CONTENT */
+    #main {
+      flex: 1; overflow-y: auto;
+      background-color: var(--cream);
+      background-image:
+        linear-gradient(rgba(247,244,239,.93), rgba(247,244,239,.93)),
+        url('https://pia.gov.ph/wp-content/uploads/2025/12/dole.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
     #left-nav {
       width: var(--sidebar-w);
       background: var(--sidebar-bg);
