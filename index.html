@@ -256,7 +256,6 @@
       <div id="session-list"></div>
       <div style="margin-top:auto; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
         <div style="color:white; font-size:14px; margin-bottom:10px;" id="user-display">User</div>
-        <button id="admin-btn" onclick="openAdmin()" style="display:none; background:none; border:1px solid rgba(255,255,255,0.2); color:#fbbf24; padding:8px; width:100%; border-radius:6px; cursor:pointer; margin-bottom:8px;">Admin Dashboard</button>
         <button onclick="doLogout()" style="background:none; border:1px solid rgba(255,255,255,0.2); color:#fca5a5; padding:8px; width:100%; border-radius:6px; cursor:pointer;">Log Out</button>
       </div>
     </aside>
@@ -367,19 +366,6 @@
       document.getElementById('app').style.display = 'flex';
       document.getElementById('user-display').textContent = '👤 ' + currentUser.username;
       loadSessions();
-      // Show Admin button if logged-in user has admin role
-      try{
-        const adminBtn = document.getElementById('admin-btn');
-        if(currentUser && currentUser.role === 'admin'){
-          adminBtn.style.display = 'block';
-        } else { adminBtn.style.display = 'none'; }
-      }catch(e){}
-    }
-
-    function openAdmin(){
-      // Store API for admin page and navigate in the same tab
-      if(API) localStorage.setItem('admin_api', API);
-      window.location.href = 'admin.html';
     }
 
     async function loadSessions() {
