@@ -4,328 +4,185 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>LaborLens – Admin Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{
-      --gold:#c9a84c; --gold-light:#e8c97a; --gold-dim:rgba(201,168,76,0.12); --gold-border:rgba(201,168,76,0.25);
-      --bg:#0d1117; --surface:#161b22; --surface2:#1c2330; --surface3:#21293a;
-      --border:rgba(255,255,255,0.06); --border-gold:rgba(201,168,76,0.2);
-      --text:#e6edf3; --text-muted:#7d8590; --text-dim:#4a5568;
-      --green:#3fb950; --red:#f85149; --amber:#d29922; --blue:#58a6ff;
-      --font-serif:'DM Serif Display',Georgia,serif;
-      --font-sans:'DM Sans',system-ui,sans-serif;
-      --font-mono:'JetBrains Mono',monospace;
-      --radius:12px; --shadow:0 4px 20px rgba(0,0,0,0.3);
-    }
-    body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-height:100vh}
-    ::-webkit-scrollbar{width:5px;height:5px}
-    ::-webkit-scrollbar-track{background:transparent}
-    ::-webkit-scrollbar-thumb{background:var(--border-gold);border-radius:10px}
-
-    /* ── AUTH ── */
-    .auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg);position:relative;overflow:hidden}
-    .auth-screen::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(201,168,76,0.07) 0%,transparent 70%);top:-100px;left:-100px;pointer-events:none}
-    .auth-screen::after{content:'';position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(248,81,73,0.04) 0%,transparent 70%);bottom:-50px;right:-50px;pointer-events:none}
-
-    .auth-card{background:var(--surface);border:1px solid var(--border-gold);border-radius:24px;padding:44px 40px;width:100%;max-width:440px;position:relative;z-index:1;animation:fadeUp .5s ease both}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-
-    .auth-header{text-align:center;margin-bottom:32px}
-    .auth-emblem{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;background:var(--gold-dim);border:1px solid var(--border-gold);border-radius:16px;font-size:30px;margin-bottom:14px}
-    .auth-header h2{font-family:var(--font-serif);font-size:26px;color:var(--gold)}
-    .auth-header p{color:var(--text-muted);font-size:13px;margin-top:4px;font-weight:300}
-    .auth-badge{display:inline-block;margin-top:8px;padding:3px 10px;background:rgba(248,81,73,0.1);color:var(--red);border:1px solid rgba(248,81,73,0.2);border-radius:20px;font-size:11px;font-weight:600;letter-spacing:0.5px}
-
-    .field-group{margin-bottom:14px}
-    .field-label{display:block;font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px}
-    .field-group input{display:block;width:100%;padding:11px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-size:14px;font-family:var(--font-sans);color:var(--text);transition:border-color .2s}
-    .field-group input::placeholder{color:var(--text-dim)}
-    .field-group input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,0.08)}
-    .field-hint{font-size:11px;color:var(--text-dim);margin-top:4px;font-family:var(--font-mono)}
-
-    .auth-submit{width:100%;padding:12px;background:var(--gold);color:#0d1117;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px;font-family:var(--font-sans);letter-spacing:0.3px;transition:all .2s}
-    .auth-submit:hover{background:var(--gold-light)}
-    #login-err{color:var(--red);font-size:12px;margin-top:10px;text-align:center;min-height:18px}
-
-    .back-link{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);font-size:12px;color:var(--text-muted);text-decoration:none;transition:color .2s}
-    .back-link:hover{color:var(--gold)}
-
-    /* ── DASHBOARD ── */
-    #dashboard{display:none}
-
-    .topbar{
-      background:var(--surface);
-      border-bottom:1px solid var(--border);
-      padding:0 28px;height:58px;
-      display:flex;align-items:center;justify-content:space-between;
-      position:sticky;top:0;z-index:100;
-    }
-    .tb-brand{display:flex;align-items:center;gap:10px}
-    .tb-emblem{width:32px;height:32px;background:var(--gold-dim);border:1px solid var(--border-gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px}
-    .tb-name{font-family:var(--font-serif);font-size:18px;color:var(--gold)}
-    .tb-badge{background:rgba(248,81,73,0.15);color:var(--red);border:1px solid rgba(248,81,73,0.25);font-size:10px;padding:2px 8px;border-radius:8px;font-weight:600;letter-spacing:0.5px}
-    .tb-right{display:flex;align-items:center;gap:14px}
-    .tb-url{font-size:11px;color:var(--green);font-family:var(--font-mono);background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.15);padding:4px 10px;border-radius:6px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .tb-user{color:var(--text-muted);font-size:13px}
-    .tb-app-link{padding:6px 13px;background:var(--gold-dim);color:var(--gold);border:1px solid var(--border-gold);border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--font-sans);text-decoration:none;transition:all .2s}
-    .tb-app-link:hover{background:rgba(201,168,76,0.2)}
-    .tb-out{padding:6px 13px;background:rgba(248,81,73,0.1);color:var(--red);border:1px solid rgba(248,81,73,0.2);border-radius:8px;font-size:13px;cursor:pointer;font-family:var(--font-sans);transition:all .2s}
-    .tb-out:hover{background:rgba(248,81,73,0.2)}
-
-    .nav-tabs{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;display:flex;overflow-x:auto;gap:2px}
-    .nav-tab{padding:14px 18px;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-muted);white-space:nowrap;transition:all .2s;letter-spacing:0.2px}
-    .nav-tab:hover{color:var(--text)}
-    .nav-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
-
-    .main{padding:28px;max-width:1240px;margin:0 auto}
-    .tab-content{display:none}
-    .tab-content.active{display:block;animation:fadeIn .25s ease both}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-
-    /* Stats */
-    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px}
-    .stat-card{
-      background:var(--surface);border:1px solid var(--border);
-      border-radius:var(--radius);padding:20px;
-      position:relative;overflow:hidden;
-      transition:border-color .2s;
-    }
-    .stat-card:hover{border-color:var(--border-gold)}
-    .stat-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--gold)}
-    .stat-card.g::before{background:var(--green)}
-    .stat-card.a::before{background:var(--amber)}
-    .stat-card.r::before{background:var(--red)}
-    .s-label{font-size:12px;color:var(--text-muted);margin-bottom:10px;font-weight:500}
-    .s-val{font-size:32px;font-weight:600;font-family:var(--font-serif);color:var(--text)}
-    .s-sub{font-size:11px;color:var(--text-dim);margin-top:4px}
-
-    /* Section */
-    .section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:20px}
-    .sec-title{font-size:14px;font-weight:600;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border);color:var(--text);display:flex;align-items:center;gap:8px}
-
-    /* Tables */
-    .tw{overflow-x:auto}
-    table{width:100%;border-collapse:collapse;font-size:13px}
-    th{background:var(--surface2);padding:10px 14px;text-align:left;font-weight:600;color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border)}
-    td{padding:12px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
-    tr:last-child td{border-bottom:none}
-    tr:hover td{background:rgba(255,255,255,0.02)}
-
-    /* Badges */
-    .bx{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;display:inline-block}
-    .b-admin{background:var(--gold-dim);color:var(--gold);border:1px solid var(--border-gold)}
-    .b-user{background:var(--surface2);color:var(--text-muted);border:1px solid var(--border)}
-    .b-active{background:rgba(63,185,80,0.12);color:var(--green);border:1px solid rgba(63,185,80,0.2)}
-    .b-inactive{background:rgba(248,81,73,0.1);color:var(--red);border:1px solid rgba(248,81,73,0.2)}
-    .b-indexed{background:rgba(63,185,80,0.12);color:var(--green);border:1px solid rgba(63,185,80,0.2)}
-    .b-processing{background:rgba(210,153,34,0.12);color:var(--amber);border:1px solid rgba(210,153,34,0.2)}
-    .b-error{background:rgba(248,81,73,0.1);color:var(--red);border:1px solid rgba(248,81,73,0.2)}
-
-    /* Buttons */
-    .btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid transparent;font-family:var(--font-sans);transition:all .2s}
-    .btn-p{background:var(--gold);color:#0d1117;border-color:var(--gold)}
-    .btn-p:hover{background:var(--gold-light)}
-    .btn-d{background:rgba(248,81,73,0.1);color:var(--red);border-color:rgba(248,81,73,0.2)}
-    .btn-d:hover{background:rgba(248,81,73,0.2)}
-    .btn-s{background:rgba(63,185,80,0.12);color:var(--green);border-color:rgba(63,185,80,0.2)}
-    .btn-s:hover{background:rgba(63,185,80,0.2)}
-    .btn-sm{padding:4px 10px;font-size:11px}
-
-    /* Upload */
-    .upload-zone{border:1px dashed var(--border-gold);border-radius:var(--radius);padding:40px;text-align:center;cursor:pointer;margin-bottom:14px;transition:all .2s;background:var(--gold-dim)}
-    .upload-zone:hover{border-color:var(--gold);background:rgba(201,168,76,0.18)}
-    .uz-icon{font-size:36px;margin-bottom:10px}
-    .uz-title{font-weight:600;color:var(--text);margin-bottom:4px}
-    .uz-sub{font-size:12px;color:var(--text-muted)}
-    #file-input{display:none}
-
-    /* FAQ form */
-    .faq-form{display:grid;gap:10px;margin-bottom:20px}
-    .faq-form input,.faq-form textarea,.faq-form select{
-      width:100%;padding:10px 14px;
-      background:var(--bg);border:1px solid var(--border);
-      border-radius:8px;font-size:13px;font-family:var(--font-sans);
-      color:var(--text);transition:border-color .2s;
-    }
-    .faq-form input::placeholder,.faq-form textarea::placeholder{color:var(--text-dim)}
-    .faq-form input:focus,.faq-form textarea:focus,.faq-form select:focus{outline:none;border-color:var(--gold)}
-    .faq-form textarea{resize:vertical;min-height:80px}
-
-    /* Bar chart */
-    .bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-    .bar-lbl{font-size:12px;min-width:180px;text-transform:capitalize;color:var(--text-muted)}
-    .bar-track{flex:1;background:var(--surface2);border-radius:4px;height:8px;overflow:hidden}
-    .bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:4px;transition:width .6s ease}
-    .bar-cnt{font-size:12px;font-weight:600;min-width:36px;text-align:right;font-family:var(--font-mono);color:var(--text)}
-
-    /* States */
-    .loading{text-align:center;padding:32px;color:var(--text-muted);font-size:13px}
-    .empty{text-align:center;padding:32px;color:var(--text-muted);font-size:13px}
-    .err{padding:16px;color:var(--red);font-size:13px;text-align:center}
-
-    /* Toast */
-    #toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;background:var(--surface);border:1px solid var(--border-gold);color:var(--text);border-radius:12px;font-size:13px;box-shadow:0 8px 32px rgba(0,0,0,.4);display:none;z-index:9999}
-    #toast.show{display:block;animation:toastIn .3s ease}
-    @keyframes toastIn{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
-
-    .g2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-    @media(max-width:768px){.g2{grid-template-columns:1fr}.main{padding:16px}}
+    body { font-family: 'Inter', sans-serif; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    /* Toast Animation */
+    @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .toast-show { animation: slideUp 0.3s ease forwards; display: block !important; }
   </style>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 min-h-screen">
 
-<!-- AUTH -->
-<div id="login-screen" class="auth-screen">
-  <div class="auth-card">
-    <div class="auth-header">
-      <div class="auth-emblem">⚖️</div>
-      <h2>LaborLens Admin</h2>
-      <p>Sign in with your administrator account</p>
-      <span class="auth-badge">RESTRICTED ACCESS</span>
+<div id="login-screen" class="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-blue-900 p-4">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+    <div class="text-center mb-8">
+      <span class="text-4xl block mb-2">🛡️</span>
+      <h2 class="text-2xl font-bold text-gray-800">Admin Portal</h2>
+      <p class="text-gray-500 text-sm">LaborLens Management</p>
     </div>
-
-    <div class="field-group">
-      <label class="field-label">Backend URL (ngrok)</label>
-      <input type="text" id="api-url" placeholder="https://xxxx.ngrok-free.app/api"/>
-      <div class="field-hint">Paste your full ngrok URL ending with /api</div>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Backend URL (ngrok)</label>
+        <input type="text" id="api-url" placeholder="https://xxxx.ngrok-free.app/api" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition"/>
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Email</label>
+        <input type="email" id="l-email" placeholder="admin@laborlens.local" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition"/>
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Password</label>
+        <input type="password" id="l-pass" placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition"/>
+      </div>
+      <button onclick="doLogin()" class="w-full bg-gray-900 hover:bg-black text-white font-bold py-3 rounded-xl shadow-md transition mt-2">Sign In</button>
+      <p id="login-err" class="text-red-500 text-sm text-center min-h-[20px]"></p>
     </div>
-    <div class="field-group">
-      <label class="field-label">Email</label>
-      <input type="email" id="l-email" placeholder="admin@laborlens.local"/>
-    </div>
-    <div class="field-group">
-      <label class="field-label">Password</label>
-      <input type="password" id="l-pass" placeholder="••••••••"/>
-    </div>
-    <button class="auth-submit" onclick="doLogin()">Sign In to Dashboard</button>
-    <p id="login-err"></p>
-
-    <a href="index.html" class="back-link">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-      Back to User Portal
-    </a>
   </div>
 </div>
 
-<!-- DASHBOARD -->
-<div id="dashboard">
-  <div class="topbar">
-    <div class="tb-brand">
-      <div class="tb-emblem">⚖️</div>
-      <span class="tb-name">LaborLens</span>
-      <span class="tb-badge">ADMIN</span>
+<div id="dashboard" class="hidden flex-col h-screen overflow-hidden">
+  
+  <nav class="bg-gray-900 text-white px-6 py-4 flex items-center justify-between shadow-md shrink-0">
+    <div class="flex items-center gap-3">
+      <span class="text-2xl">⚖️</span>
+      <span class="font-bold text-lg tracking-wide">LaborLens</span>
+      <span class="bg-blue-600 text-xs px-2 py-0.5 rounded uppercase font-bold tracking-wider">Admin</span>
     </div>
-    <div class="tb-right">
-      <span id="tb-url" class="tb-url"></span>
-      <span id="tb-user" class="tb-user"></span>
-      <a href="index.html" class="tb-app-link">← User App</a>
-      <button class="tb-out" onclick="doLogout()">Logout</button>
+    <div class="flex items-center gap-4 hidden md:flex">
+      <span id="tb-url" class="text-xs font-mono bg-white/10 px-3 py-1.5 rounded-lg text-green-400 max-w-xs truncate"></span>
+      <span id="tb-user" class="text-sm font-medium text-gray-300"></span>
+      <button onclick="doLogout()" class="bg-red-500/20 text-red-400 border border-red-500/50 hover:bg-red-500/30 px-4 py-1.5 rounded-lg text-sm font-medium transition">Logout</button>
     </div>
+  </nav>
+
+  <div class="bg-white border-b border-gray-200 px-6 flex overflow-x-auto shrink-0">
+    <button class="nav-tab active px-5 py-4 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 whitespace-nowrap" onclick="switchTab(event,'overview')">📊 Overview</button>
+    <button class="nav-tab px-5 py-4 text-sm font-semibold text-gray-500 hover:text-gray-800 border-b-2 border-transparent whitespace-nowrap transition" onclick="switchTab(event,'users')">👥 Users</button>
+    <button class="nav-tab px-5 py-4 text-sm font-semibold text-gray-500 hover:text-gray-800 border-b-2 border-transparent whitespace-nowrap transition" onclick="switchTab(event,'knowledge')">📚 Knowledge Base</button>
+    <button class="nav-tab px-5 py-4 text-sm font-semibold text-gray-500 hover:text-gray-800 border-b-2 border-transparent whitespace-nowrap transition" onclick="switchTab(event,'faqs')">❓ FAQs</button>
+    <button class="nav-tab px-5 py-4 text-sm font-semibold text-gray-500 hover:text-gray-800 border-b-2 border-transparent whitespace-nowrap transition" onclick="switchTab(event,'queries')">🔍 Unresolved</button>
   </div>
 
-  <div class="nav-tabs">
-    <div class="nav-tab active" onclick="switchTab(event,'overview')">📊 Overview</div>
-    <div class="nav-tab" onclick="switchTab(event,'users')">👥 Users</div>
-    <div class="nav-tab" onclick="switchTab(event,'knowledge')">📚 Knowledge Base</div>
-    <div class="nav-tab" onclick="switchTab(event,'faqs')">❓ FAQs</div>
-    <div class="nav-tab" onclick="switchTab(event,'queries')">🔍 Unresolved</div>
-  </div>
-
-  <div class="main">
-
-    <!-- OVERVIEW -->
-    <div id="tab-overview" class="tab-content active">
-      <div class="stat-grid" id="stat-grid"><div class="loading">Loading stats…</div></div>
-      <div class="g2">
-        <div class="section">
-          <div class="sec-title">🎯 Intent Distribution <span style="color:var(--text-muted);font-size:11px;font-weight:400">(30 days)</span></div>
-          <div id="intent-chart"><div class="loading">Loading…</div></div>
+  <div class="flex-1 overflow-y-auto p-6 lg:p-10">
+    
+    <div id="tab-overview" class="tab-content active max-w-7xl mx-auto">
+      <div id="stat-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+        <div class="text-center p-8 text-gray-400 col-span-full">Loading…</div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <h3 class="text-lg font-bold text-gray-800 mb-4 pb-3 border-b border-gray-100">🎯 Intent Distribution</h3>
+          <div id="intent-chart" class="space-y-3"></div>
         </div>
-        <div class="section">
-          <div class="sec-title">🌐 Language Distribution</div>
-          <div id="lang-chart"><div class="loading">Loading…</div></div>
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <h3 class="text-lg font-bold text-gray-800 mb-4 pb-3 border-b border-gray-100">🌐 Language Distribution</h3>
+          <div id="lang-chart" class="space-y-3"></div>
         </div>
       </div>
-      <div class="section">
-        <div class="sec-title">📈 Daily Messages <span style="color:var(--text-muted);font-size:11px;font-weight:400">(7 days)</span></div>
-        <div id="vol-table"><div class="loading">Loading…</div></div>
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-4 pb-3 border-b border-gray-100">📈 Daily Messages (7 days)</h3>
+        <div id="vol-table" class="overflow-x-auto"></div>
       </div>
     </div>
 
-    <!-- USERS -->
-    <div id="tab-users" class="tab-content">
-      <div class="section">
-        <div class="sec-title">👥 All Registered Users</div>
-        <div class="tw">
-          <table>
-            <thead><tr><th>#</th><th>Username</th><th>Email</th><th>Role</th><th>Language</th><th>Joined</th><th>Status</th><th>Action</th></tr></thead>
-            <tbody id="users-tbody"><tr><td colspan="8" class="loading">Loading…</td></tr></tbody>
+    <div id="tab-users" class="tab-content max-w-7xl mx-auto">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-6 border-b border-gray-100"><h3 class="text-lg font-bold text-gray-800">👥 All Registered Users</h3></div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                <th class="p-4 font-semibold">#</th><th class="p-4 font-semibold">Username</th><th class="p-4 font-semibold">Email</th>
+                <th class="p-4 font-semibold">Role</th><th class="p-4 font-semibold">Lang</th><th class="p-4 font-semibold">Joined</th>
+                <th class="p-4 font-semibold">Status</th><th class="p-4 font-semibold">Action</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody" class="text-sm divide-y divide-gray-100"><tr><td colspan="8" class="p-8 text-center text-gray-400">Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- KNOWLEDGE BASE -->
-    <div id="tab-knowledge" class="tab-content">
-      <div class="section">
-        <div class="sec-title">📤 Upload New Document</div>
-        <div class="upload-zone" onclick="document.getElementById('file-input').click()">
-          <div class="uz-icon">📄</div>
-          <div class="uz-title">Click to choose PDF or DOCX</div>
-          <p class="uz-sub">Labor Code, DOLE issuances, wage orders, IRR…</p>
-        </div>
-        <input type="file" id="file-input" accept=".pdf,.docx,.doc" onchange="uploadFile(this)"/>
-        <div id="upload-msg"></div>
-      </div>
-      <div class="section">
-        <div class="sec-title">📚 Indexed Documents <span id="kb-stats" style="color:var(--text-muted);font-size:11px;font-weight:400;margin-left:8px"></span></div>
-        <div class="tw">
-          <table>
-            <thead><tr><th>#</th><th>Filename</th><th>Type</th><th>Size</th><th>Chunks</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
-            <tbody id="docs-tbody"><tr><td colspan="8" class="loading">Loading…</td></tr></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- FAQs -->
-    <div id="tab-faqs" class="tab-content">
-      <div class="section">
-        <div class="sec-title">➕ Add New FAQ</div>
-        <div class="faq-form">
-          <input type="text" id="faq-q" placeholder="Question"/>
-          <textarea id="faq-a" placeholder="Answer…"></textarea>
-          <div style="display:flex;gap:10px">
-            <input type="text" id="faq-cat" placeholder="Category (wages, leave, termination…)" style="flex:1"/>
-            <select id="faq-lang" style="width:160px">
-              <option value="en">🇬🇧 English</option>
-              <option value="fil">🇵🇭 Filipino</option>
-              <option value="hil">Hiligaynon</option>
-            </select>
+    <div id="tab-knowledge" class="tab-content max-w-7xl mx-auto">
+      <div class="grid lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-1">
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">📤 Upload Document</h3>
+            <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition" onclick="document.getElementById('file-input').click()">
+              <span class="text-4xl block mb-3">📄</span>
+              <strong class="block text-gray-800">Click to choose PDF or DOCX</strong>
+              <p class="text-xs text-gray-500 mt-2">Labor Code, DOLE issuances, IRR…</p>
+            </div>
+            <input type="file" id="file-input" class="hidden" accept=".pdf,.docx,.doc" onchange="uploadFile(this)"/>
+            <div id="upload-msg" class="mt-4 text-sm"></div>
           </div>
-          <button class="btn btn-p" onclick="addFAQ()">➕ Add FAQ</button>
+        </div>
+        <div class="lg:col-span-2">
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+              <h3 class="text-lg font-bold text-gray-800">📚 Indexed Documents</h3>
+              <span id="kb-stats" class="text-xs font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full"></span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                    <th class="p-4 font-semibold">#</th><th class="p-4 font-semibold">Filename</th><th class="p-4 font-semibold">Type</th>
+                    <th class="p-4 font-semibold">Size</th><th class="p-4 font-semibold">Chunks</th><th class="p-4 font-semibold">Status</th>
+                    <th class="p-4 font-semibold">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="docs-tbody" class="text-sm divide-y divide-gray-100"><tr><td colspan="7" class="p-8 text-center text-gray-400">Loading…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="section">
-        <div class="sec-title">📋 All FAQs</div>
-        <div class="tw">
-          <table>
-            <thead><tr><th>#</th><th>Question</th><th>Answer</th><th>Category</th><th>Lang</th><th>Views</th><th>Action</th></tr></thead>
-            <tbody id="faqs-tbody"><tr><td colspan="7" class="loading">Loading…</td></tr></tbody>
+    </div>
+
+    <div id="tab-faqs" class="tab-content max-w-7xl mx-auto">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-4">➕ Add New FAQ</h3>
+        <div class="grid gap-4 md:grid-cols-2">
+          <input type="text" id="faq-q" placeholder="Question" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none md:col-span-2"/>
+          <textarea id="faq-a" placeholder="Answer…" rows="3" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none md:col-span-2 resize-y"></textarea>
+          <input type="text" id="faq-cat" placeholder="Category (wages, leave...)" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"/>
+          <select id="faq-lang" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+            <option value="en">English</option><option value="fil">Filipino</option><option value="hil">Hiligaynon</option>
+          </select>
+          <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition md:col-span-2" onclick="addFAQ()">Add FAQ</button>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                <th class="p-4 font-semibold">#</th><th class="p-4 font-semibold w-1/4">Question</th><th class="p-4 font-semibold w-1/3">Answer</th>
+                <th class="p-4 font-semibold">Category</th><th class="p-4 font-semibold">Lang</th><th class="p-4 font-semibold">Action</th>
+              </tr>
+            </thead>
+            <tbody id="faqs-tbody" class="text-sm divide-y divide-gray-100"><tr><td colspan="6" class="p-8 text-center text-gray-400">Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- UNRESOLVED -->
-    <div id="tab-queries" class="tab-content">
-      <div class="section">
-        <div class="sec-title">🔍 Unresolved Queries</div>
-        <div class="tw">
-          <table>
-            <thead><tr><th>#</th><th>User</th><th>Query</th><th>Intent</th><th>ms</th><th>Date</th><th>Action</th></tr></thead>
-            <tbody id="queries-tbody"><tr><td colspan="7" class="loading">Loading…</td></tr></tbody>
+    <div id="tab-queries" class="tab-content max-w-7xl mx-auto">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-6 border-b border-gray-100"><h3 class="text-lg font-bold text-gray-800">🔍 Unresolved Queries</h3></div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                <th class="p-4 font-semibold">#</th><th class="p-4 font-semibold">User</th><th class="p-4 font-semibold w-1/3">Query</th>
+                <th class="p-4 font-semibold">Intent</th><th class="p-4 font-semibold">Date</th><th class="p-4 font-semibold">Action</th>
+              </tr>
+            </thead>
+            <tbody id="queries-tbody" class="text-sm divide-y divide-gray-100"><tr><td colspan="6" class="p-8 text-center text-gray-400">Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -333,25 +190,22 @@
 
   </div>
 </div>
-<div id="toast"></div>
+
+<div id="toast" class="hidden fixed bottom-6 right-6 bg-gray-900 text-white px-6 py-3 rounded-xl shadow-2xl z-50 flex items-center gap-2"></div>
 
 <script>
 let API='', token=null, currentUser=null;
 
 function toast(msg,err=false){
   const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.style.borderColor=err?'rgba(248,81,73,0.3)':'var(--border-gold)';
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3500);
+  t.innerHTML = (err ? '❌ ' : '✅ ') + msg;
+  t.className = `fixed bottom-6 right-6 px-6 py-3 rounded-xl shadow-2xl z-50 font-medium text-sm toast-show ${err ? 'bg-red-600 text-white' : 'bg-gray-900 text-white'}`;
+  setTimeout(()=>t.className='hidden',3500);
 }
 
 async function apiFetch(path,opts={}){
   return fetch(`${API}${path}`,{...opts,headers:{
-    'Content-Type':'application/json',
-    'Authorization':`Bearer ${token}`,
-    'ngrok-skip-browser-warning':'true',
-    ...(opts.headers||{})
+    'Content-Type':'application/json','Authorization':`Bearer ${token}`,'ngrok-skip-browser-warning':'true',...(opts.headers||{})
   }});
 }
 
@@ -363,213 +217,191 @@ async function doLogin(){
   if(!API){errEl.textContent='Enter your ngrok URL first';return;}
   errEl.textContent='Connecting…';
   try{
-    const res=await fetch(`${API}/auth/login`,{method:'POST',
-      headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},
-      body:JSON.stringify({email,password:pass})});
+    const res=await fetch(`${API}/auth/login`,{method:'POST',headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},body:JSON.stringify({email,password:pass})});
     const data=await res.json();
     if(!res.ok) throw new Error(data.detail||'Login failed');
-    if(data.role!=='admin') throw new Error('This account is not an admin. Update role in MySQL first.');
-    token=data.access_token;
-    currentUser={id:data.user_id,username:data.username,role:data.role};
+    if(data.role!=='admin') throw new Error('This account is not an admin.');
+    token=data.access_token; currentUser={id:data.user_id,username:data.username,role:data.role};
     initDashboard();
   }catch(e){errEl.textContent=e.message;}
 }
 
 function doLogout(){
   token=null;currentUser=null;
-  document.getElementById('dashboard').style.display='none';
-  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('dashboard').classList.add('hidden');
+  document.getElementById('dashboard').classList.remove('flex');
+  document.getElementById('login-screen').classList.remove('hidden');
 }
 
 function initDashboard(){
-  document.getElementById('login-screen').style.display='none';
-  document.getElementById('dashboard').style.display='block';
-  document.getElementById('tb-user').textContent='👤 '+currentUser.username;
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('dashboard').classList.remove('hidden');
+  document.getElementById('dashboard').classList.add('flex');
+  document.getElementById('tb-user').textContent=currentUser.username;
   try{document.getElementById('tb-url').textContent=new URL(API).hostname;}catch(_){}
   loadOverview(); loadUsers(); loadDocuments(); loadFAQs(); loadUnresolved();
 }
 
 function switchTab(e,name){
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>{
+    t.classList.remove('active','text-blue-600','border-blue-600');
+    t.classList.add('text-gray-500','border-transparent');
+  });
   document.getElementById('tab-'+name).classList.add('active');
-  e.currentTarget.classList.add('active');
+  e.currentTarget.classList.remove('text-gray-500','border-transparent');
+  e.currentTarget.classList.add('active','text-blue-600','border-blue-600');
+}
+
+// Stats & Charts formatting helper
+function getBadgeHtml(val, type) {
+    const classes = type === 'success' ? 'bg-green-100 text-green-700' : type === 'warning' ? 'bg-amber-100 text-amber-700' : type === 'danger' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700';
+    return `<span class="px-2.5 py-1 rounded-full text-xs font-bold ${classes}">${val}</span>`;
 }
 
 async function loadOverview(){
   try{
-    const res=await apiFetch('/admin/dashboard');
-    const d=await res.json();
+    const res=await apiFetch('/admin/dashboard'); const d=await res.json();
     if(!res.ok) throw new Error(d.detail||'Failed');
     const t=d.totals||{};
+    
     document.getElementById('stat-grid').innerHTML=`
-      <div class="stat-card"><div class="s-label">👥 Total Users</div><div class="s-val">${t.users??0}</div><div class="s-sub">Registered</div></div>
-      <div class="stat-card g"><div class="s-label">💬 Messages</div><div class="s-val">${t.messages??0}</div><div class="s-sub">User queries</div></div>
-      <div class="stat-card"><div class="s-label">🗂️ Sessions</div><div class="s-val">${t.sessions??0}</div><div class="s-sub">Conversations</div></div>
-      <div class="stat-card a"><div class="s-label">📚 Documents</div><div class="s-val">${t.docs??t.indexed_documents??0}</div><div class="s-sub">Indexed</div></div>
-      <div class="stat-card r"><div class="s-label">❓ Unresolved</div><div class="s-val">${d.unresolved??d.unresolved_queries??0}</div><div class="s-sub">Needs attention</div></div>
-      <div class="stat-card g"><div class="s-label">⚡ Avg Response</div><div class="s-val">${Math.round(d.avg_response_time_ms||0)}<small style="font-size:14px;color:var(--text-muted)">ms</small></div><div class="s-sub">Per query</div></div>`;
-    const ii=d.intent_distribution||[];
-    const mi=Math.max(...ii.map(x=>x.count),1);
-    document.getElementById('intent-chart').innerHTML=ii.length
-      ?ii.map(i=>`<div class="bar-row"><div class="bar-lbl">${(i.intent||'').replace(/_/g,' ')}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(i.count/mi*100)}%"></div></div><div class="bar-cnt">${i.count}</div></div>`).join('')
-      :'<div class="empty">No queries yet. Start chatting!</div>';
-    const ll=d.language_distribution||[];
-    const lm={'en':'🇬🇧 English','fil':'🇵🇭 Filipino','hil':'Hiligaynon'};
-    const ml=Math.max(...ll.map(x=>x.count),1);
-    document.getElementById('lang-chart').innerHTML=ll.length
-      ?ll.map(l=>`<div class="bar-row"><div class="bar-lbl">${lm[l.language]||l.language}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(l.count/ml*100)}%"></div></div><div class="bar-cnt">${l.count}</div></div>`).join('')
-      :'<div class="empty">No language data yet</div>';
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 border-l-4 border-l-blue-500"><div class="text-sm font-semibold text-gray-500 mb-1">Users</div><div class="text-3xl font-bold">${t.users??0}</div></div>
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 border-l-4 border-l-green-500"><div class="text-sm font-semibold text-gray-500 mb-1">Messages</div><div class="text-3xl font-bold">${t.messages??0}</div></div>
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 border-l-4 border-l-indigo-500"><div class="text-sm font-semibold text-gray-500 mb-1">Sessions</div><div class="text-3xl font-bold">${t.sessions??0}</div></div>
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 border-l-4 border-l-amber-500"><div class="text-sm font-semibold text-gray-500 mb-1">Documents</div><div class="text-3xl font-bold">${t.docs??t.indexed_documents??0}</div></div>
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 border-l-4 border-l-red-500"><div class="text-sm font-semibold text-gray-500 mb-1">Unresolved</div><div class="text-3xl font-bold">${d.unresolved??d.unresolved_queries??0}</div></div>
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 border-l-4 border-l-teal-500"><div class="text-sm font-semibold text-gray-500 mb-1">Avg Res (ms)</div><div class="text-3xl font-bold">${Math.round(d.avg_response_time_ms||0)}</div></div>`;
+    
+    // Charts logic remains functionally identical, outputting tailwind classes
+    const ii=d.intent_distribution||[]; const mi=Math.max(...ii.map(x=>x.count),1);
+    document.getElementById('intent-chart').innerHTML=ii.length?ii.map(i=>`<div class="flex items-center gap-3"><div class="text-sm w-32 truncate capitalize">${(i.intent||'').replace(/_/g,' ')}</div><div class="flex-1 h-2.5 bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-blue-500 rounded-full" style="width:${Math.round(i.count/mi*100)}%"></div></div><div class="text-xs font-bold w-8 text-right">${i.count}</div></div>`).join(''):'<div class="text-gray-400 text-sm">No queries yet</div>';
+    
+    const ll=d.language_distribution||[]; const ml=Math.max(...ll.map(x=>x.count),1);
+    document.getElementById('lang-chart').innerHTML=ll.length?ll.map(l=>`<div class="flex items-center gap-3"><div class="text-sm w-24">${l.language}</div><div class="flex-1 h-2.5 bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-green-500 rounded-full" style="width:${Math.round(l.count/ml*100)}%"></div></div><div class="text-xs font-bold w-8 text-right">${l.count}</div></div>`).join(''):'<div class="text-gray-400 text-sm">No data yet</div>';
+    
     const vv=d.daily_volume||[];
-    document.getElementById('vol-table').innerHTML=vv.length
-      ?`<div class="tw"><table><thead><tr><th>Date</th><th>Messages</th></tr></thead><tbody>${vv.map(v=>`<tr><td style="font-family:var(--font-mono);font-size:12px">${v.date||v.DATE}</td><td><strong>${v.count}</strong></td></tr>`).join('')}</tbody></table></div>`
-      :'<div class="empty">No volume data yet</div>';
-  }catch(e){
-    const m=`<div class="err">❌ ${e.message}<br><small>Check FastAPI is running and ngrok URL is correct.</small></div>`;
-    ['stat-grid','intent-chart','lang-chart','vol-table'].forEach(id=>document.getElementById(id).innerHTML=m);
-  }
+    document.getElementById('vol-table').innerHTML=vv.length?`<table class="w-full text-sm text-left"><thead><tr class="text-gray-500 border-b border-gray-100"><th class="pb-2">Date</th><th class="pb-2">Messages</th></tr></thead><tbody>${vv.map(v=>`<tr class="border-b border-gray-50 last:border-0"><td class="py-2">${v.date||v.DATE}</td><td class="py-2 font-bold">${v.count}</td></tr>`).join('')}</tbody></table>`:'<div class="text-gray-400 text-sm">No data</div>';
+  }catch(e){ toast('Failed to load overview: ' + e.message, true); }
 }
 
 async function loadUsers(){
   const tb=document.getElementById('users-tbody');
   try{
-    const res=await apiFetch('/admin/users');
-    const users=await res.json();
+    const res=await apiFetch('/admin/users'); const users=await res.json();
     if(!res.ok) throw new Error(users.detail||'Failed');
-    if(!users.length){tb.innerHTML='<tr><td colspan="8" class="empty">No users yet</td></tr>';return;}
+    if(!users.length){tb.innerHTML='<tr><td colspan="8" class="p-8 text-center text-gray-400">No users yet</td></tr>';return;}
     tb.innerHTML=users.map((u,i)=>`<tr>
-      <td style="color:var(--text-muted);font-family:var(--font-mono)">${i+1}</td>
-      <td><strong>${u.username}</strong></td>
-      <td style="font-size:12px;color:var(--text-muted)">${u.email}</td>
-      <td><span class="bx ${u.role==='admin'?'b-admin':'b-user'}">${u.role}</span></td>
-      <td style="font-size:12px">${u.language_preference}</td>
-      <td style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">${new Date(u.created_at).toLocaleDateString()}</td>
-      <td><span class="bx ${u.is_active?'b-active':'b-inactive'}">${u.is_active?'Active':'Inactive'}</span></td>
-      <td><button class="btn btn-sm ${u.role==='admin'?'btn-d':'btn-s'}" onclick="toggleRole(${u.id},'${u.role}')">${u.role==='admin'?'Demote':'Make Admin'}</button></td>
+      <td class="p-4">${i+1}</td><td class="p-4 font-bold text-gray-800">${u.username}</td>
+      <td class="p-4 text-gray-500">${u.email}</td>
+      <td class="p-4">${getBadgeHtml(u.role, u.role==='admin'?'primary':'')}</td>
+      <td class="p-4 uppercase text-xs font-bold">${u.language_preference}</td>
+      <td class="p-4 text-gray-500">${new Date(u.created_at).toLocaleDateString()}</td>
+      <td class="p-4">${getBadgeHtml(u.is_active?'Active':'Inactive', u.is_active?'success':'danger')}</td>
+      <td class="p-4"><button class="px-3 py-1.5 text-xs font-bold rounded-lg ${u.role==='admin'?'bg-red-50 text-red-600 hover:bg-red-100':'bg-green-50 text-green-600 hover:bg-green-100'} transition" onclick="toggleRole(${u.id},'${u.role}')">${u.role==='admin'?'Demote':'Make Admin'}</button></td>
     </tr>`).join('');
-  }catch(e){tb.innerHTML=`<tr><td colspan="8" class="err">❌ ${e.message}</td></tr>`;}
+  }catch(e){tb.innerHTML=`<tr><td colspan="8" class="p-4 text-red-500">❌ ${e.message}</td></tr>`;}
 }
 
 async function toggleRole(id,cur){
   const next=cur==='admin'?'user':'admin';
   if(!confirm(`Change role to "${next}"?`)) return;
-  try{
-    const res=await apiFetch(`/admin/users/${id}/role?role=${next}`,{method:'PUT'});
-    if(!res.ok) throw new Error('Failed');
-    toast(`Role updated to ${next}`); loadUsers();
-  }catch(e){toast(e.message,true);}
+  try{const res=await apiFetch(`/admin/users/${id}/role?role=${next}`,{method:'PUT'});if(!res.ok) throw new Error('Failed');toast(`Role updated`); loadUsers();}catch(e){toast(e.message,true);}
 }
 
 async function loadDocuments(){
   const tb=document.getElementById('docs-tbody');
   try{
     const sr=await apiFetch('/kb/stats');
-    if(sr.ok){const s=await sr.json();document.getElementById('kb-stats').textContent=`ChromaDB: ${s.chroma?.total_chunks??0} chunks indexed`;}
-    const dr=await apiFetch('/kb/documents');
-    const docs=await dr.json();
+    if(sr.ok){const s=await sr.json();document.getElementById('kb-stats').textContent=`ChromaDB: ${s.chroma?.total_chunks??0} chunks`;}
+    const dr=await apiFetch('/kb/documents'); const docs=await dr.json();
     if(!dr.ok) throw new Error(docs.detail||'Failed');
-    if(!docs.length){tb.innerHTML='<tr><td colspan="8" class="empty">No documents uploaded yet</td></tr>';return;}
+    if(!docs.length){tb.innerHTML='<tr><td colspan="7" class="p-8 text-center text-gray-400">No documents</td></tr>';return;}
     tb.innerHTML=docs.map((d,i)=>`<tr>
-      <td style="color:var(--text-muted);font-family:var(--font-mono)">${i+1}</td>
-      <td style="max-width:180px;font-size:13px"><strong>${d.original_filename}</strong></td>
-      <td style="font-size:11px;font-family:var(--font-mono)">${d.file_type?.includes('pdf')?'PDF':'DOCX'}</td>
-      <td style="font-size:11px;font-family:var(--font-mono)">${d.file_size?(d.file_size/1048576).toFixed(2)+' MB':'-'}</td>
-      <td style="font-family:var(--font-mono)">${d.chunk_count??0}</td>
-      <td><span class="bx b-${d.status}">${d.status}</span></td>
-      <td style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">${new Date(d.created_at).toLocaleDateString()}</td>
-      <td><button class="btn btn-sm btn-d" onclick="deleteDoc(${d.id},'${d.original_filename}')">🗑️ Delete</button></td>
+      <td class="p-4">${i+1}</td>
+      <td class="p-4 font-medium text-gray-800 max-w-[200px] truncate">${d.original_filename}</td>
+      <td class="p-4 font-mono text-xs text-gray-500">${d.file_type?.includes('pdf')?'PDF':'DOCX'}</td>
+      <td class="p-4 text-gray-500">${d.file_size?(d.file_size/1048576).toFixed(2)+' MB':'-'}</td>
+      <td class="p-4">${d.chunk_count??0}</td>
+      <td class="p-4">${getBadgeHtml(d.status, d.status==='indexed'?'success':(d.status==='error'?'danger':'warning'))}</td>
+      <td class="p-4"><button class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" onclick="deleteDoc(${d.id},'${d.original_filename}')">🗑️</button></td>
     </tr>`).join('');
-  }catch(e){tb.innerHTML=`<tr><td colspan="8" class="err">❌ ${e.message}</td></tr>`;}
+  }catch(e){tb.innerHTML=`<tr><td colspan="7" class="p-4 text-red-500">❌ ${e.message}</td></tr>`;}
 }
 
 async function uploadFile(input){
   const file=input.files[0]; if(!file) return;
   const msg=document.getElementById('upload-msg');
-  msg.innerHTML=`<p style="color:var(--amber);margin-top:10px;font-size:13px">⏳ Uploading ${file.name}…</p>`;
+  msg.innerHTML=`<p class="text-amber-500">⏳ Uploading ${file.name}…</p>`;
   try{
     const form=new FormData(); form.append('file',file);
-    const res=await fetch(`${API}/kb/upload`,{method:'POST',
-      headers:{'Authorization':`Bearer ${token}`,'ngrok-skip-browser-warning':'true'},body:form});
-    const data=await res.json();
-    if(!res.ok) throw new Error(data.detail||'Upload failed');
-    msg.innerHTML=`<p style="color:var(--green);margin-top:10px;font-size:13px">✅ ${file.name} uploaded! Indexing in background…</p>`;
-    toast('Uploaded!'); setTimeout(loadDocuments,3000);
-  }catch(e){msg.innerHTML=`<p style="color:var(--red);margin-top:10px;font-size:13px">❌ ${e.message}</p>`;toast(e.message,true);}
+    const res=await fetch(`${API}/kb/upload`,{method:'POST',headers:{'Authorization':`Bearer ${token}`,'ngrok-skip-browser-warning':'true'},body:form});
+    const data=await res.json(); if(!res.ok) throw new Error(data.detail||'Upload failed');
+    msg.innerHTML=`<p class="text-green-600 font-medium">✅ Uploaded! Indexing in background…</p>`;
+    toast('Uploaded successfully'); setTimeout(loadDocuments,3000);
+  }catch(e){msg.innerHTML=`<p class="text-red-500">❌ ${e.message}</p>`;toast(e.message,true);}
   input.value='';
 }
 
 async function deleteDoc(id,name){
   if(!confirm(`Delete "${name}"?`)) return;
-  try{const res=await apiFetch(`/kb/documents/${id}`,{method:'DELETE'});if(!res.ok)throw new Error('Failed');toast('Deleted');loadDocuments();}
-  catch(e){toast(e.message,true);}
+  try{const res=await apiFetch(`/kb/documents/${id}`,{method:'DELETE'});if(!res.ok)throw new Error('Failed');toast('Deleted');loadDocuments();}catch(e){toast(e.message,true);}
 }
 
 async function loadFAQs(){
   const tb=document.getElementById('faqs-tbody');
   try{
-    const res=await apiFetch('/admin/faqs');
-    const faqs=await res.json();
+    const res=await apiFetch('/admin/faqs'); const faqs=await res.json();
     if(!res.ok) throw new Error(faqs.detail||'Failed');
-    if(!faqs.length){tb.innerHTML='<tr><td colspan="7" class="empty">No FAQs yet</td></tr>';return;}
+    if(!faqs.length){tb.innerHTML='<tr><td colspan="6" class="p-8 text-center text-gray-400">No FAQs yet</td></tr>';return;}
     tb.innerHTML=faqs.map((f,i)=>`<tr>
-      <td style="color:var(--text-muted);font-family:var(--font-mono)">${i+1}</td>
-      <td style="max-width:200px;font-size:13px">${f.question}</td>
-      <td style="max-width:220px;font-size:11px;color:var(--text-muted)">${(f.answer||'').substring(0,80)}…</td>
-      <td><small>${f.category||'-'}</small></td>
-      <td style="font-size:11px;font-family:var(--font-mono)">${f.language}</td>
-      <td style="font-family:var(--font-mono)">${f.view_count}</td>
-      <td><button class="btn btn-sm btn-d" onclick="deleteFAQ(${f.id})">🗑️</button></td>
+      <td class="p-4">${i+1}</td>
+      <td class="p-4 font-medium text-gray-800">${f.question}</td>
+      <td class="p-4 text-gray-500 text-xs">${(f.answer||'').substring(0,60)}…</td>
+      <td class="p-4"><span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">${f.category||'-'}</span></td>
+      <td class="p-4 uppercase text-xs font-bold">${f.language}</td>
+      <td class="p-4"><button class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" onclick="deleteFAQ(${f.id})">🗑️</button></td>
     </tr>`).join('');
-  }catch(e){tb.innerHTML=`<tr><td colspan="7" class="err">❌ ${e.message}</td></tr>`;}
+  }catch(e){tb.innerHTML=`<tr><td colspan="6" class="p-4 text-red-500">❌ ${e.message}</td></tr>`;}
 }
 
 async function addFAQ(){
-  const q=document.getElementById('faq-q').value.trim();
-  const a=document.getElementById('faq-a').value.trim();
+  const q=document.getElementById('faq-q').value.trim(), a=document.getElementById('faq-a').value.trim();
   if(!q||!a){toast('Question and answer required',true);return;}
   try{
-    const res=await apiFetch('/admin/faqs',{method:'POST',
-      body:JSON.stringify({question:q,answer:a,category:document.getElementById('faq-cat').value.trim(),language:document.getElementById('faq-lang').value})});
+    const res=await apiFetch('/admin/faqs',{method:'POST',body:JSON.stringify({question:q,answer:a,category:document.getElementById('faq-cat').value.trim(),language:document.getElementById('faq-lang').value})});
     if(!res.ok) throw new Error('Failed');
-    document.getElementById('faq-q').value='';
-    document.getElementById('faq-a').value='';
-    document.getElementById('faq-cat').value='';
+    document.getElementById('faq-q').value=''; document.getElementById('faq-a').value=''; document.getElementById('faq-cat').value='';
     toast('FAQ created!'); loadFAQs();
   }catch(e){toast(e.message,true);}
 }
 
 async function deleteFAQ(id){
   if(!confirm('Delete this FAQ?')) return;
-  try{const res=await apiFetch(`/admin/faqs/${id}`,{method:'DELETE'});if(!res.ok)throw new Error('Failed');toast('Deleted');loadFAQs();}
-  catch(e){toast(e.message,true);}
+  try{const res=await apiFetch(`/admin/faqs/${id}`,{method:'DELETE'});if(!res.ok)throw new Error('Failed');toast('FAQ Deleted');loadFAQs();}catch(e){toast(e.message,true);}
 }
 
 async function loadUnresolved(){
   const tb=document.getElementById('queries-tbody');
   try{
-    const res=await apiFetch('/admin/unresolved-queries');
-    const qs=await res.json();
+    const res=await apiFetch('/admin/unresolved-queries'); const qs=await res.json();
     if(!res.ok) throw new Error(qs.detail||'Failed');
-    if(!qs.length){tb.innerHTML='<tr><td colspan="7" class="empty">✅ No unresolved queries!</td></tr>';return;}
+    if(!qs.length){tb.innerHTML='<tr><td colspan="6" class="p-8 text-center text-green-600 font-medium">✅ All caught up!</td></tr>';return;}
     tb.innerHTML=qs.map((q,i)=>`<tr>
-      <td style="color:var(--text-muted);font-family:var(--font-mono)">${i+1}</td>
-      <td style="font-size:13px">${q.username||'—'}</td>
-      <td style="max-width:250px;font-size:12px">${q.query_text}</td>
-      <td style="font-size:11px;color:var(--text-muted)">${(q.intent||'').replace(/_/g,' ')}</td>
-      <td style="font-family:var(--font-mono);font-size:11px">${q.response_time_ms??0}</td>
-      <td style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">${new Date(q.created_at).toLocaleDateString()}</td>
-      <td><button class="btn btn-sm btn-s" onclick="resolveQ(${q.id})">✅ Resolve</button></td>
+      <td class="p-4">${i+1}</td><td class="p-4 font-bold text-gray-800">${q.username||'—'}</td>
+      <td class="p-4 text-gray-600">${q.query_text}</td>
+      <td class="p-4"><span class="bg-indigo-50 text-indigo-600 px-2 py-1 rounded text-xs">${(q.intent||'').replace(/_/g,' ')}</span></td>
+      <td class="p-4 text-gray-400 text-xs">${new Date(q.created_at).toLocaleDateString()}</td>
+      <td class="p-4"><button class="bg-green-100 text-green-700 hover:bg-green-200 px-3 py-1.5 rounded-lg text-xs font-bold transition" onclick="resolveQ(${q.id})">Resolve</button></td>
     </tr>`).join('');
-  }catch(e){tb.innerHTML=`<tr><td colspan="7" class="err">❌ ${e.message}</td></tr>`;}
+  }catch(e){tb.innerHTML=`<tr><td colspan="6" class="p-4 text-red-500">❌ ${e.message}</td></tr>`;}
 }
 
 async function resolveQ(id){
-  try{const res=await apiFetch(`/admin/unresolved-queries/${id}/resolve`,{method:'PUT'});if(!res.ok)throw new Error('Failed');toast('Resolved');loadUnresolved();loadOverview();}
-  catch(e){toast(e.message,true);}
+  try{const res=await apiFetch(`/admin/unresolved-queries/${id}/resolve`,{method:'PUT'});if(!res.ok)throw new Error('Failed');toast('Resolved');loadUnresolved();loadOverview();}catch(e){toast(e.message,true);}
 }
 
-document.getElementById('login-screen').style.display='flex';
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none')doLogin();});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!document.getElementById('login-screen').classList.contains('hidden'))doLogin();});
 </script>
 </body>
 </html>
