@@ -4,249 +4,393 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>LaborLens – Philippine Labor Law Advisor</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet"/>
   <style>
-    body { font-family: 'Inter', sans-serif; }
-    /* Custom scrollbar for chat */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-    .typing-dots span { animation: bounce 1.4s infinite ease-in-out both; }
-    .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
-    .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
-    @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      /* Legal / DOLE Color Palette */
+      --primary: #0A3470;       /* DOLE Deep Blue */
+      --primary-dark: #06224A;
+      --accent: #D4AF37;        /* Legal Gold */
+      --accent-hover: #FCD116;  /* DOLE Yellow */
+      --bg: #f8fafc; 
+      --sidebar-bg: #061836;    /* Darker Blue for Sidebar */
+      --sidebar-text: #e2e8f0;
+      --card-bg: #ffffff; 
+      --text: #1e293b; 
+      --text-muted: #64748b;
+      --border: #e2e8f0; 
+      --green: #16a34a;
+      --radius: 12px; 
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      --font-body: 'Inter', system-ui, sans-serif;
+      --font-heading: 'Playfair Display', serif;
+    }
+    body { font-family: var(--font-body); background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; }
+
+    /* SHARED BACKGROUND (Landing & Auth) */
+    .bg-legal {
+      background-color: var(--primary);
+      background-image: linear-gradient(rgba(10, 52, 112, 0.85), rgba(10, 52, 112, 0.92)), url('https://pia.gov.ph/wp-content/uploads/2025/12/dole.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    /* LANDING PAGE */
+    #landing-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 24px; }
+    .landing-content { max-width: 800px; animation: fadeIn 0.8s ease-out; }
+    .landing-icon { font-size: 72px; margin-bottom: 24px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); }
+    .landing-content h1 { font-family: var(--font-heading); font-size: 48px; color: var(--accent); margin-bottom: 20px; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    .landing-content p { font-size: 18px; color: #f1f5f9; margin-bottom: 40px; line-height: 1.6; }
+    .btn-gold { padding: 16px 36px; background: var(--accent); color: var(--primary-dark); font-size: 18px; font-weight: 700; border: none; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4); font-family: var(--font-body); }
+    .btn-gold:hover { background: var(--accent-hover); transform: translateY(-2px); }
+    
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* AUTH */
+    .auth-screen { display: none; align-items: center; justify-content: center; min-height: 100vh; }
+    .auth-card { background: var(--card-bg); border-radius: 16px; padding: 48px 40px; width: 100%; max-width: 440px; box-shadow: 0 24px 60px rgba(0,0,0,0.3); border-top: 6px solid var(--primary); animation: fadeIn 0.4s ease-out; }
+    .logo { text-align: center; margin-bottom: 32px; }
+    .logo-icon { font-size: 48px; }
+    .logo h1 { font-family: var(--font-heading); font-size: 32px; font-weight: 700; color: var(--primary); margin: 12px 0 6px; }
+    .logo p { color: var(--text-muted); font-size: 14px; }
+    #auth-tabs { display: flex; gap: 8px; margin-bottom: 24px; }
+    .tab-btn { flex: 1; padding: 12px; border: 1px solid var(--border); border-bottom: 3px solid transparent; background: none; cursor: pointer; font-weight: 600; color: var(--text-muted); transition: all .2s; font-family: var(--font-body); border-radius: 8px 8px 0 0; }
+    .tab-btn.active { border-color: var(--border); border-bottom-color: var(--primary); color: var(--primary); background: #f8fafc; }
+    #login-form input, #login-form select, #register-form input, #register-form select { display: block; width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 15px; font-family: var(--font-body); margin-bottom: 16px; background: #f8fafc; transition: all .2s; }
+    #login-form input:focus, #register-form input:focus, #login-form select:focus, #register-form select:focus { outline: none; border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(10, 52, 112, 0.1); }
+    #login-form button, #register-form button { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background .2s; font-family: var(--font-body); margin-top: 8px; }
+    #login-form button:hover, #register-form button:hover { background: var(--primary-dark); }
+    .error-msg { color: #dc2626; font-size: 13px; margin-top: 12px; text-align: center; min-height: 20px; font-weight: 500; }
+
+    /* LAYOUT */
+    #app { display: none; height: 100vh; }
+
+    /* SIDEBAR */
+    #sidebar { width: 300px; background: var(--sidebar-bg); display: flex; flex-direction: column; padding: 20px; overflow-y: auto; flex-shrink: 0; box-shadow: inset -1px 0 0 rgba(255,255,255,0.1); }
+    .sidebar-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .brand { color: var(--accent); font-family: var(--font-heading); font-weight: 700; font-size: 22px; }
+    .new-chat-btn { width: 100%; padding: 14px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px; font-family: var(--font-body); transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .new-chat-btn:hover { background: var(--accent); color: var(--primary-dark); border-color: var(--accent); }
+    #session-list { flex: 1; overflow-y: auto; padding-right: 4px; }
+    .session-item { padding: 12px 14px; border-radius: 8px; cursor: pointer; color: var(--sidebar-text); font-size: 13.5px; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: background .15s; border-left: 3px solid transparent; }
+    .session-item:hover { background: rgba(255,255,255,.05); }
+    .session-item.active { background: rgba(255,255,255,.1); border-left-color: var(--accent); color: white; font-weight: 500; }
+    .sidebar-footer { border-top: 1px solid rgba(255,255,255,.08); padding-top: 20px; margin-top: 10px; }
+    .ngrok-status { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; min-height: 20px; }
+    .ngrok-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); flex-shrink: 0; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .ngrok-badge { font-size: 11px; color: #86efac; font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; background: rgba(22, 163, 74, 0.1); padding: 2px 6px; border-radius: 4px; }
+    .user-info { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; }
+    #user-display { color: white; font-size: 14px; font-weight: 600; flex: 1; }
+    .logout-btn { padding: 6px 12px; background: transparent; color: #fca5a5; border: 1px solid rgba(239,68,68,.3); border-radius: 6px; font-size: 12px; cursor: pointer; font-family: var(--font-body); transition: all 0.2s; }
+    .logout-btn:hover { background: rgba(239,68,68,.1); color: #fecaca; }
+    #lang-selector { width: 100%; padding: 10px; background: rgba(0,0,0,.2); border: 1px solid rgba(255,255,255,.1); border-radius: 8px; color: white; font-size: 13px; font-family: var(--font-body); outline: none; }
+    #lang-selector option { background: var(--sidebar-bg); color: white; }
+
+    /* CHAT */
+    #chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: url('data:image/svg+xml;utf8,<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="2" cy="2" r="1" fill="%23cbd5e1" opacity="0.3"/></svg>'); }
+    #chat-header { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); padding: 20px 32px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 16px; box-shadow: 0 1px 10px rgba(0,0,0,.03); z-index: 10; }
+    #chat-title { font-family: var(--font-heading); font-size: 20px; font-weight: 700; color: var(--primary); }
+    .intent-badge { padding: 4px 12px; border-radius: 20px; background: #fef3c7; color: #b45309; font-size: 12px; font-weight: 600; border: 1px solid #fde68a; }
+    #messages-container { flex: 1; overflow-y: auto; padding: 32px; display: flex; flex-direction: column; gap: 24px; }
+
+    .welcome { text-align: center; margin: auto; max-width: 600px; padding: 40px; background: white; border-radius: 16px; box-shadow: var(--shadow); border-top: 4px solid var(--primary); }
+    .welcome-icon { font-size: 64px; }
+    .welcome h2 { font-family: var(--font-heading); font-size: 28px; font-weight: 700; margin: 16px 0 12px; color: var(--primary); }
+    .welcome p { color: var(--text-muted); margin-bottom: 32px; font-size: 16px; line-height: 1.5; }
+    .quick-topics { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .quick-topics button { padding: 10px 18px; background: #f8fafc; border: 1px solid var(--border); border-radius: 24px; font-size: 13.5px; cursor: pointer; color: var(--primary); font-weight: 500; font-family: var(--font-body); transition: all .2s; }
+    .quick-topics button:hover { border-color: var(--accent); background: #fffbeb; color: #b45309; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2); }
+
+    .message-row { display: flex; gap: 16px; max-width: 850px; }
+    .message-row.user { margin-left: auto; flex-direction: row-reverse; }
+    .message-row.bot { margin-right: auto; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .bot .avatar { background: var(--primary); color: var(--accent); border: 2px solid #fff; }
+    .user .avatar { background: #f1f5f9; color: var(--primary); font-size: 16px; font-weight: 600; border: 2px solid #e2e8f0; }
+    .bubble { padding: 18px 24px; border-radius: var(--radius); max-width: 680px; font-size: 15px; line-height: 1.6; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    .bot .bubble { background: var(--card-bg); border-bottom-left-radius: 4px; border: 1px solid var(--border); }
+    .user .bubble { background: var(--primary); color: white; border-bottom-right-radius: 4px; }
+    .sources { margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.08); font-size: 12.5px; color: var(--text-muted); }
+    .source-tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 6px; margin: 0 6px 6px 0; font-size: 11.5px; color: var(--primary); font-weight: 500; }
+    .source-tag::before { content: '📄'; font-size: 10px; }
+    .follow-ups { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .follow-up-btn { padding: 8px 14px; background: #fff; border: 1px solid var(--border); border-radius: 20px; font-size: 12.5px; cursor: pointer; color: var(--text-muted); font-family: var(--font-body); transition: all 0.2s; }
+    .follow-up-btn:hover { background: #f8fafc; color: var(--primary); border-color: var(--primary); }
+
+    #typing-indicator { display: flex; align-items: center; gap: 12px; padding: 8px 32px; color: var(--text-muted); font-size: 14px; font-style: italic; }
+    .typing-dots { display: flex; gap: 4px; }
+    .typing-dots span { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out; }
+    .typing-dots span:nth-child(2) { animation-delay: .2s; }
+    .typing-dots span:nth-child(3) { animation-delay: .4s; }
+    @keyframes bounce { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1);opacity:1} }
+
+    #input-area { display: flex; gap: 12px; padding: 20px 32px; background: var(--card-bg); border-top: 1px solid var(--border); align-items: flex-end; box-shadow: 0 -4px 20px rgba(0,0,0,0.02); z-index: 10; }
+    #message-input { flex: 1; padding: 14px 20px; border: 1px solid var(--border); border-radius: 12px; font-size: 15px; resize: none; font-family: var(--font-body); transition: all .2s; max-height: 150px; background: #f8fafc; line-height: 1.5; }
+    #message-input:focus { outline: none; border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(10, 52, 112, 0.08); }
+    #send-btn { padding: 14px 18px; background: var(--primary); color: white; border: none; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 8px rgba(10, 52, 112, 0.2); }
+    #send-btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    #send-btn:disabled { background: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
+    .disclaimer { text-align: center; font-size: 12px; color: var(--text-muted); padding: 10px 32px 14px; background: var(--card-bg); border-top: 1px dashed var(--border); }
+    
+    .bubble strong { font-weight: 600; color: inherit; }
+    .bot .bubble strong { color: var(--text); }
+    .bubble h3 { margin: 12px 0 6px; font-weight: 700; font-family: var(--font-heading); color: var(--primary); font-size: 17px; }
+    .bubble h2 { margin: 16px 0 8px; font-weight: 700; font-family: var(--font-heading); color: var(--primary); font-size: 19px; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+    .user .bubble h2, .user .bubble h3 { color: white; border-color: rgba(255,255,255,0.2); }
+    .bubble ul, .bubble ol { padding-left: 24px; margin: 10px 0; }
+    .bubble li { margin-bottom: 4px; }
+    .bubble code { background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px; font-size: 13.5px; font-family: monospace; }
+    .user .bubble code { background: rgba(255,255,255,0.2); }
+
+    @media (max-width: 768px) { 
+      #sidebar { position: fixed; transform: translateX(-100%); z-index: 50; height: 100%; transition: transform 0.3s ease; }
+      #sidebar.open { transform: translateX(0); }
+      .bubble { max-width: 85vw; } 
+      #chat-header { padding: 16px; }
+      #messages-container { padding: 16px; }
+      #input-area { padding: 12px 16px; }
+    }
   </style>
 </head>
-<body class="bg-gray-50 text-gray-800 h-screen overflow-hidden flex flex-col">
+<body>
 
-  <div id="landing-page" class="relative h-screen w-full flex items-center justify-center bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2000&auto=format&fit=crop');">
-    <div class="absolute inset-0 bg-blue-900/80 backdrop-blur-sm"></div>
-    <div class="relative z-10 text-center px-6 max-w-3xl mx-auto">
-      <span class="text-6xl block mb-4">⚖️</span>
-      <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">Welcome to LaborLens</h1>
-      <p class="text-lg md:text-xl text-blue-100 mb-10">Your AI-powered guide to Philippine Labor Law. Empowering students, employees, and employers with quick, accurate legal insights.</p>
-      <button onclick="showAuthScreen()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition transform hover:-translate-y-1 text-lg">
-        Get Started
+  <!-- LANDING PAGE -->
+  <div id="landing-screen" class="bg-legal">
+    <div class="landing-content">
+      <div class="landing-icon">⚖️</div>
+      <h1>LaborLens</h1>
+      <p>Your intelligent, AI-powered companion for navigating Philippine Labor Law. Empowering both employees and employers with accurate, DOLE-aligned legal insights instantly.</p>
+      <button class="btn-gold" onclick="goToAuth()">Access LaborLens</button>
+    </div>
+  </div>
+
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen" class="auth-screen bg-legal">
+    <div class="auth-card">
+      <div class="logo">
+        <span class="logo-icon">⚖️</span>
+        <h1>LaborLens</h1>
+        <p>Log in to access your personalized legal dashboard.</p>
+      </div>
+      <div id="auth-tabs">
+        <button class="tab-btn active" onclick="showAuthTab('login')">Login</button>
+        <button class="tab-btn" onclick="showAuthTab('register')">Register</button>
+      </div>
+      <div id="login-form">
+        <input type="email" id="login-email" placeholder="Email Address"/>
+        <input type="password" id="login-password" placeholder="Password"/>
+        <select id="login-lang">
+          <option value="en">🇬🇧 English</option>
+          <option value="fil">🇵🇭 Filipino</option>
+          <option value="hil">Hiligaynon</option>
+        </select>
+        <button onclick="doLogin()">Secure Login</button>
+        <p id="login-error" class="error-msg"></p>
+      </div>
+      <div id="register-form" style="display:none;">
+        <input type="text" id="reg-username" placeholder="Full Name or Username"/>
+        <input type="email" id="reg-email" placeholder="Email Address"/>
+        <input type="password" id="reg-password" placeholder="Password"/>
+        <select id="reg-lang">
+          <option value="en">🇬🇧 English</option>
+          <option value="fil">🇵🇭 Filipino</option>
+          <option value="hil">Hiligaynon</option>
+        </select>
+        <button onclick="doRegister()">Create Account</button>
+        <p id="reg-error" class="error-msg"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="app">
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <span style="font-size: 28px;">⚖️</span>
+        <span class="brand">LaborLens</span>
+      </div>
+      <button class="new-chat-btn" onclick="startNewChat()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        New Consultation
       </button>
-    </div>
-  </div>
-
-  <div id="login-screen" class="hidden flex-1 items-center justify-center min-h-screen bg-gradient-to-br from-blue-900 via-blue-700 to-blue-500 p-4">
-    <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
-      <div class="text-center mb-8">
-        <span class="text-5xl block mb-2">⚖️</span>
-        <h2 class="text-2xl font-bold text-blue-700">LaborLens</h2>
-        <p class="text-gray-500 text-sm">Access your legal advisor</p>
-      </div>
-      
-      <div id="auth-tabs" class="flex gap-2 mb-6">
-        <button class="tab-btn flex-1 py-2 rounded-lg font-semibold border-2 border-blue-600 bg-blue-50 text-blue-700 transition" onclick="showTab('login')">Login</button>
-        <button class="tab-btn flex-1 py-2 rounded-lg font-semibold border-2 border-transparent text-gray-500 hover:bg-gray-50 transition" onclick="showTab('register')">Register</button>
-      </div>
-
-      <div id="login-form" class="space-y-4">
-        <input type="email" id="login-email" placeholder="Email" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"/>
-        <input type="password" id="login-password" placeholder="Password" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"/>
-        <select id="login-lang" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none bg-white">
-          <option value="en">🇬🇧 English</option>
-          <option value="fil">🇵🇭 Filipino</option>
-          <option value="hil">Hiligaynon</option>
-        </select>
-        <button onclick="doLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md transition">Login</button>
-        <p id="login-error" class="text-red-500 text-sm text-center min-h-[20px]"></p>
-      </div>
-
-      <div id="register-form" class="space-y-4 hidden">
-        <input type="text" id="reg-username" placeholder="Username" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition"/>
-        <input type="email" id="reg-email" placeholder="Email" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition"/>
-        <input type="password" id="reg-password" placeholder="Password" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition"/>
-        <select id="reg-lang" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none bg-white">
-          <option value="en">🇬🇧 English</option>
-          <option value="fil">🇵🇭 Filipino</option>
-          <option value="hil">Hiligaynon</option>
-        </select>
-        <button onclick="doRegister()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md transition">Register</button>
-        <p id="reg-error" class="text-red-500 text-sm text-center min-h-[20px]"></p>
-      </div>
-    </div>
-  </div>
-
-  <div id="app" class="hidden flex-1 flex h-full overflow-hidden bg-white">
-    <aside id="sidebar" class="w-72 bg-gray-900 text-gray-300 flex flex-col hidden md:flex transition-all duration-300 z-20 absolute md:relative h-full">
-      <div class="p-5 border-b border-gray-800 flex justify-between items-center">
-        <div class="flex items-center gap-3">
-          <span class="text-2xl">⚖️</span>
-          <span class="font-bold text-white text-lg">LaborLens</span>
+      <div id="session-list"></div>
+      <div class="sidebar-footer">
+        <div class="ngrok-status">
+          <span class="ngrok-dot"></span>
+          <span id="backend-url-badge" class="ngrok-badge">Backend Connected</span>
         </div>
-        <button class="md:hidden text-gray-400 hover:text-white" onclick="toggleSidebar()">✕</button>
-      </div>
-      <div class="p-4">
-        <button class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 rounded-lg transition" onclick="startNewChat()">+ New Chat</button>
-      </div>
-      <div id="session-list" class="flex-1 overflow-y-auto px-3 space-y-1"></div>
-      <div class="p-4 border-t border-gray-800 bg-gray-900/50">
-        <div class="flex items-center gap-2 mb-3">
-          <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>
-          <span id="backend-url-badge" class="text-xs text-green-400 font-mono truncate"></span>
+        <div class="user-info">
+          <span id="user-display">User</span>
+          <button onclick="doLogout()" class="logout-btn">Log Out</button>
         </div>
-        <div class="flex items-center justify-between mb-3">
-          <span id="user-display" class="font-medium text-white truncate pr-2">User</span>
-          <button onclick="doLogout()" class="text-xs bg-red-500/10 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-md hover:bg-red-500/20 transition">Logout</button>
-        </div>
-        <select id="lang-selector" onchange="setLanguage(this.value)" class="w-full bg-gray-800 border border-gray-700 text-sm rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
-          <option value="en">🇬🇧 English</option>
-          <option value="fil">🇵🇭 Filipino</option>
-          <option value="hil">Hiligaynon</option>
+        <select id="lang-selector" onchange="setLanguage(this.value)">
+          <option value="en">🌐 English Interface</option>
+          <option value="fil">🌐 Filipino Interface</option>
+          <option value="hil">🌐 Hiligaynon Interface</option>
         </select>
       </div>
     </aside>
 
-    <main id="chat-area" class="flex-1 flex flex-col min-w-0 relative">
-      <header id="chat-header" class="bg-white border-b border-gray-200 px-6 py-4 flex items-center gap-4 shadow-sm z-10">
-        <button class="md:hidden text-gray-500 hover:text-blue-600 text-2xl" onclick="toggleSidebar()">☰</button>
-        <h2 id="chat-title" class="text-lg font-bold text-gray-800 flex-1 truncate">LaborLens Assistant</h2>
-        <span id="chat-intent-badge" class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold"></span>
-      </header>
-
-      <div id="messages-container" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 bg-gray-50">
-        <div id="welcome-message" class="max-w-2xl mx-auto text-center mt-10">
-          <span class="text-6xl block mb-4">⚖️</span>
-          <h2 class="text-2xl font-bold text-gray-800 mb-2">How can I help you today?</h2>
-          <p class="text-gray-500 mb-8">Ask about your rights, wages, benefits, and termination.</p>
-          <div class="flex flex-wrap justify-center gap-2">
-            <button onclick="sendQuick('What is the minimum wage in the Philippines?')" class="bg-white border border-gray-200 text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-full text-sm font-medium shadow-sm transition">Minimum Wage</button>
-            <button onclick="sendQuick('How is 13th month pay computed?')" class="bg-white border border-gray-200 text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-full text-sm font-medium shadow-sm transition">13th Month Pay</button>
-            <button onclick="sendQuick('What are my leave benefits?')" class="bg-white border border-gray-200 text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-full text-sm font-medium shadow-sm transition">Leave Benefits</button>
-            <button onclick="sendQuick('What are the grounds for termination?')" class="bg-white border border-gray-200 text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-full text-sm font-medium shadow-sm transition">Termination</button>
+    <main id="chat-area">
+      <div id="chat-header">
+        <h2 id="chat-title">LaborLens Assistant</h2>
+        <span id="chat-intent-badge" class="intent-badge" style="display:none;"></span>
+      </div>
+      <div id="messages-container">
+        <div id="welcome-message" class="welcome">
+          <div class="welcome-icon">⚖️</div>
+          <h2>Welcome to LaborLens</h2>
+          <p>I am your AI legal assistant trained on Philippine Labor Laws, DOLE issuances, and jurisprudence. How can I assist you today?</p>
+          <div class="quick-topics">
+            <button onclick="sendQuick('What is the minimum wage in the Philippines?')">Minimum Wage</button>
+            <button onclick="sendQuick('How is 13th month pay computed?')">13th Month Pay</button>
+            <button onclick="sendQuick('What are my leave benefits?')">Leave Benefits</button>
+            <button onclick="sendQuick('What are the grounds for termination?')">Termination Rights</button>
+            <button onclick="sendQuick('What is separation pay?')">Separation Pay</button>
+            <button onclick="sendQuick('Am I entitled to overtime pay?')">Overtime Pay</button>
           </div>
         </div>
       </div>
-
-      <div id="typing-indicator" class="hidden px-6 py-2 text-gray-500 text-sm flex items-center gap-2">
-        <div class="typing-dots flex gap-1">
-          <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
-          <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
-          <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
-        </div>
-        LaborLens is typing...
+      <div id="typing-indicator" style="display:none;">
+        <div class="typing-dots"><span></span><span></span><span></span></div>
+        <span>Reviewing legal literature...</span>
       </div>
-
-      <div id="input-area" class="bg-white border-t border-gray-200 p-4">
-        <div class="max-w-4xl mx-auto flex gap-3 items-end relative">
-          <textarea id="message-input" placeholder="Message LaborLens..." rows="1" onkeydown="handleKeyDown(event)" class="flex-1 bg-gray-100 border border-transparent focus:bg-white focus:border-blue-500 rounded-2xl px-5 py-3.5 text-gray-800 resize-none outline-none shadow-sm transition min-h-[52px] max-h-[150px] overflow-y-auto"></textarea>
-          <button id="send-btn" onclick="sendMessage()" class="bg-blue-600 hover:bg-blue-700 text-white h-[52px] w-[52px] rounded-2xl flex items-center justify-center shadow-md transition disabled:bg-gray-400">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-          </button>
-        </div>
-        <p class="text-center text-xs text-gray-400 mt-3">⚠️ For informational purposes only. Consult DOLE for official advice.</p>
+      <div id="input-area">
+        <textarea id="message-input"
+          placeholder="Ask about wages, benefits, termination, DOLE procedures..."
+          rows="2" onkeydown="handleKeyDown(event)"></textarea>
+        <button id="send-btn" onclick="sendMessage()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
       </div>
+      <p class="disclaimer">⚠️ Disclaimer: This AI tool is for informational purposes only and does not constitute formal legal advice. For official guidance, consult a licensed attorney or the Department of Labor and Employment (DOLE).</p>
     </main>
   </div>
 
   <script>
+    // ── CONFIG — update this URL when your ngrok URL changes ──────────────────
     const API = 'https://plaster-multiply-tint.ngrok-free.dev/api';
-    let token = localStorage.getItem('ll_token');
-    let currentUser = JSON.parse(localStorage.getItem('ll_user') || 'null');
+    // ─────────────────────────────────────────────────────────────────────────
+
+    let token            = localStorage.getItem('ll_token');
+    let currentUser      = JSON.parse(localStorage.getItem('ll_user') || 'null');
     let currentSessionId = null;
     let selectedLanguage = 'en';
 
-    // UI Logic specific to new layout
-    function showAuthScreen() {
-      document.getElementById('landing-page').classList.add('hidden');
-      document.getElementById('login-screen').classList.remove('hidden');
-      document.getElementById('login-screen').classList.add('flex');
+    // ── NAVIGATION & AUTH ─────────────────────────────────────────────────────
+    function goToAuth() {
+      document.getElementById('landing-screen').style.display = 'none';
+      document.getElementById('login-screen').style.display = 'flex';
     }
 
-    function toggleSidebar() {
-      const sb = document.getElementById('sidebar');
-      sb.classList.toggle('hidden');
-      sb.classList.toggle('flex');
+    function showLanding() {
+      document.getElementById('landing-screen').style.display = 'flex';
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'none';
     }
 
-    function showTab(tab) {
-      document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
-      document.getElementById('register-form').classList.toggle('hidden', tab !== 'register');
-      const btns = document.querySelectorAll('.tab-btn');
-      btns[0].className = tab === 'login' ? 'tab-btn flex-1 py-2 rounded-lg font-semibold border-2 border-blue-600 bg-blue-50 text-blue-700 transition' : 'tab-btn flex-1 py-2 rounded-lg font-semibold border-2 border-transparent text-gray-500 hover:bg-gray-50 transition';
-      btns[1].className = tab === 'register' ? 'tab-btn flex-1 py-2 rounded-lg font-semibold border-2 border-blue-600 bg-blue-50 text-blue-700 transition' : 'tab-btn flex-1 py-2 rounded-lg font-semibold border-2 border-transparent text-gray-500 hover:bg-gray-50 transition';
+    function showAuthTab(tab) {
+      document.getElementById('login-form').style.display    = tab === 'login'    ? 'block' : 'none';
+      document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+      document.querySelectorAll('.tab-btn').forEach((b, i) =>
+        b.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='register')));
     }
 
-    // Existing Logic Intact
     async function doLogin() {
-      const email = document.getElementById('login-email').value.trim();
+      const email    = document.getElementById('login-email').value.trim();
       const password = document.getElementById('login-password').value;
       selectedLanguage = document.getElementById('login-lang').value;
       document.getElementById('login-error').textContent = '';
       try {
-        const res = await fetch(`${API}/auth/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email, password}) });
+        const res  = await fetch(`${API}/auth/login`, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({email, password})
+        });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Login failed');
+        if (!res.ok) throw new Error(data.detail || 'Login failed. Please check your credentials.');
         saveAuth(data);
       } catch(e) { document.getElementById('login-error').textContent = e.message; }
     }
 
     async function doRegister() {
       const username = document.getElementById('reg-username').value.trim();
-      const email = document.getElementById('reg-email').value.trim();
+      const email    = document.getElementById('reg-email').value.trim();
       const password = document.getElementById('reg-password').value;
       selectedLanguage = document.getElementById('reg-lang').value;
       document.getElementById('reg-error').textContent = '';
       try {
-        const res = await fetch(`${API}/auth/register`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username, email, password, language_preference: selectedLanguage}) });
+        const res  = await fetch(`${API}/auth/register`, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({username, email, password, language_preference: selectedLanguage})
+        });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Registration failed');
+        if (!res.ok) throw new Error(data.detail || 'Registration failed.');
         saveAuth(data);
       } catch(e) { document.getElementById('reg-error').textContent = e.message; }
     }
 
     function saveAuth(data) {
-      token = data.access_token; currentUser = {id: data.user_id, username: data.username, role: data.role};
-      localStorage.setItem('ll_token', token); localStorage.setItem('ll_user', JSON.stringify(currentUser));
+      token       = data.access_token;
+      currentUser = {id: data.user_id, username: data.username, role: data.role};
+      localStorage.setItem('ll_token', token);
+      localStorage.setItem('ll_user', JSON.stringify(currentUser));
       initApp();
     }
 
     function doLogout() {
       localStorage.removeItem('ll_token'); localStorage.removeItem('ll_user');
       token = null; currentUser = null; currentSessionId = null;
-      document.getElementById('app').classList.add('hidden');
-      document.getElementById('app').classList.remove('flex');
-      document.getElementById('landing-page').classList.remove('hidden');
+      showLanding();
     }
 
+    // ── APP ───────────────────────────────────────────────────────────────────
     function initApp() {
-      document.getElementById('login-screen').classList.add('hidden');
-      document.getElementById('login-screen').classList.remove('flex');
-      document.getElementById('landing-page').classList.add('hidden');
-      document.getElementById('app').classList.remove('hidden');
-      document.getElementById('app').classList.add('flex');
-      document.getElementById('user-display').textContent = currentUser.username;
+      document.getElementById('landing-screen').style.display = 'none';
+      document.getElementById('login-screen').style.display   = 'none';
+      document.getElementById('app').style.display            = 'flex';
+      document.getElementById('user-display').textContent     = currentUser.username;
+      
       const badge = document.getElementById('backend-url-badge');
-      try { badge.textContent = new URL(API).hostname; badge.style.display = 'inline'; } catch(_){}
+      try { 
+        badge.textContent = new URL(API).hostname; 
+        badge.style.display = 'inline-block'; 
+      } catch(_) {
+        badge.style.display = 'none';
+      }
+      
       loadSessions();
     }
 
     function setLanguage(lang) { selectedLanguage = lang; }
 
+    // ── SESSIONS ──────────────────────────────────────────────────────────────
     async function loadSessions() {
       try {
-        const sessions = await (await authFetch('/chat/sessions')).json();
-        const list = document.getElementById('session-list'); list.innerHTML = '';
+        const res = await authFetch('/chat/sessions');
+        if (!res.ok) return;
+        const sessions = await res.json();
+        const list = document.getElementById('session-list');
+        list.innerHTML = '';
         sessions.forEach(s => {
           const d = document.createElement('div');
-          d.className = `p-3 rounded-xl cursor-pointer text-sm mb-1 truncate transition ${s.id === currentSessionId ? 'bg-blue-600 text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`;
-          d.textContent = s.title || 'Chat';
-          d.onclick = () => loadSession(s.id, s.title);
+          d.className   = 'session-item' + (s.id === currentSessionId ? ' active' : '');
+          d.textContent = s.title || 'Legal Consultation';
+          d.onclick     = () => loadSession(s.id, s.title);
           list.appendChild(d);
         });
-      } catch(e) { console.error(e); }
+      } catch(e) { console.error("Failed to load sessions", e); }
     }
 
     async function loadSession(id, title) {
       currentSessionId = id;
-      document.getElementById('chat-title').textContent = title || 'Chat';
+      document.getElementById('chat-title').textContent       = title || 'Legal Consultation';
+      document.getElementById('chat-intent-badge').style.display = 'none';
       document.getElementById('messages-container').innerHTML = '';
-      if(window.innerWidth < 768) toggleSidebar(); // auto-close sidebar on mobile
       try {
         const msgs = await (await authFetch(`/chat/sessions/${id}/messages`)).json();
         msgs.forEach(m => {
@@ -260,55 +404,74 @@
     function startNewChat() {
       currentSessionId = null;
       document.getElementById('messages-container').innerHTML = welcomeHTML();
-      document.getElementById('chat-title').textContent = 'LaborLens Assistant';
-      document.getElementById('chat-intent-badge').textContent = '';
-      if(window.innerWidth < 768) toggleSidebar();
+      document.getElementById('chat-title').textContent       = 'LaborLens Assistant';
+      document.getElementById('chat-intent-badge').style.display = 'none';
       loadSessions();
     }
 
     function welcomeHTML() {
-      return `<div id="welcome-message" class="max-w-2xl mx-auto text-center mt-10">
-          <span class="text-6xl block mb-4">⚖️</span>
-          <h2 class="text-2xl font-bold text-gray-800 mb-2">How can I help you today?</h2>
-          <p class="text-gray-500 mb-8">Ask about your rights, wages, benefits, and termination.</p>
-          <div class="flex flex-wrap justify-center gap-2">
-            <button onclick="sendQuick('What is the minimum wage in the Philippines?')" class="bg-white border border-gray-200 text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-full text-sm font-medium shadow-sm transition">Minimum Wage</button>
-            <button onclick="sendQuick('How is 13th month pay computed?')" class="bg-white border border-gray-200 text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-full text-sm font-medium shadow-sm transition">13th Month Pay</button>
-            <button onclick="sendQuick('What are my leave benefits?')" class="bg-white border border-gray-200 text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-full text-sm font-medium shadow-sm transition">Leave Benefits</button>
-            <button onclick="sendQuick('What are the grounds for termination?')" class="bg-white border border-gray-200 text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-full text-sm font-medium shadow-sm transition">Termination</button>
-          </div>
-        </div>`;
+      return `<div id="welcome-message" class="welcome">
+        <div class="welcome-icon">⚖️</div>
+        <h2>Welcome to LaborLens</h2>
+        <p>I am your AI legal assistant trained on Philippine Labor Laws, DOLE issuances, and jurisprudence. How can I assist you today?</p>
+        <div class="quick-topics">
+          <button onclick="sendQuick('What is the minimum wage in the Philippines?')">Minimum Wage</button>
+          <button onclick="sendQuick('How is 13th month pay computed?')">13th Month Pay</button>
+          <button onclick="sendQuick('What are my leave benefits?')">Leave Benefits</button>
+          <button onclick="sendQuick('What are the grounds for termination?')">Termination Rights</button>
+          <button onclick="sendQuick('What is separation pay?')">Separation Pay</button>
+          <button onclick="sendQuick('Am I entitled to overtime pay?')">Overtime Pay</button>
+        </div>
+      </div>`;
     }
 
-    function sendQuick(text) { document.getElementById('message-input').value = text; sendMessage(); }
+    // ── MESSAGING ─────────────────────────────────────────────────────────────
+    function sendQuick(text) {
+      document.getElementById('message-input').value = text;
+      sendMessage();
+    }
+
     function handleKeyDown(e) {
       if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-      // Auto-resize textarea
-      e.target.style.height = 'auto';
-      e.target.style.height = (e.target.scrollHeight) + 'px';
     }
 
     async function sendMessage() {
       const input = document.getElementById('message-input');
-      const text = input.value.trim(); if (!text) return;
-      input.value = ''; input.style.height = 'auto';
-      const w = document.getElementById('welcome-message'); if (w) w.style.display = 'none';
+      const text  = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      
+      const w = document.getElementById('welcome-message');
+      if (w) w.style.display = 'none';
+      
       appendMessage('user', text, [], []);
-      const typing = document.getElementById('typing-indicator');
-      typing.classList.remove('hidden'); typing.classList.add('flex');
+      document.getElementById('typing-indicator').style.display = 'flex';
       document.getElementById('send-btn').disabled = true;
+      
       try {
-        const res = await authFetch('/chat/message', { method:'POST', body: JSON.stringify({message:text, session_id:currentSessionId, language:selectedLanguage}) });
+        const res  = await authFetch('/chat/message', {
+          method:'POST',
+          body: JSON.stringify({message:text, session_id:currentSessionId, language:selectedLanguage})
+        });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Server error');
+        if (!res.ok) throw new Error(data.detail || 'Server error communicating with backend.');
+        
         currentSessionId = data.session_id;
-        document.getElementById('chat-intent-badge').textContent = data.intent.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+        
+        if (data.intent) {
+          const badge = document.getElementById('chat-intent-badge');
+          badge.textContent = data.intent.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+          badge.style.display = 'inline-block';
+        }
+        
         appendMessage('assistant', data.answer, data.sources, data.follow_up_questions);
         loadSessions();
       } catch(e) {
-        appendMessage('assistant', `❌ **Error:** ${e.message}<br><small>Is FastAPI running? Is ngrok active?</small>`, [], []);
+        appendMessage('assistant',
+          `❌ <strong>Connection Error:</strong> ${e.message}<br><br><small>Please verify that the FastAPI backend is running and the ngrok tunnel is correctly configured.</small>`,
+          [], []);
       } finally {
-        typing.classList.add('hidden'); typing.classList.remove('flex');
+        document.getElementById('typing-indicator').style.display = 'none';
         document.getElementById('send-btn').disabled = false;
         scrollBottom();
       }
@@ -316,63 +479,72 @@
 
     function appendMessage(role, content, sources=[], followUps=[]) {
       const container = document.getElementById('messages-container');
-      const isUser = role === 'user';
+      const row       = document.createElement('div');
+      row.className   = `message-row ${role==='user'?'user':'bot'}`;
       
-      const wrapper = document.createElement('div');
-      wrapper.className = `flex gap-3 max-w-3xl ${isUser ? 'ml-auto flex-row-reverse' : 'mr-auto'}`;
+      const avatar    = document.createElement('div');
+      avatar.className   = 'avatar';
+      avatar.textContent = role==='user' ? (currentUser?.username?.[0]?.toUpperCase()||'U') : '⚖️';
       
-      const avatar = document.createElement('div');
-      avatar.className = `w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-bold shadow-sm ${isUser ? 'bg-blue-600 text-white' : 'bg-white border border-gray-200 text-xl'}`;
-      avatar.innerHTML = isUser ? (currentUser?.username?.[0]?.toUpperCase()||'U') : '⚖️';
-      
-      const bubbleContainer = document.createElement('div');
-      bubbleContainer.className = 'flex flex-col gap-2 max-w-[calc(100%-3rem)]';
-
-      const bubble = document.createElement('div');
-      bubble.className = `px-5 py-3.5 shadow-sm text-[15px] leading-relaxed ${isUser ? 'bg-blue-600 text-white rounded-2xl rounded-tr-sm' : 'bg-white text-gray-800 rounded-2xl rounded-tl-sm border border-gray-100'}`;
+      const bubble    = document.createElement('div');
+      bubble.className = 'bubble';
       bubble.innerHTML = mdToHTML(content);
-
-      if (sources?.length && !isUser) {
+      
+      if (sources?.length) {
         const s = document.createElement('div');
-        s.className = 'mt-3 pt-3 border-t border-gray-200 text-xs text-gray-500 flex flex-wrap gap-1 items-center';
-        s.innerHTML = '<span class="font-semibold mr-1">📚 Sources:</span> ' + sources.filter(x=>x.source).map(x=>`<span class="bg-gray-100 px-2 py-1 rounded text-gray-600">${x.source}${x.page?', p.'+x.page:''}</span>`).join('');
+        s.className = 'sources';
+        s.innerHTML = '<div style="font-weight:600;margin-bottom:6px;">📚 Legal References:</div>' + 
+          sources.filter(x=>x.source).map(x=>`<span class="source-tag">${x.source}${x.page?', Sec/Page '+x.page:''}</span>`).join('');
         bubble.appendChild(s);
       }
       
-      if (followUps?.length && !isUser) {
+      if (followUps?.length) {
         const f = document.createElement('div');
-        f.className = 'flex flex-wrap gap-2 mt-3';
+        f.className = 'follow-ups';
         followUps.forEach(q => {
           const b = document.createElement('button');
-          b.className = 'text-xs bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 px-3 py-1.5 rounded-full transition';
-          b.textContent = q; b.onclick = () => sendQuick(q);
+          b.className = 'follow-up-btn'; b.textContent = q;
+          b.onclick = () => sendQuick(q);
           f.appendChild(b);
         });
-        bubbleContainer.appendChild(bubble);
-        bubbleContainer.appendChild(f);
-      } else {
-        bubbleContainer.appendChild(bubble);
+        bubble.appendChild(f);
       }
-
-      wrapper.appendChild(avatar); wrapper.appendChild(bubbleContainer);
-      container.appendChild(wrapper); scrollBottom();
+      
+      row.appendChild(avatar); 
+      row.appendChild(bubble);
+      container.appendChild(row);
+      scrollBottom();
     }
 
     function mdToHTML(t) {
-      return t.replace(/\*\*(.+?)\*\*/g,'<strong class="font-bold">$1</strong>')
-               .replace(/\*(.+?)\*/g,'<em class="italic">$1</em>')
-               .replace(/^### (.+)$/gm,'<h3 class="font-bold text-lg mt-2 mb-1">$1</h3>')
-               .replace(/^## (.+)$/gm,'<h2 class="font-bold text-xl mt-3 mb-2">$1</h2>')
-               .replace(/^- (.+)$/gm,'<li class="ml-4 list-disc">$1</li>')
-               .replace(/`([^`]+)`/g,'<code class="bg-black/10 px-1.5 py-0.5 rounded text-sm font-mono">$1</code>')
+      if (!t) return '';
+      return t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+               .replace(/\*(.+?)\*/g,'<em>$1</em>')
+               .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+               .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+               .replace(/^- (.+)$/gm,'<li>$1</li>')
+               .replace(/`([^`]+)`/g,'<code>$1</code>')
                .replace(/\n/g,'<br>');
     }
 
-    function scrollBottom() { const c = document.getElementById('messages-container'); c.scrollTop = c.scrollHeight; }
+    function scrollBottom() {
+      const c = document.getElementById('messages-container');
+      c.scrollTop = c.scrollHeight;
+    }
 
-    async function authFetch(path, opts={}) { return fetch(`${API}${path}`, { ...opts, headers: {'Content-Type':'application/json','Authorization':`Bearer ${token}`, ...(opts.headers||{})} }); }
+    async function authFetch(path, opts={}) {
+      return fetch(`${API}${path}`, {
+        ...opts,
+        headers: {'Content-Type':'application/json','Authorization':`Bearer ${token}`, 'ngrok-skip-browser-warning':'true', ...(opts.headers||{})}
+      });
+    }
 
-    if (token && currentUser) { initApp(); }
+    // ── STARTUP ───────────────────────────────────────────────────────────────
+    if (token && currentUser) { 
+      initApp(); 
+    } else { 
+      showLanding(); 
+    }
   </script>
 </body>
 </html>
