@@ -4,541 +4,938 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>LaborLens – Philippine Labor Law Advisor</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --primary: #0A3470;       /* DOLE Deep Blue */
-      --primary-dark: #06224A;
-      --accent: #D4AF37;        /* Legal Gold */
-      --accent-hover: #FCD116;  /* DOLE Yellow */
-      --bg: #f8fafc; 
-      --sidebar-bg: #041228;
-      --sidebar-text: #94a3b8;
-      --card-bg: rgba(255, 255, 255, 0.95); 
-      --text: #1e293b; 
-      --text-muted: #64748b;
-      --border: #e2e8f0; 
-      --green: #10b981;
-      --radius: 16px; 
-      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-      --shadow-md: 0 8px 24px rgba(10, 52, 112, 0.08);
-      --shadow-lg: 0 24px 48px rgba(10, 52, 112, 0.15);
-      --font-body: 'Inter', system-ui, sans-serif;
-      --font-heading: 'Playfair Display', serif;
-    }
-    body { font-family: var(--font-body); background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; -webkit-font-smoothing: antialiased; }
-
-    /* SHARED BACKGROUND UTILITY */
-    .bg-legal {
-      background-color: var(--primary);
-      background-image: linear-gradient(rgba(10, 52, 112, 0.75), rgba(10, 52, 112, 0.95)), url('https://pia.gov.ph/wp-content/uploads/2025/12/dole.jpg');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
+      --navy:    #0B2545;
+      --navy-2:  #163062;
+      --navy-3:  #1A3A72;
+      --gold:    #C9962A;
+      --gold-lt: #E8B84B;
+      --gold-bg: #FBF5E8;
+      --cream:   #F7F4EF;
+      --white:   #FFFFFF;
+      --text:    #1A1A2E;
+      --muted:   #6B7280;
+      --border:  #E5E0D8;
+      --green:   #0D7A55;
+      --red:     #C0392B;
+      --shadow:  0 4px 24px rgba(11,37,69,.10);
+      --shadow-lg: 0 16px 48px rgba(11,37,69,.15);
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans:  'DM Sans', system-ui, sans-serif;
+      --sidebar-w: 300px;
+      --topbar-h: 64px;
     }
 
-    /* GLASSMORPHISM UTILITY */
-    .glass-panel {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 32px 64px rgba(0,0,0,0.3);
+    html, body { height: 100%; overflow: hidden; font-family: var(--sans); color: var(--text); background: var(--cream); -webkit-font-smoothing: antialiased; }
+
+    /* ═══════════════════════════════════════════
+       SCREENS LAYER
+    ═══════════════════════════════════════════ */
+
+    .screen { position: fixed; inset: 0; z-index: 100; display: flex; }
+    .screen.hidden { display: none; }
+
+    /* ─── LANDING ─── */
+    #landing {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--navy);
+      background-image:
+        radial-gradient(ellipse 70% 60% at 50% 0%, rgba(201,150,42,.18) 0%, transparent 70%),
+        repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(255,255,255,.025) 80px),
+        repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(255,255,255,.025) 80px);
+      padding: 24px;
+      text-align: center;
     }
 
-    /* LANDING PAGE */
-    #landing-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 24px; position: relative; }
-    .landing-content { max-width: 800px; padding: 60px 40px; border-radius: 24px; animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-    .landing-icon { font-size: 64px; margin-bottom: 16px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
-    .landing-content h1 { font-family: var(--font-heading); font-size: 56px; color: #ffffff; margin-bottom: 16px; letter-spacing: -0.5px; text-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-    .landing-content h1 span { color: var(--accent); }
-    .landing-content p { font-size: 18px; color: #e2e8f0; margin-bottom: 32px; line-height: 1.6; font-weight: 300; max-width: 600px; margin-inline: auto; }
-    
-    .feature-badges { display: flex; gap: 12px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap; }
-    .f-badge { padding: 6px 16px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; color: white; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; }
+    .land-seal {
+      width: 88px; height: 88px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 40px;
+      margin: 0 auto 28px;
+      box-shadow: 0 0 0 12px rgba(201,150,42,.12), 0 0 0 24px rgba(201,150,42,.06);
+      animation: pulse-seal 3s ease-in-out infinite;
+    }
 
-    .btn-gold { padding: 18px 48px; background: linear-gradient(135deg, var(--accent), #eab308); color: var(--primary-dark); font-size: 18px; font-weight: 700; border: none; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3); font-family: var(--font-body); }
-    .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(212, 175, 55, 0.4); }
-    
-    @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse-seal {
+      0%, 100% { box-shadow: 0 0 0 12px rgba(201,150,42,.12), 0 0 0 24px rgba(201,150,42,.06); }
+      50% { box-shadow: 0 0 0 16px rgba(201,150,42,.16), 0 0 0 32px rgba(201,150,42,.08); }
+    }
 
-    /* AUTH SCREEN */
-    .auth-screen { display: none; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-    .auth-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-radius: 24px; padding: 48px; width: 100%; max-width: 460px; box-shadow: var(--shadow-lg); border-top: 6px solid var(--primary); animation: slideUp 0.4s ease-out; }
-    .logo { text-align: center; margin-bottom: 32px; }
-    .logo-icon { font-size: 48px; margin-bottom: 8px; display: inline-block;}
-    .logo h1 { font-family: var(--font-heading); font-size: 32px; color: var(--primary); font-weight: 800; }
-    
-    #auth-tabs { display: flex; margin-bottom: 32px; background: #f1f5f9; padding: 4px; border-radius: 12px; }
-    .tab-btn { flex: 1; padding: 12px; border: none; background: none; cursor: pointer; font-weight: 600; color: var(--text-muted); transition: all .3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 10px; font-family: var(--font-body); font-size: 14px; }
-    .tab-btn.active { background: white; color: var(--primary); box-shadow: var(--shadow-sm); }
-    
-    .input-group { margin-bottom: 16px; position: relative; }
-    .auth-card input, .auth-card select { display: block; width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 15px; background: #f8fafc; transition: all 0.3s ease; color: var(--text); }
-    .auth-card input:focus, .auth-card select:focus { outline: none; border-color: var(--accent); background: white; box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1); }
-    
-    .auth-card button.main-btn { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all .2s; margin-top: 8px; box-shadow: 0 4px 12px rgba(10, 52, 112, 0.2); }
-    .auth-card button.main-btn:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(10, 52, 112, 0.3); }
+    .land-title {
+      font-family: var(--serif);
+      font-size: clamp(40px, 7vw, 72px);
+      color: var(--white);
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .land-title em { color: var(--gold-lt); font-style: italic; }
 
-    /* GOOGLE LOGIN BUTTON */
-    .google-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px; margin-top: 20px; background: white; border: 2px solid var(--border); border-radius: 12px; color: var(--text); font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.2s; }
-    .google-btn:hover { background: #f8fafc; border-color: #cbd5e1; box-shadow: var(--shadow-sm); }
-    .google-btn img { width: 20px; height: 20px; }
-    
-    .divider { display: flex; align-items: center; text-align: center; color: var(--text-muted); font-size: 12px; margin: 24px 0; font-weight: 500; }
-    .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border); }
-    .divider:not(:empty)::before { margin-right: 1em; }
-    .divider:not(:empty)::after { margin-left: 1em; }
+    .land-sub {
+      font-size: clamp(14px, 2vw, 17px);
+      color: rgba(255,255,255,.65);
+      max-width: 520px;
+      line-height: 1.7;
+      margin: 0 auto 36px;
+      font-weight: 300;
+    }
 
-    .admin-link { display: inline-block; margin-top: 24px; color: var(--text-muted); text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.2s; border-bottom: 1px dashed transparent; }
-    .admin-link:hover { color: var(--primary); border-bottom-color: var(--primary); }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 44px; }
+    .pill {
+      padding: 6px 18px;
+      border: 1px solid rgba(201,150,42,.4);
+      border-radius: 100px;
+      font-size: 12px;
+      color: var(--gold-lt);
+      font-weight: 500;
+      letter-spacing: .5px;
+      background: rgba(201,150,42,.08);
+    }
 
-    /* MAIN APP LAYOUT */
-    #app { display: none; height: 100vh; }
+    .land-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 40px;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-lt) 100%);
+      color: var(--navy);
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 8px 32px rgba(201,150,42,.35);
+      font-family: var(--sans);
+    }
+    .land-cta:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(201,150,42,.45); }
 
-    /* SIDEBAR */
-    #sidebar { width: 320px; background: var(--sidebar-bg); display: flex; flex-direction: column; padding: 24px; flex-shrink: 0; border-right: 1px solid rgba(255,255,255,0.05); }
-    .sidebar-header { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
-    .brand { color: white; font-family: var(--font-heading); font-weight: 700; font-size: 24px; display: flex; align-items: center; gap: 10px;}
-    .brand span { color: var(--accent); }
-    
-    .new-chat-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), #114285); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-    .new-chat-btn:hover { background: var(--primary); border-color: var(--accent); transform: translateY(-1px); }
-    
-    .sidebar-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #475569; font-weight: 700; margin-bottom: 12px; margin-top: 24px; }
-    #session-list { flex: 1; overflow-y: auto; }
-    
-    .session-item { padding: 12px 16px; border-radius: 10px; cursor: pointer; color: var(--sidebar-text); font-size: 14px; font-weight: 500; margin-bottom: 6px; transition: all .2s; border: 1px solid transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 10px; }
-    .session-item::before { content: '💬'; font-size: 12px; opacity: 0.5; }
-    .session-item:hover { background: rgba(255,255,255,0.03); color: white; }
-    .session-item.active { background: rgba(212, 175, 55, 0.1); border-color: rgba(212, 175, 55, 0.2); color: var(--accent); }
-    .session-item.active::before { opacity: 1; }
+    .land-admin-link {
+      display: inline-block;
+      margin-top: 36px;
+      color: rgba(255,255,255,.4);
+      font-size: 13px;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,.15);
+      padding-bottom: 2px;
+      transition: color .2s, border-color .2s;
+    }
+    .land-admin-link:hover { color: rgba(255,255,255,.75); border-color: rgba(255,255,255,.4); }
 
-    .user-footer { margin-top:auto; padding-top:20px; border-top:1px solid rgba(255,255,255,0.05); }
-    .user-profile { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-    .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: var(--primary-dark); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
-    .user-details { flex: 1; overflow: hidden; }
-    #user-display { color: white; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .user-role { font-size: 11px; color: #64748b; text-transform: capitalize; }
-    
-    .logout-btn { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 10px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.2s; font-family: var(--font-body); }
-    .logout-btn:hover { background: rgba(239, 68, 68, 0.2); color: #fecaca; }
+    /* ─── AUTH ─── */
+    #auth-screen {
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: var(--navy);
+      background-image: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(201,150,42,.15) 0%, transparent 60%);
+    }
 
-    /* CHAT AREA WITH BACKGROUND IMAGE */
-    #chat-area { flex: 1; display: flex; flex-direction: column; position: relative; background-color: #f8fafc; }
-    #chat-area::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('https://pia.gov.ph/wp-content/uploads/2025/12/dole.jpg'); background-size: cover; background-position: center; opacity: 0.04; pointer-events: none; z-index: 0; mix-blend-mode: multiply; }
+    .auth-wrap {
+      width: 100%; max-width: 440px;
+      background: var(--white);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      animation: fadeUp .4s ease;
+    }
 
-    #chat-header { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 20px 40px; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; z-index: 10; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
-    #chat-title { font-family: var(--font-heading); font-size: 20px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-    #messages-container { flex: 1; overflow-y: auto; padding: 40px; display: flex; flex-direction: column; gap: 32px; z-index: 1; scroll-behavior: smooth; }
+    .auth-top {
+      background: var(--navy);
+      padding: 32px 36px 28px;
+      text-align: center;
+      border-bottom: 3px solid var(--gold);
+    }
+    .auth-logo { font-size: 36px; margin-bottom: 10px; display: block; }
+    .auth-brand { font-family: var(--serif); font-size: 28px; color: var(--white); }
+    .auth-brand em { color: var(--gold-lt); font-style: italic; }
+    .auth-tagline { font-size: 13px; color: rgba(255,255,255,.5); margin-top: 4px; }
 
-    .welcome { text-align: center; margin: auto; max-width: 640px; padding: 48px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 24px; box-shadow: var(--shadow-lg); border: 1px solid rgba(255,255,255,0.5); }
-    .welcome h2 { font-family: var(--font-heading); font-size: 32px; color: var(--primary); margin: 16px 0; }
-    .welcome p { color: var(--text-muted); font-size: 16px; line-height: 1.6; margin-bottom: 32px; }
-    .quick-topics { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
-    .quick-topics button { padding: 10px 20px; background: #f1f5f9; border: 1px solid var(--border); border-radius: 30px; font-size: 14px; font-weight: 500; color: var(--primary); cursor: pointer; transition: all 0.2s; }
-    .quick-topics button:hover { background: white; border-color: var(--accent); box-shadow: 0 4px 12px rgba(212, 175, 55, 0.15); transform: translateY(-2px); }
+    .auth-body { padding: 32px 36px 36px; }
 
-    .message-row { display: flex; gap: 16px; max-width: 880px; position: relative; animation: slideUp 0.3s ease-out; }
-    .message-row.user { margin-left: auto; flex-direction: row-reverse; }
-    .avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 20px; box-shadow: var(--shadow-sm); }
-    .bot .avatar { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: var(--accent); border: 2px solid white; }
-    .user .avatar { background: white; color: var(--primary); font-size: 16px; font-weight: bold; border: 2px solid var(--border); }
-    
-    .bubble { padding: 20px 24px; border-radius: 20px; font-size: 15px; line-height: 1.6; max-width: calc(100% - 60px); }
-    .bot .bubble { background: rgba(255,255,255,0.95); border: 1px solid rgba(0,0,0,0.05); border-top-left-radius: 4px; box-shadow: var(--shadow-md); color: var(--text); }
-    .user .bubble { background: var(--primary); color: white; border-top-right-radius: 4px; box-shadow: 0 8px 24px rgba(10, 52, 112, 0.2); }
+    .seg-ctrl {
+      display: flex;
+      background: var(--cream);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 28px;
+      border: 1px solid var(--border);
+    }
+    .seg-btn {
+      flex: 1; padding: 10px; border: none; background: none; border-radius: 8px;
+      font-size: 14px; font-weight: 600; color: var(--muted); cursor: pointer;
+      transition: all .25s; font-family: var(--sans);
+    }
+    .seg-btn.active { background: var(--navy); color: var(--white); box-shadow: var(--shadow); }
 
-    .bubble strong { font-weight: 600; }
-    .bot .bubble strong { color: var(--primary); }
-    .bubble ul { padding-left: 20px; margin: 12px 0; }
-    .bubble li { margin-bottom: 6px; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .field input, .field select {
+      width: 100%; padding: 13px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: var(--sans);
+      background: var(--cream);
+      color: var(--text);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .field input:focus, .field select:focus {
+      outline: none;
+      border-color: var(--gold);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(201,150,42,.12);
+    }
 
-    /* FLOATING INPUT AREA */
-    #input-area-container { padding: 0 40px 32px; z-index: 10; background: transparent; }
-    #input-area { display: flex; gap: 12px; align-items: flex-end; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); padding: 12px 16px; border-radius: 32px; box-shadow: 0 12px 40px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.05); transition: all 0.3s ease; }
-    #input-area:focus-within { box-shadow: 0 12px 40px rgba(10, 52, 112, 0.15); border-color: rgba(10, 52, 112, 0.1); }
-    
-    #message-input { flex: 1; padding: 12px 16px; border: none; background: transparent; font-size: 15px; resize: none; font-family: var(--font-body); outline: none; max-height: 120px; line-height: 1.5; color: var(--text); }
-    #message-input::placeholder { color: #94a3b8; }
-    
-    #send-btn { width: 48px; height: 48px; background: var(--primary); color: white; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; box-shadow: 0 4px 12px rgba(10, 52, 112, 0.2); }
-    #send-btn:hover { background: var(--primary-dark); transform: scale(1.05); }
-    #send-btn svg { width: 20px; height: 20px; fill: currentColor; margin-left: 2px; }
+    .auth-submit {
+      width: 100%; padding: 14px;
+      background: var(--navy);
+      color: var(--white);
+      border: none; border-radius: 10px;
+      font-size: 15px; font-weight: 600;
+      cursor: pointer; font-family: var(--sans);
+      transition: background .2s, transform .15s;
+      margin-top: 4px;
+    }
+    .auth-submit:hover { background: var(--navy-2); transform: translateY(-1px); }
 
-    .disclaimer { font-size: 12px; color: #94a3b8; text-align: center; margin-top: 16px; font-weight: 500; }
-    .error-msg { color: #ef4444; font-size: 13px; text-align: center; margin-top: 12px; font-weight: 500; }
+    .divider-or {
+      display: flex; align-items: center; gap: 12px;
+      margin: 20px 0; color: var(--muted); font-size: 12px; font-weight: 600;
+    }
+    .divider-or::before, .divider-or::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-    /* TYPING INDICATOR */
-    #typing-indicator { display: flex; align-items: center; gap: 12px; padding: 8px 16px; color: var(--text-muted); font-size: 14px; font-weight: 500; }
-    .typing-dots { display: flex; gap: 4px; }
-    .typing-dots span { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out; opacity: 0.6; }
-    .typing-dots span:nth-child(2) { animation-delay: .2s; }
-    .typing-dots span:nth-child(3) { animation-delay: .4s; }
-    @keyframes bounce { 0%,80%,100%{transform:translateY(0);} 40%{transform:translateY(-6px);} }
+    .google-btn {
+      width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 12px; border: 1.5px solid var(--border); border-radius: 10px;
+      background: var(--white); color: var(--text);
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: background .2s, border-color .2s; font-family: var(--sans);
+    }
+    .google-btn:hover { background: var(--cream); border-color: #c9c4bb; }
+    .google-btn img { width: 18px; }
 
+    .auth-err { color: var(--red); font-size: 13px; margin-top: 12px; text-align: center; min-height: 18px; font-weight: 500; }
+
+    /* ═══════════════════════════════════════════
+       APP LAYOUT
+    ═══════════════════════════════════════════ */
+
+    #app {
+      display: none;
+      height: 100vh;
+      flex-direction: column;
+    }
+    #app.visible { display: flex; }
+
+    /* ─── TOP BAR ─── */
+    #topbar {
+      height: var(--topbar-h);
+      background: var(--navy);
+      display: flex; align-items: center;
+      padding: 0 20px;
+      flex-shrink: 0;
+      border-bottom: 2px solid var(--gold);
+      z-index: 50;
+      gap: 12px;
+    }
+
+    .tb-hamburger {
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 8px;
+      display: none; /* shown on mobile */
+      align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0;
+      color: white; font-size: 18px;
+    }
+
+    .tb-brand {
+      display: flex; align-items: center; gap: 10px;
+      flex-shrink: 0;
+    }
+    .tb-seal {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .tb-name { font-family: var(--serif); font-size: 22px; color: var(--white); }
+    .tb-name em { color: var(--gold-lt); font-style: italic; }
+    .tb-badge {
+      padding: 3px 10px;
+      background: rgba(201,150,42,.2);
+      border: 1px solid rgba(201,150,42,.35);
+      border-radius: 100px;
+      font-size: 10px;
+      color: var(--gold-lt);
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .tb-spacer { flex: 1; }
+
+    .tb-status {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: rgba(255,255,255,.55); font-weight: 500;
+    }
+    .tb-dot { width: 7px; height: 7px; background: #22c55e; border-radius: 50%; animation: blink 2s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.4;} }
+
+    .tb-user-chip {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 14px 6px 8px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 100px;
+      cursor: pointer;
+    }
+    .tb-avatar {
+      width: 28px; height: 28px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+      color: var(--navy);
+    }
+    .tb-uname { font-size: 13px; color: rgba(255,255,255,.85); font-weight: 600; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .tb-logout {
+      padding: 8px 16px;
+      background: rgba(192,57,43,.15);
+      border: 1px solid rgba(192,57,43,.3);
+      border-radius: 8px;
+      color: #f87171;
+      font-size: 12px; font-weight: 600;
+      cursor: pointer; font-family: var(--sans);
+      transition: background .2s;
+    }
+    .tb-logout:hover { background: rgba(192,57,43,.25); }
+
+    /* ─── BODY ─── */
+    #body { display: flex; flex: 1; overflow: hidden; }
+
+    /* ─── SIDEBAR ─── */
+    #sidebar {
+      width: var(--sidebar-w);
+      background: #0D1B35;
+      border-right: 1px solid rgba(255,255,255,.06);
+      display: flex; flex-direction: column;
+      flex-shrink: 0;
+      transition: transform .3s ease;
+      z-index: 40;
+    }
+
+    .sb-new-btn {
+      margin: 20px 16px 8px;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--navy-2), var(--navy-3));
+      border: 1px solid rgba(201,150,42,.25);
+      border-radius: 12px;
+      color: var(--white);
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; font-family: var(--sans);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all .2s;
+    }
+    .sb-new-btn:hover { border-color: var(--gold); background: var(--navy-2); }
+
+    .sb-section-label {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: rgba(255,255,255,.25);
+      padding: 20px 20px 8px;
+    }
+
+    #session-list { flex: 1; overflow-y: auto; padding: 0 10px 10px; }
+    #session-list::-webkit-scrollbar { width: 4px; }
+    #session-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 4px; }
+
+    .sess-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      color: rgba(255,255,255,.5);
+      font-size: 13px; font-weight: 500;
+      margin-bottom: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      transition: all .2s;
+      border: 1px solid transparent;
+    }
+    .sess-item:hover { background: rgba(255,255,255,.04); color: rgba(255,255,255,.8); }
+    .sess-item.active { background: rgba(201,150,42,.1); border-color: rgba(201,150,42,.2); color: var(--gold-lt); }
+    .sess-icon { font-size: 14px; flex-shrink: 0; opacity: .6; }
+    .sess-item.active .sess-icon { opacity: 1; }
+
+    /* ─── CHAT AREA ─── */
+    #chat-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--cream);
+      background-image:
+        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(201,150,42,.06) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(11,37,69,.04) 0%, transparent 60%);
+    }
+
+    #chat-header {
+      padding: 16px 32px;
+      background: rgba(247,244,239,.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px;
+      flex-shrink: 0;
+    }
+    #chat-title { font-family: var(--serif); font-size: 18px; color: var(--navy); flex: 1; }
+
+    #msgs {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px;
+      display: flex; flex-direction: column; gap: 28px;
+      scroll-behavior: smooth;
+    }
+    #msgs::-webkit-scrollbar { width: 5px; }
+    #msgs::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* WELCOME */
+    .welcome-state {
+      margin: auto;
+      text-align: center;
+      max-width: 560px;
+      padding: 48px 32px;
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      animation: fadeUp .5s ease;
+    }
+    .ws-icon { font-size: 52px; margin-bottom: 16px; display: block; }
+    .ws-title { font-family: var(--serif); font-size: 30px; color: var(--navy); margin-bottom: 10px; }
+    .ws-sub { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
+
+    .quick-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .quick-btn {
+      padding: 9px 18px;
+      background: var(--cream);
+      border: 1.5px solid var(--border);
+      border-radius: 100px;
+      font-size: 13px; font-weight: 500;
+      color: var(--navy);
+      cursor: pointer; font-family: var(--sans);
+      transition: all .2s;
+    }
+    .quick-btn:hover { background: var(--gold-bg); border-color: var(--gold); color: var(--navy); transform: translateY(-2px); }
+
+    /* MESSAGES */
+    .msg-row { display: flex; gap: 14px; max-width: 820px; animation: fadeUp .3s ease; }
+    .msg-row.user { margin-left: auto; flex-direction: row-reverse; }
+
+    .msg-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 16px; font-weight: 700;
+      box-shadow: var(--shadow);
+    }
+    .bot .msg-avatar { background: var(--navy); color: var(--gold-lt); border: 2px solid var(--border); }
+    .user .msg-avatar { background: var(--gold); color: var(--navy); font-size: 14px; }
+
+    .msg-bubble {
+      padding: 16px 20px;
+      border-radius: 16px;
+      font-size: 14px; line-height: 1.75;
+      max-width: calc(100% - 56px);
+    }
+    .bot .msg-bubble {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-top-left-radius: 4px;
+      box-shadow: var(--shadow);
+      color: var(--text);
+    }
+    .user .msg-bubble {
+      background: var(--navy);
+      color: rgba(255,255,255,.92);
+      border-top-right-radius: 4px;
+    }
+    .msg-bubble strong { font-weight: 600; }
+    .bot .msg-bubble strong { color: var(--navy); }
+    .msg-bubble ul { padding-left: 18px; margin: 10px 0; }
+    .msg-bubble li { margin-bottom: 5px; }
+    .msg-bubble h3 { font-family: var(--serif); font-size: 16px; color: var(--navy); margin: 12px 0 6px; }
+
+    /* TYPING */
+    #typing { display: none; align-items: center; gap: 12px; padding: 0 32px 8px; color: var(--muted); font-size: 13px; }
+    .dot-row { display: flex; gap: 4px; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--navy); animation: dot-bounce 1.2s ease-in-out infinite; }
+    .dot:nth-child(2){animation-delay:.2s;} .dot:nth-child(3){animation-delay:.4s;}
+    @keyframes dot-bounce { 0%,80%,100%{transform:translateY(0);} 40%{transform:translateY(-6px);} }
+
+    /* INPUT */
+    #input-zone { padding: 16px 32px 24px; flex-shrink: 0; }
+    #input-box {
+      display: flex; align-items: flex-end; gap: 10px;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 10px 12px;
+      box-shadow: var(--shadow);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    #input-box:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,150,42,.1), var(--shadow); }
+
+    #msg-input {
+      flex: 1; border: none; background: none;
+      font-size: 14px; font-family: var(--sans);
+      color: var(--text); resize: none;
+      max-height: 120px; line-height: 1.6;
+      padding: 6px 8px;
+      outline: none;
+    }
+    #msg-input::placeholder { color: #b0a99a; }
+
+    #send-btn {
+      width: 44px; height: 44px; flex-shrink: 0;
+      background: var(--navy);
+      border: none; border-radius: 12px;
+      color: var(--white);
+      cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s, transform .15s;
+    }
+    #send-btn:hover { background: var(--navy-2); transform: scale(1.05); }
+
+    .disclaimer {
+      font-size: 11px; color: var(--muted); text-align: center; margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    /* ═══════════════════════════════════════════
+       OVERLAY (mobile sidebar)
+    ═══════════════════════════════════════════ */
+    #sidebar-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 39;
+    }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      :root { --sidebar-w: 280px; }
+
+      .tb-hamburger { display: flex; }
+      .tb-badge { display: none; }
+      .tb-status { display: none; }
+      .tb-uname { display: none; }
+
+      #sidebar {
+        position: fixed;
+        top: var(--topbar-h);
+        left: 0;
+        bottom: 0;
+        transform: translateX(-100%);
+        z-index: 40;
+      }
+      #sidebar.open { transform: translateX(0); }
+      #sidebar-overlay.open { display: block; }
+
+      #msgs { padding: 20px 16px; gap: 20px; }
+      .msg-row { max-width: 100%; }
+
+      #chat-header { padding: 12px 16px; }
+      #input-zone { padding: 10px 12px 16px; }
+      #input-box { border-radius: 12px; }
+
+      .auth-body { padding: 24px 20px 28px; }
+      .auth-top { padding: 24px 20px 20px; }
+
+      .land-title { font-size: 38px; }
+      .land-cta { padding: 14px 32px; font-size: 15px; }
+    }
+
+    @media (max-width: 480px) {
+      .welcome-state { margin: 16px auto; padding: 28px 20px; }
+      .ws-title { font-size: 24px; }
+      .tb-logout span { display: none; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- LANDING PAGE -->
-  <div id="landing-screen" class="bg-legal">
-    <div class="landing-content glass-panel">
-      <div class="landing-icon">⚖️</div>
-      <h1>Labor<span>Lens</span></h1>
-      <p>Empowering the Philippine workforce and employers with intelligent, instant access to labor regulations, DOLE issuances, and jurisprudence.</p>
-      
-      <div class="feature-badges">
-        <span class="f-badge">✨ AI-Powered</span>
-        <span class="f-badge">📜 DOLE-Aligned</span>
-        <span class="f-badge">⚡ Instant Insights</span>
-      </div>
+<!-- ═══ LANDING ═══ -->
+<div class="screen" id="landing">
+  <div style="max-width:640px; width:100%; margin:0 auto; padding:24px;">
+    <div class="land-seal">⚖️</div>
+    <h1 class="land-title">Labor<em>Lens</em></h1>
+    <p class="land-sub">Empowering the Philippine workforce with intelligent, instant access to labor regulations, DOLE issuances, and Supreme Court jurisprudence.</p>
 
-      <button class="btn-gold" onclick="goToAuth()">Access Legal Assistant</button>
-      
-      <div style="margin-top: 40px;">
-        <a href="admin.html" style="color: rgba(255,255,255,0.7); text-decoration: none; font-size: 14px; font-weight: 500; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 2px; transition: all 0.2s;">Secure Admin Portal →</a>
-      </div>
+    <div class="pill-row">
+      <span class="pill">✦ AI-Powered Analysis</span>
+      <span class="pill">📜 DOLE-Aligned</span>
+      <span class="pill">⚡ Instant Insights</span>
+      <span class="pill">🇵🇭 Philippine Labor Code</span>
     </div>
+
+    <button class="land-cta" onclick="showAuth()">
+      <span>Access Legal Assistant</span>
+      <span style="font-size:18px;">→</span>
+    </button>
+
+    <br>
+    <a class="land-admin-link" href="admin.html">Secure Admin Portal →</a>
   </div>
+</div>
 
-  <!-- AUTH SCREEN -->
-  <div id="login-screen" class="auth-screen bg-legal">
-    <div class="auth-card">
-      <div class="logo">
-        <div class="logo-icon">⚖️</div>
-        <h1>LaborLens</h1>
-      </div>
-      
-      <div id="auth-tabs">
-        <button class="tab-btn active" onclick="showAuthTab('login')">Sign In</button>
-        <button class="tab-btn" onclick="showAuthTab('register')">Create Account</button>
+<!-- ═══ AUTH ═══ -->
+<div class="screen hidden" id="auth-screen">
+  <div class="auth-wrap">
+    <div class="auth-top">
+      <span class="auth-logo">⚖️</span>
+      <div class="auth-brand">Labor<em>Lens</em></div>
+      <div class="auth-tagline">Philippine Labor Law Advisor</div>
+    </div>
+
+    <div class="auth-body">
+      <div class="seg-ctrl">
+        <button class="seg-btn active" onclick="switchAuthTab('login',this)">Sign In</button>
+        <button class="seg-btn" onclick="switchAuthTab('reg',this)">Create Account</button>
       </div>
 
-      <!-- Login Form -->
+      <!-- LOGIN -->
       <div id="login-form">
-        <div class="input-group">
-          <input type="email" id="login-email" placeholder="Email Address"/>
+        <div class="field">
+          <label>Email Address</label>
+          <input type="email" id="l-email" placeholder="you@example.com"/>
         </div>
-        <div class="input-group">
-          <input type="password" id="login-password" placeholder="Password"/>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="l-pass" placeholder="••••••••"/>
         </div>
-        <button class="main-btn" onclick="doLogin()">Secure Sign In</button>
-        
-        <div class="divider">OR</div>
-        
-        <button class="google-btn" onclick="continueWithGoogle()">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+        <button class="auth-submit" onclick="doLogin()">Secure Sign In</button>
+
+        <div class="divider-or">or</div>
+
+        <button class="google-btn" onclick="continueGoogle()">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">
           Continue with Google
         </button>
-        
-        <p id="login-error" class="error-msg"></p>
+        <p class="auth-err" id="login-err"></p>
       </div>
 
-      <!-- Register Form -->
-      <div id="register-form" style="display:none;">
-        <div class="input-group">
-          <input type="text" id="reg-username" placeholder="Full Name"/>
+      <!-- REGISTER -->
+      <div id="reg-form" style="display:none;">
+        <div class="field">
+          <label>Full Name</label>
+          <input type="text" id="r-name" placeholder="Juan Dela Cruz"/>
         </div>
-        <div class="input-group">
-          <input type="email" id="reg-email" placeholder="Email Address"/>
+        <div class="field">
+          <label>Email Address</label>
+          <input type="email" id="r-email" placeholder="you@example.com"/>
         </div>
-        <div class="input-group">
-          <input type="password" id="reg-password" placeholder="Create Password"/>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="r-pass" placeholder="Create a strong password"/>
         </div>
-        <div class="input-group">
-          <select id="reg-lang">
-            <option value="en">Preferred Language: English</option>
-            <option value="fil">Preferred Language: Filipino</option>
-            <option value="hil">Preferred Language: Hiligaynon</option>
+        <div class="field">
+          <label>Preferred Language</label>
+          <select id="r-lang">
+            <option value="en">English</option>
+            <option value="fil">Filipino</option>
+            <option value="hil">Hiligaynon</option>
           </select>
         </div>
-        <button class="main-btn" onclick="doRegister()">Create Account</button>
+        <button class="auth-submit" onclick="doRegister()">Create Account</button>
 
-        <div class="divider">OR</div>
-        
-        <button class="google-btn" onclick="continueWithGoogle()">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+        <div class="divider-or">or</div>
+
+        <button class="google-btn" onclick="continueGoogle()">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">
           Sign up with Google
         </button>
-
-        <p id="reg-error" class="error-msg"></p>
+        <p class="auth-err" id="reg-err"></p>
       </div>
 
-      <div style="text-align: center; margin-top: 32px;">
-        <a href="admin.html" class="admin-link">Access Admin Dashboard →</a>
+      <div style="text-align:center; margin-top:24px;">
+        <a href="admin.html" style="font-size:12px; color:var(--muted); text-decoration:none; border-bottom:1px solid var(--border);">Admin Portal →</a>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- MAIN APP -->
-  <div id="app">
+<!-- ═══ MAIN APP ═══ -->
+<div id="app">
+
+  <!-- TOP BAR -->
+  <div id="topbar">
+    <button class="tb-hamburger" id="hamburger" onclick="toggleSidebar()">☰</button>
+    <div class="tb-brand">
+      <div class="tb-seal">⚖️</div>
+      <span class="tb-name">Labor<em>Lens</em></span>
+      <span class="tb-badge">Legal AI</span>
+    </div>
+    <div class="tb-spacer"></div>
+    <div class="tb-status">
+      <div class="tb-dot"></div>
+      <span>System Online</span>
+    </div>
+    <div class="tb-user-chip" style="margin-left:12px;">
+      <div class="tb-avatar" id="tb-avatar">U</div>
+      <span class="tb-uname" id="tb-uname">User</span>
+    </div>
+    <button class="tb-logout" onclick="doLogout()" style="margin-left:8px;">Sign Out</button>
+  </div>
+
+  <div id="body">
+    <!-- SIDEBAR -->
     <aside id="sidebar">
-      <div class="sidebar-header">
-        <div class="brand">⚖️ Labor<span>Lens</span></div>
-      </div>
-      <button class="new-chat-btn" onclick="startNewChat()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        New Consultation
+      <button class="sb-new-btn" onclick="startNewChat()">
+        <span style="font-size:16px;">+</span> New Consultation
       </button>
-      
-      <div class="sidebar-label">Recent Sessions</div>
+
+      <div class="sb-section-label">Recent Sessions</div>
       <div id="session-list"></div>
-      
-      <div class="user-footer">
-        <div class="user-profile">
-          <div class="user-avatar" id="user-initial">U</div>
-          <div class="user-details">
-            <div id="user-display">User Name</div>
-            <div class="user-role">Standard User</div>
-          </div>
-        </div>
-        <button onclick="doLogout()" class="logout-btn">Sign Out</button>
-      </div>
     </aside>
 
+    <!-- OVERLAY for mobile -->
+    <div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- CHAT -->
     <main id="chat-area">
       <div id="chat-header">
-        <h2 id="chat-title">
-          LaborLens Assistant
-        </h2>
-        <div style="padding: 6px 12px; background: rgba(16, 185, 129, 0.1); color: #059669; border-radius: 20px; font-size: 12px; font-weight: 600;">System Online</div>
+        <h2 id="chat-title">LaborLens Assistant</h2>
+        <div style="font-size:12px; color:var(--muted);">Philippine Labor Code · DOLE Issuances · Jurisprudence</div>
       </div>
-      
-      <div id="messages-container">
-        <div id="welcome-message" class="welcome">
-          <div style="font-size:56px; margin-bottom:20px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">⚖️</div>
-          <h2>Consult our Legal AI</h2>
-          <p>I am trained on the Philippine Labor Code, recent DOLE advisories, and Supreme Court jurisprudence. Select a topic below or type your specific legal query.</p>
-          
-          <div class="quick-topics">
-            <button onclick="sendQuick('What is the minimum wage in the Philippines?')">Minimum Wage</button>
-            <button onclick="sendQuick('How is 13th month pay computed?')">13th Month Pay</button>
-            <button onclick="sendQuick('What are my leave benefits?')">Leave Benefits</button>
-            <button onclick="sendQuick('What are the grounds for termination?')">Termination Rights</button>
+
+      <div id="msgs">
+        <div class="welcome-state" id="welcome">
+          <span class="ws-icon">⚖️</span>
+          <h2 class="ws-title">How can I help you today?</h2>
+          <p class="ws-sub">I'm trained on the Philippine Labor Code, DOLE advisories, and Supreme Court decisions. Ask me anything about labor law, or choose a topic below.</p>
+          <div class="quick-grid">
+            <button class="quick-btn" onclick="qs('What is the minimum wage in the Philippines?')">Minimum Wage</button>
+            <button class="quick-btn" onclick="qs('How is 13th month pay computed?')">13th Month Pay</button>
+            <button class="quick-btn" onclick="qs('What are my leave benefits?')">Leave Benefits</button>
+            <button class="quick-btn" onclick="qs('What are the grounds for termination?')">Termination</button>
+            <button class="quick-btn" onclick="qs('How is separation pay calculated?')">Separation Pay</button>
+            <button class="quick-btn" onclick="qs('What are overtime pay rules?')">Overtime Rules</button>
           </div>
         </div>
       </div>
-      
-      <div id="input-area-container">
-        <div id="typing-indicator" style="display:none; padding-left: 20px; margin-bottom: 8px;">
-          <div class="typing-dots"><span></span><span></span><span></span></div>
-          <span>Reviewing legal literature...</span>
+
+      <div id="typing">
+        <div class="dot-row"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span>Reviewing legal literature…</span>
+      </div>
+
+      <div id="input-zone">
+        <div id="input-box">
+          <textarea id="msg-input" rows="1" placeholder="Type your legal query here…" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+          <button id="send-btn" onclick="sendMsg()">➤</button>
         </div>
-        
-        <div id="input-area">
-          <textarea id="message-input" placeholder="Type your legal query here..." rows="1" onkeydown="handleKeyDown(event)"></textarea>
-          <button id="send-btn" onclick="sendMessage()">
-            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-          </button>
-        </div>
-        <p class="disclaimer">⚠️ For informational purposes only. Not a substitute for formal legal advice. Consult a licensed attorney or DOLE for official rulings.</p>
+        <p class="disclaimer">⚠️ For informational purposes only. Not a substitute for formal legal counsel. Consult a licensed attorney or DOLE for official rulings.</p>
       </div>
     </main>
   </div>
+</div>
 
-  <script>
-    const API = 'https://plaster-multiply-tint.ngrok-free.dev/api';
-    let token = localStorage.getItem('ll_token');
-    let currentUser = JSON.parse(localStorage.getItem('ll_user') || 'null');
-    let currentSessionId = null;
+<script>
+const API = 'https://plaster-multiply-tint.ngrok-free.dev/api';
+let token = localStorage.getItem('ll_token');
+let currentUser = JSON.parse(localStorage.getItem('ll_user') || 'null');
+let currentSessionId = null;
 
-    function goToAuth() {
-      document.getElementById('landing-screen').style.display = 'none';
-      document.getElementById('login-screen').style.display = 'flex';
-    }
+// ── Screen helpers ──
+function showAuth() {
+  document.getElementById('landing').classList.add('hidden');
+  document.getElementById('auth-screen').classList.remove('hidden');
+}
+function switchAuthTab(tab, btn) {
+  document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('reg-form').style.display   = tab === 'reg'   ? 'block' : 'none';
+}
 
-    function showAuthTab(tab) {
-      document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
-      document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
-      document.querySelectorAll('.tab-btn').forEach((b, i) =>
-        b.classList.toggle('active', (i===0 && tab==='login') || (i===1 && tab==='register')));
-    }
+// ── Auth ──
+async function doLogin() {
+  const email = document.getElementById('l-email').value.trim();
+  const pass  = document.getElementById('l-pass').value;
+  try {
+    const r = await fetch(`${API}/auth/login`, { method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email, password: pass}) });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Login failed');
+    saveAuth(d);
+  } catch(e) { document.getElementById('login-err').textContent = e.message; }
+}
+async function doRegister() {
+  const username = document.getElementById('r-name').value.trim();
+  const email    = document.getElementById('r-email').value.trim();
+  const password = document.getElementById('r-pass').value;
+  const lang     = document.getElementById('r-lang').value;
+  try {
+    const r = await fetch(`${API}/auth/register`, { method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({username, email, password, language_preference: lang}) });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Registration failed');
+    saveAuth(d);
+  } catch(e) { document.getElementById('reg-err').textContent = e.message; }
+}
+function continueGoogle() {
+  saveAuth({ access_token:'google_mock', user_id:101, username:'Google User', role:'user' });
+}
+function saveAuth(data) {
+  token = data.access_token;
+  currentUser = { id: data.user_id, username: data.username, role: data.role };
+  localStorage.setItem('ll_token', token);
+  localStorage.setItem('ll_user', JSON.stringify(currentUser));
+  initApp();
+}
+function doLogout() { localStorage.clear(); location.reload(); }
 
-    // --- GOOGLE LOGIN HANDLER ---
-    async function continueWithGoogle() {
-      console.log("Redirecting to Google Auth...");
-      // For now, we simulate a successful login:
-      const mockUser = {
-        access_token: "google_mock_token",
-        user_id: 101,
-        username: "Google User",
-        role: "user"
-      };
-      saveAuth(mockUser);
-    }
+// ── Init App ──
+function initApp() {
+  document.getElementById('landing').classList.add('hidden');
+  document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('app').classList.add('visible');
+  const uname = currentUser?.username || 'User';
+  document.getElementById('tb-uname').textContent = uname;
+  document.getElementById('tb-avatar').textContent = uname.charAt(0).toUpperCase();
+  loadSessions();
+}
 
-    async function doLogin() {
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-      try {
-        const res = await fetch(`${API}/auth/login`, {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({email, password})
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Login failed');
-        saveAuth(data);
-      } catch(e) { document.getElementById('login-error').textContent = e.message; }
-    }
+// ── Sidebar (mobile) ──
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+}
 
-    async function doRegister() {
-      const username = document.getElementById('reg-username').value;
-      const email = document.getElementById('reg-email').value;
-      const password = document.getElementById('reg-password').value;
-      const lang = document.getElementById('reg-lang').value;
-      try {
-        const res = await fetch(`${API}/auth/register`, {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({username, email, password, language_preference: lang})
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Registration failed');
-        saveAuth(data);
-      } catch(e) { document.getElementById('reg-error').textContent = e.message; }
-    }
+// ── Sessions ──
+async function loadSessions() {
+  try {
+    const r = await authFetch('/chat/sessions');
+    const ss = await r.json();
+    const list = document.getElementById('session-list');
+    list.innerHTML = '';
+    (ss || []).forEach(s => {
+      const el = document.createElement('div');
+      el.className = 'sess-item' + (s.id === currentSessionId ? ' active' : '');
+      el.innerHTML = `<span class="sess-icon">💬</span> <span style="overflow:hidden;text-overflow:ellipsis;">${s.title || 'Consultation'}</span>`;
+      el.onclick = () => loadSession(s.id, s.title);
+      list.appendChild(el);
+    });
+  } catch(_) {}
+}
+async function loadSession(id, title) {
+  currentSessionId = id;
+  document.getElementById('chat-title').textContent = title || 'Consultation';
+  document.getElementById('msgs').innerHTML = '';
+  try {
+    const r = await authFetch(`/chat/sessions/${id}/messages`);
+    const msgs = await r.json();
+    (msgs || []).forEach(m => appendMsg(m.role, m.content));
+  } catch(_) {}
+  loadSessions();
+  closeSidebar();
+}
+function startNewChat() {
+  currentSessionId = null;
+  document.getElementById('chat-title').textContent = 'LaborLens Assistant';
+  document.getElementById('msgs').innerHTML = '';
+  document.getElementById('msgs').insertAdjacentHTML('beforeend', `
+    <div class="welcome-state" id="welcome">
+      <span class="ws-icon">⚖️</span>
+      <h2 class="ws-title">New Consultation</h2>
+      <p class="ws-sub">How can LaborLens help you today?</p>
+    </div>`);
+  closeSidebar();
+  loadSessions();
+}
 
-    function saveAuth(data) {
-      token = data.access_token;
-      currentUser = {id: data.user_id, username: data.username, role: data.role};
-      localStorage.setItem('ll_token', token);
-      localStorage.setItem('ll_user', JSON.stringify(currentUser));
-      initApp();
-    }
+// ── Messaging ──
+function qs(text) { document.getElementById('msg-input').value = text; sendMsg(); }
+async function sendMsg() {
+  const inp = document.getElementById('msg-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = ''; inp.style.height = 'auto';
+  const w = document.getElementById('welcome');
+  if (w) w.remove();
+  appendMsg('user', text);
+  document.getElementById('typing').style.display = 'flex';
+  try {
+    const r = await authFetch('/chat/message', { method:'POST',
+      body: JSON.stringify({message: text, session_id: currentSessionId}) });
+    const d = await r.json();
+    currentSessionId = d.session_id;
+    appendMsg('assistant', d.answer);
+    loadSessions();
+  } catch(_) {
+    appendMsg('assistant', "I'm having trouble connecting to the legal database. Please check your connection and try again.");
+  }
+  document.getElementById('typing').style.display = 'none';
+}
+function appendMsg(role, content) {
+  const box = document.getElementById('msgs');
+  const isUser = role === 'user';
+  const row = document.createElement('div');
+  row.className = `msg-row ${isUser ? 'user' : 'bot'}`;
+  const initial = currentUser?.username?.charAt(0)?.toUpperCase() || 'U';
+  row.innerHTML = `
+    <div class="msg-avatar">${isUser ? initial : '⚖️'}</div>
+    <div class="msg-bubble">${fmtText(content)}</div>`;
+  box.appendChild(row);
+  box.scrollTop = box.scrollHeight;
+}
+function fmtText(t) {
+  return t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+           .replace(/\*(.+?)\*/g,'<em>$1</em>')
+           .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+           .replace(/^## (.+)$/gm,'<strong>$1</strong>')
+           .replace(/^- (.+)$/gm,'<li>$1</li>')
+           .replace(/\n/g,'<br>');
+}
 
-    function doLogout() {
-      localStorage.clear();
-      location.reload();
-    }
+// ── Helpers ──
+function handleKey(e) { if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendMsg(); } }
+function autoResize(el) { el.style.height='auto'; el.style.height = Math.min(el.scrollHeight, 120)+'px'; }
+async function authFetch(path, opts={}) {
+  return fetch(`${API}${path}`, { ...opts,
+    headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`,'ngrok-skip-browser-warning':'true',...(opts.headers||{})} });
+}
+document.addEventListener('keydown', e => {
+  if(e.key==='Enter' && document.getElementById('auth-screen') && !document.getElementById('auth-screen').classList.contains('hidden')) {
+    if(document.getElementById('login-form').style.display !== 'none') doLogin();
+  }
+});
 
-    function initApp() {
-      document.getElementById('landing-screen').style.display = 'none';
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('app').style.display = 'flex';
-      document.getElementById('user-display').textContent = currentUser.username;
-      document.getElementById('user-initial').textContent = currentUser.username.charAt(0).toUpperCase();
-      loadSessions();
-    }
-
-    async function loadSessions() {
-      try {
-        const res = await authFetch('/chat/sessions');
-        const sessions = await res.json();
-        const list = document.getElementById('session-list');
-        list.innerHTML = '';
-        sessions.forEach(s => {
-          const d = document.createElement('div');
-          d.className = 'session-item' + (s.id === currentSessionId ? ' active' : '');
-          d.textContent = s.title || 'Legal Consultation';
-          d.onclick = () => loadSession(s.id, s.title);
-          list.appendChild(d);
-        });
-      } catch(e) {}
-    }
-
-    async function loadSession(id, title) {
-      currentSessionId = id;
-      document.getElementById('chat-title').textContent = title;
-      document.getElementById('messages-container').innerHTML = '';
-      const msgs = await (await authFetch(`/chat/sessions/${id}/messages`)).json();
-      msgs.forEach(m => appendMessage(m.role, m.content));
-      loadSessions();
-    }
-
-    function startNewChat() {
-      currentSessionId = null;
-      document.getElementById('messages-container').innerHTML = `
-        <div id="welcome-message" class="welcome">
-          <div style="font-size:56px; margin-bottom:20px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">⚖️</div>
-          <h2>New Consultation</h2>
-          <p>How can LaborLens help you today?</p>
-        </div>`;
-      document.getElementById('chat-title').textContent = "LaborLens Assistant";
-      loadSessions();
-    }
-
-    function sendQuick(text) {
-      document.getElementById('message-input').value = text;
-      sendMessage();
-    }
-
-    async function sendMessage() {
-      const input = document.getElementById('message-input');
-      const text = input.value.trim();
-      if (!text) return;
-      input.value = '';
-      
-      const w = document.getElementById('welcome-message');
-      if (w) w.remove();
-      
-      appendMessage('user', text);
-      document.getElementById('typing-indicator').style.display = 'flex';
-      
-      try {
-        const res = await authFetch('/chat/message', {
-          method:'POST',
-          body: JSON.stringify({message:text, session_id:currentSessionId})
-        });
-        const data = await res.json();
-        currentSessionId = data.session_id;
-        document.getElementById('typing-indicator').style.display = 'none';
-        appendMessage('assistant', data.answer);
-        loadSessions();
-      } catch(e) { 
-        document.getElementById('typing-indicator').style.display = 'none';
-        appendMessage('assistant', "I'm having trouble connecting to the legal database. Please check your connection."); 
-      }
-    }
-
-    function appendMessage(role, content) {
-      const container = document.getElementById('messages-container');
-      const row = document.createElement('div');
-      row.className = `message-row ${role==='user'?'user':'bot'}`;
-      
-      const avatar = document.createElement('div');
-      avatar.className = 'avatar';
-      avatar.textContent = role==='user' ? currentUser.username[0].toUpperCase() : '⚖️';
-      
-      const bubble = document.createElement('div');
-      bubble.className = 'bubble';
-      bubble.innerHTML = formatText(content);
-      
-      row.appendChild(avatar); 
-      row.appendChild(bubble);
-      container.appendChild(row);
-      container.scrollTop = container.scrollHeight;
-    }
-
-    function formatText(t) {
-      return t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-               .replace(/\*(.+?)\*/g,'<em>$1</em>')
-               .replace(/^### (.+)$/gm,'<h3>$1</h3>')
-               .replace(/^## (.+)$/gm,'<h2>$1</h2>')
-               .replace(/^- (.+)$/gm,'<li>$1</li>')
-               .replace(/\n/g,'<br>');
-    }
-
-    function handleKeyDown(e) { 
-      if(e.key==='Enter' && !e.shiftKey) { 
-        e.preventDefault(); 
-        sendMessage(); 
-      }
-      // Auto-resize textarea
-      const el = e.target;
-      el.style.height = 'auto';
-      el.style.height = (el.scrollHeight) + 'px';
-    }
-
-    async function authFetch(path, opts={}) {
-      return fetch(`${API}${path}`, {
-        ...opts,
-        headers: {'Content-Type':'application/json','Authorization':`Bearer ${token}`, 'ngrok-skip-browser-warning':'true', ...(opts.headers||{})}
-      });
-    }
-
-    if (token) initApp();
-  </script>
+if (token && currentUser) initApp();
+</script>
 </body>
 </html>
