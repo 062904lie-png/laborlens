@@ -29,7 +29,7 @@
     @keyframes blink{0%,100%{opacity:1;}50%{opacity:.35;}}
 
     /* ══ LOGIN ══ */
-    #login-screen{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;background-color:var(--navy);background-image:linear-gradient(rgba(11,37,69,.72),rgba(6,22,50,.87)),url('https://pia.gov.ph/wp-content/uploads/2025/12/dole.jpg');background-size:cover;background-position:center;background-attachment:fixed;}
+    #login-screen{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;background-color:var(--navy);background-image:linear-gradient(135deg,rgba(6,29,89,.98),rgba(11,45,122,.94) 56%,rgba(125,16,36,.92));background-size:cover;background-position:center;background-attachment:fixed;}
     #login-screen.gone{display:none;}
     .login-card{width:100%;max-width:420px;background:var(--white);border-radius:22px;overflow:hidden;box-shadow:0 28px 80px rgba(0,0,0,.32);animation:fadeUp .4s ease;}
     .lc-header{background:var(--navy);background-image:linear-gradient(135deg,var(--navy) 0%,var(--navy-3) 100%);padding:36px 36px 28px;text-align:center;border-bottom:3px solid var(--gold);position:relative;overflow:hidden;}
@@ -55,7 +55,7 @@
     /* ══ DASHBOARD ══ */
     #dashboard{display:none;height:100vh;flex-direction:column;}
     #dashboard.visible{display:flex;}
-    #topbar{height:var(--topbar-h);background-color:var(--navy);background-image:linear-gradient(rgba(11,37,69,.88),rgba(11,37,69,.88)),url('https://pia.gov.ph/wp-content/uploads/2025/12/dole.jpg');background-size:cover;background-position:center top;border-bottom:2px solid var(--gold);display:flex;align-items:center;padding:0 24px;gap:14px;flex-shrink:0;z-index:50;}
+    #topbar{height:var(--topbar-h);background-color:var(--navy);background-image:linear-gradient(135deg,rgba(6,29,89,.98),rgba(11,45,122,.96) 64%,rgba(125,16,36,.9));background-size:cover;background-position:center top;border-bottom:2px solid var(--gold);display:flex;align-items:center;padding:0 24px;gap:14px;flex-shrink:0;z-index:50;}
     .tb-seal{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--gold-lt));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 8px rgba(201,150,42,.4);}
     .tb-name{font-family:var(--serif);font-size:22px;color:var(--white);}
     .tb-name em{color:var(--gold-lt);font-style:italic;}
@@ -76,7 +76,7 @@
     .nav-item.active{color:var(--gold-lt);border-left-color:var(--gold);background:rgba(201,150,42,.08);}
     .nav-icon{font-size:15px;flex-shrink:0;width:20px;text-align:center;}
     .nav-badge{margin-left:auto;padding:2px 7px;background:var(--red);color:white;border-radius:100px;font-size:10px;font-weight:700;display:none;}
-    #main{flex:1;overflow-y:auto;background-color:var(--cream);background-image:linear-gradient(rgba(247,244,239,.92),rgba(247,244,239,.92)),url('https://pia.gov.ph/wp-content/uploads/2025/12/dole.jpg');background-size:cover;background-position:center;background-attachment:fixed;}
+    #main{flex:1;overflow-y:auto;background-color:var(--cream);background-image:linear-gradient(135deg,rgba(11,45,122,.10),rgba(200,16,46,.045) 62%,rgba(244,196,48,.08));background-size:cover;background-position:center;background-attachment:fixed;}
     #main::-webkit-scrollbar{width:5px;}
     #main::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
     .content-inner{padding:36px;max-width:1280px;}
@@ -141,6 +141,8 @@
     .uz-icon{font-size:48px;margin-bottom:14px;display:block;}
     .uz-title{font-size:16px;font-weight:600;color:var(--navy);margin-bottom:6px;}
     .uz-sub{font-size:13px;color:var(--muted);}
+    .kb-category-field{margin-bottom:14px;}
+    .kb-category-badge{max-width:220px;white-space:normal;line-height:1.3;text-align:left;}
     .info-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(201,150,42,.08);border:1px solid rgba(201,150,42,.2);border-radius:10px;font-size:13px;color:var(--amber);font-weight:500;margin-bottom:20px;}
     .alert-bar{display:flex;align-items:center;gap:12px;padding:14px 20px;border-radius:10px;margin-bottom:20px;font-size:13px;font-weight:500;}
     .alert-bar.amber{background:var(--amber-bg);border:1px solid rgba(217,119,6,.25);color:#92400E;border-left:4px solid var(--amber);}
@@ -168,10 +170,244 @@
     .loading{text-align:center;padding:48px 24px;color:var(--muted);font-size:14px;}
     .empty{text-align:center;padding:48px 24px;color:var(--muted);font-style:italic;}
     .err-msg{padding:16px;background:var(--red-bg);color:var(--red);border-radius:10px;font-size:13px;font-weight:500;}
+    .doc-actions{display:flex;gap:6px;flex-wrap:wrap;}
+    .doc-name{max-width:280px;white-space:normal;word-break:break-word;}
+    .status-note{display:block;margin-top:4px;font-size:11px;color:var(--muted);}
+    .btn[disabled]{opacity:.55;cursor:not-allowed;transform:none!important;}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(11,37,69,.58);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px;z-index:900;}
+    .modal-backdrop.show{display:flex;}
+    .modal-card{width:min(960px,100%);max-height:86vh;background:var(--white);border-radius:14px;box-shadow:var(--shadow-lg);border:1px solid rgba(255,255,255,.22);display:flex;flex-direction:column;overflow:hidden;}
+    .modal-hdr{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;background:#FDFCFA;}
+    .modal-title{font-family:var(--serif);font-size:19px;color:var(--navy);}
+    .modal-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+    .modal-body{padding:18px 22px;overflow:auto;}
+    .doc-meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px;}
+    .chunk-card{border:1px solid var(--border);border-radius:10px;background:#FDFCFA;padding:14px 16px;margin-bottom:12px;}
+    .chunk-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:8px;font-size:12px;color:var(--muted);font-weight:700;}
+    .chunk-text{white-space:pre-wrap;font-size:13px;line-height:1.55;color:#374151;max-height:220px;overflow:auto;}
+    .full-doc-card{border:1px solid var(--border);border-radius:10px;background:#FDFCFA;padding:18px;margin-top:14px;}
+    .full-doc-text{white-space:pre-wrap;font-family:var(--sans);font-size:14px;line-height:1.72;color:#253044;margin:0;max-height:58vh;overflow:auto;}
+    .modal-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;background:#FDFCFA;}
     #toast{position:fixed;bottom:28px;right:28px;padding:14px 20px;background:var(--navy);color:var(--white);border-radius:12px;font-size:14px;font-weight:600;box-shadow:var(--shadow-lg);display:none;z-index:999;border-left:4px solid var(--gold);max-width:320px;}
     #toast.show{display:block;animation:fadeUp .4s ease;}
     @media(max-width:1100px){.two-col{grid-template-columns:1fr;}.three-col{grid-template-columns:1fr 1fr;}:root{--sidebar-w:220px;}}
     @media(max-width:768px){#left-nav{display:none;}.content-inner{padding:20px 16px;}.stat-grid{grid-template-columns:repeat(2,1fr);}.form-row{grid-template-columns:1fr;}.page-hdr{flex-direction:column;align-items:flex-start;}.tb-label{display:none;}.tb-status{display:none;}.three-col{grid-template-columns:1fr;}}
+
+    /* Professional responsive redesign */
+    *{letter-spacing:0!important;}
+    :root{
+      --navy:#10233f;--navy-2:#17365f;--navy-3:#24507f;
+      --gold:#b9831e;--gold-lt:#d9a23a;--gold-bg:#fff8e7;
+      --cream:#f4f6fa;--white:#fff;--text:#172033;
+      --muted:#667085;--border:#d8dee9;
+      --green:#08745f;--green-bg:#ecfdf3;
+      --red:#b42318;--red-bg:#fff1f0;
+      --amber:#b76e00;--amber-bg:#fff7df;
+      --blue:#24507f;--blue-bg:#eef5ff;
+      --purple:#6840a0;--purple-bg:#f3efff;
+      --sidebar-bg:#0f172a;--sidebar-w:282px;--topbar-h:68px;
+      --shadow:0 1px 2px rgba(16,35,63,.06),0 10px 24px rgba(16,35,63,.08);
+      --shadow-md:0 14px 34px rgba(16,35,63,.12);
+      --shadow-lg:0 22px 60px rgba(16,35,63,.22);
+    }
+    body{background:var(--cream);}
+    button,a,input,select,textarea{font:inherit;}
+    button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(185,131,30,.32);outline-offset:3px;}
+    #login-screen{background-color:#0f1f38;background-image:linear-gradient(135deg,rgba(6,29,89,.98),rgba(11,45,122,.95) 58%,rgba(125,16,36,.92));}
+    .login-card,.panel,.stat-card,.mini-metric,.modal-card,.upload-zone,.alert-bar,.info-bar,.chunk-card{border-radius:8px;}
+    .login-card{box-shadow:var(--shadow-lg);}
+    .lc-header{background:#10233f;background-image:none;border-bottom:1px solid rgba(217,162,58,.55);}
+    .lc-header::before{display:none;}
+    .lc-seal{width:60px;height:60px;border-radius:8px;box-shadow:0 14px 34px rgba(185,131,30,.28);}
+    .lc-title,.tb-name,.page-hdr-left h1,.panel-title,.stat-val,.mini-metric-val,.modal-title{font-family:var(--sans);font-weight:800;}
+    .lc-title em,.tb-name em{font-style:normal;color:var(--gold-lt);}
+    .admin-badge,.tb-label,.badge{border-radius:8px;}
+    .field input,.form-group input,.form-group textarea,.form-group select,#user-search{border-radius:8px;background:#fff;border-color:var(--border);}
+    .login-btn,.return-link,.btn,.end-btn{border-radius:8px;}
+    #topbar{height:var(--topbar-h);background:#10233f;background-image:none;border-bottom:1px solid rgba(255,255,255,.1);box-shadow:0 8px 24px rgba(16,35,63,.16);}
+    .admin-menu-btn{display:none;width:38px;height:38px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);color:#fff;border-radius:8px;align-items:center;justify-content:center;cursor:pointer;font-size:18px;}
+    .tb-seal{border-radius:8px;box-shadow:none;}
+    .tb-user-chip{border-radius:8px;}
+    .end-btn{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#fff;}
+    .end-btn:hover{background:rgba(255,255,255,.14);}
+    #left-nav{background:#0f172a;border-right:1px solid rgba(255,255,255,.08);}
+    .nav-section-lbl{color:#94a3b8;}
+    .nav-item{margin:2px 10px;padding:11px 12px;border-left:0;border-radius:8px;color:#cbd5e1;}
+    .nav-item:hover{background:rgba(255,255,255,.08);color:#fff;}
+    .nav-item.active{background:rgba(217,162,58,.14);color:#f6d88a;border-left-color:transparent;}
+    .nav-icon{width:18px;}
+    #main{background:#f4f6fa;background-image:none;}
+    .content-inner{padding:30px;max-width:none;}
+    .page-hdr{align-items:center;margin-bottom:22px;}
+    .page-hdr-left h1{font-size:28px;}
+    .page-hdr-left p{max-width:760px;line-height:1.55;}
+    .stat-grid{grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-bottom:24px;}
+    .stat-card{box-shadow:var(--shadow);padding:20px;background:#fff;}
+    .stat-card:hover{transform:none;box-shadow:var(--shadow-md);}
+    .stat-card::after{height:4px;}
+    .stat-icon{font-size:22px;}
+    .stat-val{font-size:32px;}
+    .panel{box-shadow:var(--shadow);background:#fff;margin-bottom:22px;}
+    .panel-hdr{background:#fff;padding:16px 18px;}
+    .panel-body{padding:20px;}
+    th{background:#f8fafc;color:#475467;}
+    td{color:#344054;}
+    tbody tr:hover td{background:#f8fafc;}
+    .btn{box-shadow:none;}
+    .btn-primary{background:#10233f;}
+    .btn-primary:hover{background:#17365f;transform:none;}
+    .upload-zone{background:#fff;border-color:#cbd5e1;padding:34px 24px;}
+    .upload-zone:hover{background:#eef5ff;border-color:#9db7d8;}
+    .modal-backdrop{background:rgba(15,23,42,.58);}
+    .modal-card{border:1px solid var(--border);}
+    #toast{border-radius:8px;}
+    #admin-nav-overlay{display:none;position:fixed;inset:var(--topbar-h) 0 0;background:rgba(15,23,42,.52);z-index:38;}
+    #admin-nav-overlay.open{display:block;}
+    @media(max-width:900px){
+      .admin-menu-btn{display:flex;}
+      #left-nav{display:flex!important;position:fixed;top:var(--topbar-h);left:0;bottom:0;width:min(86vw,300px);z-index:40;transform:translateX(-100%);transition:transform .24s ease;box-shadow:18px 0 42px rgba(15,23,42,.22);}
+      #left-nav.open{transform:translateX(0);}
+      .content-inner{padding:22px 16px;}
+      .tb-label,.tb-status{display:none;}
+      .tb-user-chip{padding:5px;}
+      #tb-user{display:none;}
+      .page-hdr{align-items:flex-start;}
+      .panel-hdr{align-items:flex-start;flex-direction:column;}
+      .stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+      .three-col{grid-template-columns:1fr;}
+    }
+    @media(max-width:560px){
+      #login-screen{justify-content:flex-start;padding:16px 28px;overflow:auto;}
+      .login-card{width:100%;max-width:334px;margin:0;}
+      .stat-grid{grid-template-columns:1fr;}
+      .two-col,.three-col{grid-template-columns:1fr;}
+      .content-inner{padding:16px 12px;}
+      .lc-body{padding:24px 22px;}
+      .login-card{max-height:calc(100vh - 24px);overflow:auto;}
+      .url-indicator{font-size:11px;overflow-wrap:anywhere;}
+      .tbl-wrap{margin:0 -12px;padding:0 12px;}
+      .btn{width:100%;justify-content:center;}
+      .doc-actions{width:100%;}
+      .doc-actions .btn{flex:1;}
+      .modal-card{max-height:92vh;}
+    }
+
+    /* DOLE no-photo admin refresh */
+    :root{
+      --navy:#0b2d7a;--navy-2:#082563;--navy-3:#123d98;
+      --gold:#f4c430;--gold-lt:#ffe083;--gold-bg:#fff7d7;
+      --cream:#dbe8f8;--white:#fff;--text:#172033;
+      --muted:#5f6f86;--border:#c8d4e6;
+      --red:#c8102e;--red-bg:#fff0f3;
+      --blue:#0b4eb3;--blue-bg:#edf5ff;
+      --sidebar-bg:#071b52;
+    }
+    #login-screen{
+      background-color:#0b2d7a!important;
+      background-image:
+        repeating-linear-gradient(0deg,rgba(255,255,255,.09) 0 1px,transparent 1px 88px),
+        repeating-linear-gradient(90deg,rgba(255,255,255,.075) 0 1px,transparent 1px 126px),
+        linear-gradient(135deg,#061d59 0%,#0b2d7a 56%,#7d1024 100%)!important;
+    }
+    .login-card{position:relative;z-index:1;border:1px solid rgba(255,255,255,.36);box-shadow:0 30px 80px rgba(2,12,38,.34);}
+    .lc-header{
+      background:#0b2d7a!important;
+      background-image:linear-gradient(135deg,#061d59,#0b2d7a 62%,#7d1024)!important;
+      border-bottom:3px solid var(--gold)!important;
+    }
+    .lc-seal,.tb-seal{
+      background:linear-gradient(135deg,#0b2d7a 0 52%,#c8102e 52% 82%,#f4c430 82%)!important;
+      color:#fff!important;
+      border:1px solid rgba(255,255,255,.25);
+    }
+    #topbar{
+      background:#0b2d7a!important;
+      background-image:linear-gradient(135deg,#061d59,#0b2d7a 64%,#7d1024)!important;
+      border-bottom:3px solid var(--gold)!important;
+      box-shadow:0 10px 28px rgba(7,27,82,.22)!important;
+    }
+    #main{
+      background-color:#dbe8f8!important;
+      background-image:
+        repeating-linear-gradient(0deg,rgba(11,45,122,.07) 0 1px,transparent 1px 84px),
+        repeating-linear-gradient(90deg,rgba(11,45,122,.055) 0 1px,transparent 1px 124px),
+        linear-gradient(135deg,#dbe8f8 0%,#eef4fb 48%,#f7f1df 100%)!important;
+    }
+    #left-nav{background:#071b52!important;border-right:1px solid rgba(255,255,255,.10);}
+    .nav-item.active{background:rgba(244,196,48,.16)!important;color:#ffe083!important;box-shadow:inset 3px 0 0 #f4c430;}
+    .nav-item:hover{background:rgba(255,255,255,.10)!important;}
+    .content-inner{padding:32px;max-width:1360px;}
+    .page-hdr-left h1,.panel-title,.modal-title{color:#09276d!important;}
+    .page-hdr-left p{color:#4b607a;}
+    .panel,.stat-card,.mini-metric,.modal-card,.upload-zone,.chunk-card,.full-doc-card{
+      background:rgba(255,255,255,.96)!important;
+      border:1px solid rgba(143,162,191,.62)!important;
+      box-shadow:0 12px 30px rgba(7,27,82,.08)!important;
+    }
+    .panel,.stat-card,.modal-card{border-radius:10px;}
+    .panel-hdr,.modal-hdr,.modal-foot,thead tr{background:#f8fbff!important;}
+    .stat-card::after{
+      height:4px!important;
+      background:linear-gradient(90deg,#0b2d7a 0 58%,#c8102e 58% 86%,#f4c430 86%)!important;
+    }
+    .btn-primary,.login-btn{background:#0b2d7a!important;color:#fff!important;}
+    .btn-primary:hover,.login-btn:hover{background:#082563!important;}
+    .btn-gold{background:#fff7d7!important;color:#7a5200!important;border-color:#ead07a!important;}
+    .btn-danger{background:#fff0f3!important;color:#a8071f!important;border-color:#ffc2cc!important;}
+    .upload-zone{background:#f8fbff!important;border-style:dashed!important;border-width:2px!important;}
+    .upload-zone:hover{background:#edf5ff!important;border-color:#0b4eb3!important;}
+    .info-bar,.alert-bar.blue{background:#edf5ff!important;color:#0b2d7a!important;border-color:#b8cff3!important;}
+    .badge-blue,.badge-navy{background:#edf5ff!important;color:#0b2d7a!important;border-color:#b8cff3!important;}
+    .badge-green{background:#ecfdf5!important;}
+    .full-doc-card{margin-top:12px;padding:0!important;overflow:hidden;}
+    .full-doc-toolbar{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+      padding:12px 14px;border-bottom:1px solid var(--border);background:#f8fbff;
+      font-size:12px;color:#4b607a;font-weight:700;
+    }
+    .full-doc-text{
+      padding:18px 20px;max-height:60vh;background:#fff;font-size:14px;line-height:1.72;
+      color:#22314a;white-space:pre-wrap;
+    }
+    .original-file-frame{
+      width:100%;height:min(68vh,720px);border:0;background:#fff;display:block;
+    }
+    .original-image-preview{
+      display:block;max-width:100%;max-height:min(68vh,720px);margin:0 auto;background:#fff;
+      object-fit:contain;
+    }
+    .original-file-card{
+      display:grid;gap:14px;padding:22px;background:#fff;color:#22314a;
+    }
+    .original-file-actions{display:flex;gap:8px;flex-wrap:wrap;}
+    .original-file-meta{font-size:12px;color:#4b607a;line-height:1.55;word-break:break-word;}
+    .source-url-text{word-break:break-all;font-size:12px;line-height:1.4;}
+    .original-view-note{
+      display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;padding:12px 14px;
+      background:#edf5ff;border:1px solid #b8cff3;border-left:4px solid #0b2d7a;
+      border-radius:8px;color:#0b2d7a;font-size:13px;line-height:1.45;
+    }
+    .kb-filter-panel{display:grid;gap:12px;padding:18px;background:#f8fbff;border-bottom:1px solid var(--border);}
+    .kb-filter-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+    .kb-category-tabs{display:flex;gap:8px;flex-wrap:wrap;}
+    .kb-filter-chip{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border-radius:8px;border:1px solid #b8cff3;background:#fff;color:#0b2d7a;font-size:12px;font-weight:800;cursor:pointer;transition:background .2s,border-color .2s,color .2s;}
+    .kb-filter-chip:hover{background:#edf5ff;}
+    .kb-filter-chip.active{background:#0b2d7a;color:#fff;border-color:#0b2d7a;}
+    .kb-filter-count{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:20px;padding:0 6px;border-radius:7px;background:rgba(11,78,179,.12);font-size:11px;}
+    .kb-filter-chip.active .kb-filter-count{background:rgba(255,255,255,.18);color:#fff;}
+    .kb-doc-search{width:min(360px,100%);padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;background:#fff;color:var(--text);font-size:13px;}
+    .kb-filter-summary{font-size:12px;color:#4b607a;font-weight:700;}
+    .view-mode-pill{
+      display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;
+      background:#fff7d7;color:#7a5200;border:1px solid #ead07a;font-size:11px;font-weight:800;
+      text-transform:uppercase;
+    }
+    .doc-actions .btn{min-width:112px;justify-content:center;}
+    @media(max-width:560px){
+      .content-inner{padding:16px 12px;}
+      .doc-actions .btn{min-width:0;}
+      .full-doc-text{font-size:13px;padding:14px;max-height:58vh;}
+    }
   </style>
 </head>
 <body>
@@ -203,12 +439,12 @@
       </div>
 
       <div class="field">
-        <label>Administrator Email</label>
-        <input type="email" id="l-email" value="admin@laborlens.local"/>
+        <label for="l-email">Administrator Email</label>
+        <input type="email" id="l-email" value="admin@laborlens.local" autocomplete="email"/>
       </div>
       <div class="field">
-        <label>Master Password</label>
-        <input type="password" id="l-pass" placeholder="••••••••" autofocus/>
+        <label for="l-pass">Master Password</label>
+        <input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password" autofocus/>
       </div>
       <button class="login-btn" onclick="doLogin()">Authenticate Session</button>
       <button class="return-link" onclick="window.location.href='index.html'">← Return to User App</button>
@@ -220,6 +456,7 @@
 <!-- ═══ DASHBOARD ═══ -->
 <div id="dashboard">
   <div id="topbar">
+    <button class="admin-menu-btn" id="admin-menu-btn" onclick="toggleAdminNav()" aria-label="Open admin navigation" aria-expanded="false">&#9776;</button>
     <div class="tb-seal">⚖️</div>
     <span class="tb-name">Labor<em>Lens</em></span>
     <span class="tb-label">Administration</span>
@@ -233,7 +470,7 @@
   </div>
 
   <div id="body">
-    <nav id="left-nav">
+    <nav id="left-nav" aria-label="Admin sections">
       <div class="nav-section-lbl">Dashboard</div>
       <div class="nav-item active" data-tab="overview" onclick="switchTab(this,'overview')"><span class="nav-icon">📊</span> Metrics Overview</div>
       <div class="nav-section-lbl">Management</div>
@@ -248,6 +485,7 @@
         <span class="nav-badge" id="unresolved-nav-badge">0</span>
       </div>
     </nav>
+    <div id="admin-nav-overlay" onclick="closeAdminNav()"></div>
 
     <div id="main">
       <div class="content-inner">
@@ -295,7 +533,8 @@
 
         <!-- 3. FREQUENTLY ASKED -->
         <div id="tab-faqs">
-          <div class="page-hdr"><div class="page-hdr-left"><h1>Frequently Asked Questions</h1><p>Publish curated answers to the most common labor law queries.</p></div></div>
+          <div class="page-hdr"><div class="page-hdr-left"><h1>Frequently Asked Questions</h1><p>Publish curated answers to the most common labor law queries.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-primary" onclick="exportFAQs()">Export FAQs</button><button class="btn btn-primary" onclick="document.getElementById('faq-import-file').click()">Import FAQs</button></div></div>
+          <input type="file" id="faq-import-file" accept=".csv,.json" style="display:none" onchange="importFAQs(this)"/>
           <div class="panel">
             <div class="panel-hdr"><div class="panel-title">➕ Add FAQ Answer</div></div>
             <div class="panel-body">
@@ -306,7 +545,7 @@
                   <div class="form-group"><label>Category</label><input type="text" id="faq-cat" placeholder="e.g. Wages, Leave, Termination"/></div>
                   <div class="form-group"><label>Language</label><select id="faq-lang"><option value="en">English</option><option value="fil">Filipino</option><option value="hil">Hiligaynon</option></select></div>
                 </div>
-                <div><button class="btn btn-primary" onclick="addFAQ()">➕ Publish FAQ</button></div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-primary" onclick="addFAQ()">➕ Publish FAQ</button><button class="btn btn-gold" onclick="resetFAQForm()">Reset Form</button></div>
               </div>
             </div>
           </div>
@@ -314,8 +553,8 @@
             <div class="panel-hdr"><div class="panel-title">📋 FAQ List — Ranked by Frequency</div></div>
             <div class="tbl-wrap">
               <table>
-                <thead><tr><th>#</th><th>Question</th><th>Answer Snippet</th><th>Category</th><th>Language</th><th>Times Asked</th><th>Actions</th></tr></thead>
-                <tbody id="faqs-tbody"><tr><td colspan="7" class="loading">Loading…</td></tr></tbody>
+                <thead><tr><th>#</th><th>Question</th><th>Answer Snippet</th><th>Category</th><th>Language</th><th>Times Asked</th><th>Updated</th><th>Actions</th></tr></thead>
+                <tbody id="faqs-tbody"><tr><td colspan="8" class="loading">Loading…</td></tr></tbody>
               </table>
             </div>
           </div>
@@ -323,18 +562,44 @@
 
         <!-- 4. KNOWLEDGE BASE -->
         <div id="tab-knowledge">
-          <div class="page-hdr"><div class="page-hdr-left"><h1>Knowledge Base Editor</h1><p>Ingest and manage legal reference documents for AI indexing.</p></div></div>
-          <div class="alert-bar blue"><span style="font-size:18px;">ℹ️</span><div><div style="font-weight:600;">Supported: PDF, DOCX, DOC</div><div style="font-size:12px;margin-top:2px;">Upload Labor Code revisions, DOLE issuances, wage orders, or IRR updates. Files are automatically chunked and vector-indexed.</div></div></div>
+          <div class="page-hdr"><div class="page-hdr-left"><h1>Knowledge Base Editor</h1><p>Upload, review, and manage legal reference documents used by the chatbot.</p></div></div>
+          <div class="alert-bar blue"><span style="font-size:18px;">ℹ️</span><div><div style="font-weight:600;">Supported: PDF, DOCX, and scanned images</div><div style="font-size:12px;margin-top:2px;">Text-based files are indexed directly. Scanned PDFs or images are converted to text with OCR first, then chunked and vector-indexed for chatbot search.</div></div></div>
           <div class="two-col" style="margin-bottom:24px;">
             <div class="panel" style="margin-bottom:0;">
               <div class="panel-hdr"><div class="panel-title">📤 Upload Legal Document</div></div>
               <div class="panel-body">
+                <div class="form-group kb-category-field">
+                  <label for="kb-category">RAG Category</label>
+                  <select id="kb-category" aria-label="Knowledge base category">
+                    <option value="Core Labor Laws">Core Labor Laws</option>
+                  </select>
+                </div>
+                <div class="form-group"><label for="kb-title">Document Title</label><input type="text" id="kb-title" placeholder="e.g. Labor Code of the Philippines"/></div>
+                <div class="form-row">
+                  <div class="form-group"><label for="kb-source">Official Source</label><input type="text" id="kb-source" placeholder="e.g. DOLE, Official Gazette"/></div>
+                  <div class="form-group"><label for="kb-version">Law Year / Version</label><input type="text" id="kb-version" placeholder="e.g. 2022 renumbered"/></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label for="kb-law-number">Law / Issuance Number</label><input type="text" id="kb-law-number" placeholder="e.g. RA 11210, DOLE DO 174-17"/></div>
+                  <div class="form-group"><label for="kb-article-section">Article / Section</label><input type="text" id="kb-article-section" placeholder="e.g. Section 3, ART. 296"/></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label for="kb-issuing-agency">Issuing Agency</label><input type="text" id="kb-issuing-agency" placeholder="e.g. DOLE, Congress, Supreme Court"/></div>
+                  <div class="form-group"><label for="kb-date-issued">Date Issued</label><input type="text" id="kb-date-issued" placeholder="e.g. February 20, 2019"/></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label for="kb-effective-date">Effective Date</label><input type="text" id="kb-effective-date" placeholder="e.g. March 11, 2019"/></div>
+                  <div class="form-group"><label for="kb-date-downloaded">Date Downloaded</label><input type="text" id="kb-date-downloaded" placeholder="e.g. June 19, 2026"/></div>
+                </div>
+                <div class="form-group"><label for="kb-superseding-document">Superseding / Amending Document</label><input type="text" id="kb-superseding-document" placeholder="Leave blank if this is the current controlling source"/></div>
+                <div class="form-group"><label for="kb-version-status">Version Status</label><select id="kb-version-status"><option value="active">Active</option><option value="amended">Amended</option><option value="repealed">Repealed</option><option value="archived">Archived</option><option value="inactive">Inactive</option><option value="replaced">Replaced</option><option value="outdated">Outdated</option></select><span class="status-note">Only active documents should remain available for chatbot retrieval.</span></div>
+                <div class="form-group"><label for="kb-source-url">Original Link / Source URL</label><input type="url" id="kb-source-url" placeholder="https://lawphil.net/... or official source link"/><span class="status-note">Paste the exact source link you want shown in chatbot citations.</span></div>
                 <div class="upload-zone" onclick="document.getElementById('file-input').click()">
                   <span class="uz-icon">📄</span>
                   <div class="uz-title">Click to select file</div>
-                  <p class="uz-sub">PDF or DOCX · Max 10MB</p>
+                  <p class="uz-sub">PDF, DOCX, PNG, JPG, TIFF, BMP, or WEBP · Max 10MB</p>
                 </div>
-                <input type="file" id="file-input" accept=".pdf,.docx,.doc" style="display:none" onchange="uploadFile(this)"/>
+                <input type="file" id="file-input" accept=".pdf,.docx,.png,.jpg,.jpeg,.tif,.tiff,.bmp,.webp,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*" style="display:none" onchange="uploadFile(this)"/>
                 <div id="upload-msg"></div>
               </div>
             </div>
@@ -342,17 +607,27 @@
               <div class="panel-hdr"><div class="panel-title">📊 Vector Database Status</div></div>
               <div class="panel-body">
                 <div class="info-bar" id="kb-stats">Querying vector database…</div>
-                <div class="mini-metric" style="margin-bottom:10px;"><div class="mini-metric-lbl">Total Chunks Indexed</div><div class="mini-metric-val" id="kb-chunks">—</div></div>
-                <div class="mini-metric"><div class="mini-metric-lbl">Documents Indexed</div><div class="mini-metric-val" id="kb-docs-count">—</div></div>
+                <div class="mini-metric" style="margin-bottom:10px;"><div class="mini-metric-lbl">Searchable Chunks</div><div class="mini-metric-val" id="kb-chunks">—</div></div>
+                <div class="mini-metric"><div class="mini-metric-lbl">Documents Ready</div><div class="mini-metric-val" id="kb-docs-count">—</div></div>
               </div>
             </div>
           </div>
           <div class="panel">
-            <div class="panel-hdr"><div class="panel-title">📚 Indexed Documents</div><button class="btn btn-sm btn-primary" onclick="loadDocuments()">↻ Refresh</button></div>
+            <div class="panel-hdr"><div class="panel-title">📚 Knowledge Base Documents</div><button class="btn btn-sm btn-primary" onclick="loadDocuments()">↻ Refresh</button></div>
+            <div class="kb-filter-panel">
+              <div class="kb-filter-toolbar">
+                <div>
+                  <div class="mini-metric-lbl">Filter by Category</div>
+                  <div class="kb-filter-summary" id="kb-filter-summary">Showing all knowledge base documents</div>
+                </div>
+                <input class="kb-doc-search" id="kb-doc-search" type="search" placeholder="Search documents, source, status..." oninput="setKbDocumentSearch(this.value)" aria-label="Search knowledge base documents"/>
+              </div>
+              <div class="kb-category-tabs" id="kb-category-tabs"></div>
+            </div>
             <div class="tbl-wrap">
               <table>
-                <thead><tr><th>#</th><th>Document</th><th>Type</th><th>Size</th><th>Chunks</th><th>Status</th><th>Indexed</th><th>Actions</th></tr></thead>
-                <tbody id="docs-tbody"><tr><td colspan="8" class="loading">Loading…</td></tr></tbody>
+                <thead><tr><th>#</th><th>Document</th><th>Category</th><th>Type</th><th>Size</th><th>Chunks</th><th>Status</th><th>Indexed</th><th>Actions</th></tr></thead>
+                <tbody id="docs-tbody"><tr><td colspan="9" class="loading">Loading…</td></tr></tbody>
               </table>
             </div>
           </div>
@@ -360,7 +635,7 @@
 
         <!-- 5. ANALYTICS -->
         <div id="tab-analytics">
-          <div class="page-hdr"><div class="page-hdr-left"><h1>Analytics &amp; Reports</h1><p>Usage trends, query patterns, and user engagement data.</p></div><button class="btn btn-primary" onclick="loadAnalytics()">↻ Refresh</button></div>
+          <div class="page-hdr"><div class="page-hdr-left"><h1>Analytics &amp; Reports</h1><p>Usage trends, query patterns, and user engagement data.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-primary" onclick="downloadSystemBackup()">System Backup</button><button class="btn btn-primary" onclick="exportAnalyticsReport()">Export Analytics Report</button><button class="btn btn-primary" onclick="exportChatLogs()">Export Chat Logs</button><button class="btn btn-primary" onclick="loadAnalytics()">↻ Refresh</button></div></div>
           <div class="stat-grid" id="analytics-stats" style="margin-bottom:28px;"><div class="loading" style="grid-column:1/-1;">Loading analytics…</div></div>
           <div class="two-col">
             <div class="panel">
@@ -386,8 +661,35 @@
             <div class="panel-hdr"><div class="panel-title">🔥 Most Asked Questions</div></div>
             <div class="tbl-wrap">
               <table>
-                <thead><tr><th>Rank</th><th>Topic / Intent</th><th>Times Asked</th><th>Trend</th></tr></thead>
+                <thead><tr><th>Rank</th><th>Question / Intent</th><th>Times Asked</th><th>Trend</th></tr></thead>
                 <tbody id="top-questions-tbody"><tr><td colspan="4" class="loading">Loading…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-hdr"><div class="panel-title">User Feedback Review</div><button class="btn btn-sm btn-primary" onclick="loadFeedbackAnalytics()">Refresh Feedback</button></div>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th>#</th><th>User</th><th>Rating</th><th>Intent</th><th>Source Match</th><th>Answer Snippet</th><th>Date</th></tr></thead>
+                <tbody id="feedback-tbody"><tr><td colspan="7" class="loading">Loading feedback…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-hdr"><div class="panel-title">Answer Review Queue</div><button class="btn btn-sm btn-primary" onclick="loadReviewQueue()">Refresh Queue</button></div>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th>#</th><th>User Question</th><th>Rating</th><th>Source Match</th><th>Review Status</th><th>Actions</th></tr></thead>
+                <tbody id="review-queue-tbody"><tr><td colspan="6" class="loading">Loading review queue...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-hdr"><div class="panel-title">Recent Admin Audit Log</div><button class="btn btn-sm btn-primary" onclick="loadAuditLogs()">Refresh Audit Log</button></div>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th>#</th><th>Action</th><th>Target</th><th>Details</th><th>Admin</th><th>Date</th></tr></thead>
+                <tbody id="audit-tbody"><tr><td colspan="6" class="loading">Loading audit log...</td></tr></tbody>
               </table>
             </div>
           </div>
@@ -405,7 +707,7 @@
             <div class="panel-hdr"><div class="panel-title">📋 Recent Query Performance Log</div></div>
             <div class="tbl-wrap">
               <table>
-                <thead><tr><th>#</th><th>Query Snippet</th><th>Response Time</th><th>KB Found</th><th>Date</th></tr></thead>
+                <thead><tr><th>#</th><th>Query Snippet</th><th>Response Time</th><th>Result</th><th>Date</th></tr></thead>
                 <tbody id="perf-log-tbody"><tr><td colspan="5" class="loading">Loading…</td></tr></tbody>
               </table>
             </div>
@@ -435,8 +737,8 @@
             </div>
             <div class="tbl-wrap">
               <table>
-                <thead><tr><th>#</th><th>User</th><th>Question (Not Found in KB)</th><th>Detected Intent</th><th>Response Time</th><th>Date</th><th>Actions</th></tr></thead>
-                <tbody id="queries-tbody"><tr><td colspan="7" class="loading">Scanning logs…</td></tr></tbody>
+                <thead><tr><th>#</th><th>User</th><th>Question (Not Found in KB)</th><th>Detected Intent</th><th>Suggested Fix</th><th>Response Time</th><th>Date</th><th>Actions</th></tr></thead>
+                <tbody id="queries-tbody"><tr><td colspan="8" class="loading">Scanning logs…</td></tr></tbody>
               </table>
             </div>
           </div>
@@ -446,6 +748,20 @@
     </div>
   </div>
 </div>
+<div class="modal-backdrop" id="doc-modal" onclick="closeDocModal(event)">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="doc-modal-title" onclick="event.stopPropagation()">
+    <div class="modal-hdr">
+      <div>
+        <div class="modal-title" id="doc-modal-title">Document Content</div>
+        <div class="modal-sub" id="doc-modal-sub">Indexed chunks from the knowledge base</div>
+      </div>
+      <button class="btn btn-sm btn-danger" onclick="closeDocModal()">Close</button>
+    </div>
+    <div class="modal-body" id="doc-modal-body"><div class="loading">Loading document content...</div></div>
+    <div class="modal-foot" id="doc-modal-foot"></div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -456,7 +772,281 @@ const NGROK_URL = 'https://plaster-multiply-tint.ngrok-free.dev/api';
 // ════════════════════════════════════════════════════════════════
 
 let API = NGROK_URL;   // Set immediately — no login input needed
-let token = null, currentUser = null, allUsers = [];
+let token = null, currentUser = null, allUsers = [], faqCache = [];
+let docContentState = { id: null, offset: 0, limit: 25, total: 0 };
+let docObjectUrl = null;
+let kbDocumentsCache = [];
+let kbSearchableChunks = null;
+let kbSelectedCategory = 'All';
+let kbDocumentSearch = '';
+let editingFaqId = null;
+const ADMIN_SESSION_KEY = 'laborlens_admin_session';
+const DOC_VERSION_STATUSES = ['active', 'amended', 'repealed', 'archived', 'inactive', 'replaced', 'outdated'];
+const KB_CATEGORIES = [
+  'Core Labor Laws',
+  'Employment Benefits',
+  'Leave Benefits',
+  'Domestic Workers',
+  'Anti-Harassment / Discrimination',
+  'Social Benefits',
+  'DOLE Resources',
+  'Jurisprudence',
+  'Others'
+];
+
+function esc(v) {
+  return String(v ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  }[ch]));
+}
+
+function jsArg(v) {
+  return String(v ?? '').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\r?\n/g,' ');
+}
+
+function num(v, fallback=0) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+function pct(part, whole) {
+  const total = num(whole);
+  return total > 0 ? Math.round((num(part) / total) * 100) : 0;
+}
+
+function dateLabel(v) {
+  if (!v) return '-';
+  const d = new Date(v);
+  return Number.isNaN(d.getTime()) ? String(v).slice(0, 10) : d.toLocaleDateString();
+}
+
+function languageLabel(code) {
+  return ({ en: 'English', fil: 'Filipino', hil: 'Hiligaynon' }[String(code || '').toLowerCase()] || 'Unknown');
+}
+
+function safeUrl(v) {
+  const raw=String(v ?? '').trim();
+  if(!raw) return '';
+  try {
+    const url=new URL(raw);
+    return ['http:','https:'].includes(url.protocol) ? url.href : '';
+  } catch(_) {
+    return '';
+  }
+}
+
+function docTypeLabel(doc) {
+  const type = String(doc?.file_type || '').toLowerCase();
+  const name = String(doc?.original_filename || '').toLowerCase();
+  if (type === 'pdf' || name.endsWith('.pdf')) return 'PDF';
+  if (type === 'docx' || name.endsWith('.docx')) return 'DOCX';
+  if (['png','jpg','jpeg','tif','tiff','bmp','webp'].includes(type) || /\.(png|jpe?g|tiff?|bmp|webp)$/.test(name)) return 'IMAGE';
+  return type ? type.toUpperCase() : '-';
+}
+
+function versionStatusBadge(status='active', isActive=true) {
+  const value=String(status||'active').toLowerCase();
+  const cls=value==='active'&&isActive?'badge-green':value==='repealed'?'badge-red':['amended','replaced','outdated'].includes(value)?'badge-amber':'badge-gray';
+  const label=isActive?value.toUpperCase():`INACTIVE / ${value.toUpperCase()}`;
+  return `<span class="badge ${cls}">${esc(label)}</span>`;
+}
+
+function unresolvedSuggestionText(intent='general') {
+  const key=String(intent||'general').toLowerCase();
+  if(key.includes('leave')) return 'Add a FAQ for leave rules or upload a source under Leave Benefits.';
+  if(key.includes('termination') || key.includes('dismiss')) return 'Upload a termination-related source under Core Labor Laws or add a reviewed FAQ.';
+  if(key.includes('wage') || key.includes('pay') || key.includes('overtime')) return 'Upload a wage-related source under Employment Benefits or DOLE Resources.';
+  if(key.includes('harass') || key.includes('safe')) return 'Upload a source under Anti-Harassment / Discrimination or add a focused FAQ answer.';
+  return 'Review the question, then add a FAQ or upload a source document under the best matching knowledge base category.';
+}
+
+function revokeDocObjectUrl() {
+  if (docObjectUrl) {
+    URL.revokeObjectURL(docObjectUrl);
+    docObjectUrl = null;
+  }
+}
+
+function saveAdminSession() {
+  if (!token || !currentUser) return;
+  localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({
+    token,
+    user: currentUser,
+    savedAt: Date.now()
+  }));
+}
+
+function clearAdminSession() {
+  localStorage.removeItem(ADMIN_SESSION_KEY);
+}
+
+function showLogin(message='') {
+  document.getElementById('dashboard').classList.remove('visible');
+  document.getElementById('login-screen').classList.remove('gone');
+  document.getElementById('login-err').textContent = message;
+  const pass = document.getElementById('l-pass');
+  if (pass) pass.focus();
+}
+
+function renderKbCategoryOptions(categories=KB_CATEGORIES, selected=KB_CATEGORIES[0]) {
+  const select = document.getElementById('kb-category');
+  if (!select) return;
+  const safeCategories = Array.isArray(categories) && categories.length ? categories : KB_CATEGORIES;
+  select.innerHTML = safeCategories
+    .map(c => `<option value="${esc(c)}" ${c===selected?'selected':''}>${esc(c)}</option>`)
+    .join('');
+}
+
+function countByStatus(rows=[], status='indexed') {
+  const match = rows.find(r => String(r.status || '').toLowerCase() === status);
+  return match ? Number(match.count || 0) : 0;
+}
+
+function kbSummary(stats={}) {
+  const chunks = Number(stats.chroma?.total_chunks || 0);
+  const docs = stats.documents || [];
+  const categories = stats.categories || [];
+  const indexedDocs = countByStatus(docs, 'indexed');
+  const activeCategories = categories.filter(c => Number(c.count || 0) > 0).length;
+  return { chunks, indexedDocs, activeCategories };
+}
+
+function documentDisplayTitle(doc={}) {
+  return doc.document_title || doc.original_filename || doc.filename || 'Untitled document';
+}
+
+function normalizedKbCategory(category='') {
+  const raw = String(category || '').trim();
+  return KB_CATEGORIES.includes(raw) ? raw : 'Others';
+}
+
+function isIndexedKbDocument(doc={}) {
+  return String(doc.status || '').toLowerCase() === 'indexed' && Number(doc.chunk_count || 0) > 0;
+}
+
+function kbCategoryCounts(docs=kbDocumentsCache) {
+  const counts = Object.fromEntries(['All', ...KB_CATEGORIES].map(category => [category, 0]));
+  (Array.isArray(docs) ? docs : []).forEach(doc => {
+    counts.All += 1;
+    const category = normalizedKbCategory(doc.category);
+    counts[category] = (counts[category] || 0) + 1;
+  });
+  return counts;
+}
+
+function renderKbCategoryFilters() {
+  const wrap = document.getElementById('kb-category-tabs');
+  if (!wrap) return;
+  const counts = kbCategoryCounts();
+  const categories = ['All', ...KB_CATEGORIES];
+  wrap.innerHTML = categories.map(category => {
+    const active = kbSelectedCategory === category ? ' active' : '';
+    return `<button type="button" class="kb-filter-chip${active}" onclick="setKbCategoryFilter('${jsArg(category)}')">${esc(category)} <span class="kb-filter-count">${counts[category] || 0}</span></button>`;
+  }).join('');
+}
+
+function documentMatchesSearch(doc={}, query='') {
+  const q = String(query || '').trim().toLowerCase();
+  if (!q) return true;
+  return [
+    documentDisplayTitle(doc),
+    doc.original_filename,
+    doc.filename,
+    doc.category,
+    doc.source_name,
+    doc.source_url,
+    doc.law_number,
+    doc.article_section,
+    doc.issuing_agency,
+    doc.date_issued,
+    doc.effective_date,
+    doc.date_downloaded,
+    doc.superseding_document,
+    doc.law_version,
+    doc.status,
+    doc.processing_stage,
+    doc.file_type
+  ].some(value => String(value || '').toLowerCase().includes(q));
+}
+
+function filteredKbDocuments() {
+  return kbDocumentsCache.filter(doc => {
+    const inCategory = kbSelectedCategory === 'All' || normalizedKbCategory(doc.category) === kbSelectedCategory;
+    return inCategory && documentMatchesSearch(doc, kbDocumentSearch);
+  });
+}
+
+function setKbCategoryFilter(category='All') {
+  kbSelectedCategory = category === 'All' || KB_CATEGORIES.includes(category) ? category : 'All';
+  renderDocumentsTable();
+}
+
+function setKbDocumentSearch(value='') {
+  kbDocumentSearch = String(value || '');
+  renderDocumentsTable();
+}
+
+function updateKbFilterSummary(total=0, shown=0) {
+  const el = document.getElementById('kb-filter-summary');
+  if (!el) return;
+  const categoryText = kbSelectedCategory === 'All' ? 'all categories' : kbSelectedCategory;
+  const searchText = kbDocumentSearch.trim() ? ` matching "${kbDocumentSearch.trim()}"` : '';
+  el.textContent = `Showing ${shown.toLocaleString()} of ${total.toLocaleString()} documents in ${categoryText}${searchText}`;
+}
+
+function renderDocumentsTable() {
+  const tb = document.getElementById('docs-tbody');
+  if (!tb) return;
+  renderKbCategoryFilters();
+  const docs = filteredKbDocuments();
+  updateKbFilterSummary(kbDocumentsCache.length, docs.length);
+  if (!kbDocumentsCache.length) {
+    tb.innerHTML = '<tr><td colspan="9" class="empty">Knowledge base is empty.</td></tr>';
+    return;
+  }
+  if (!docs.length) {
+    tb.innerHTML = '<tr><td colspan="9" class="empty">No documents match this category or search.</td></tr>';
+    return;
+  }
+  tb.innerHTML = docs.map((d,i)=>{
+    const isProcessing=d.status==='processing'||d.status==='pending';
+    const vectorMissing=kbSearchableChunks===0 && d.status==='indexed' && (d.chunk_count??0)>0;
+    const shownChunks=vectorMissing ? 0 : (d.chunk_count??0);
+    const canView=!!d.filename;
+    const displayTitle=esc(d.document_title||d.original_filename);
+    const name=esc(d.original_filename);
+    const nameArg=jsArg(d.original_filename);
+    const category=esc(d.category||KB_CATEGORIES[0]);
+    const docMeta=[d.source_name,d.law_number,d.article_section,d.issuing_agency,d.date_issued,d.effective_date,d.date_downloaded,d.superseding_document,d.law_version,d.processing_stage].filter(Boolean).map(esc).join(' | ');
+    const sourceUrl=safeUrl(d.source_url);
+    const originalLink=sourceUrl?`<span class="status-note"><a href="${esc(sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(d.source_url)}</a></span>`:'';
+    return `<tr>
+      <td class="td-mono">${i+1}</td>
+      <td class="td-strong doc-name">${displayTitle}<span class="status-note">${name}${docMeta?` | ${docMeta}`:''}</span><span class="status-note">${versionStatusBadge(d.version_status,d.is_active)}</span>${originalLink}${d.error_message?`<span class="status-note" style="color:var(--red);">${esc(d.error_message)}</span>`:''}</td>
+      <td><span class="badge badge-blue kb-category-badge">${category}</span></td>
+      <td><span class="badge badge-gray">${docTypeLabel(d)}</span></td>
+      <td>${d.file_size?(d.file_size/1048576).toFixed(2)+' MB':'-'}</td>
+      <td><strong>${shownChunks}</strong></td>
+      <td>${statusBadge(d, vectorMissing)}</td>
+      <td class="td-mono">${dateLabel(d.last_indexed_at||d.created_at)}</td>
+      <td><div class="doc-actions">
+        <button class="btn btn-sm btn-primary" ${canView?'':'disabled'} onclick="viewDoc(${d.id},'${nameArg}')">View Original</button>
+        <button class="btn btn-sm btn-gold" onclick="viewDocHealth(${d.id},'${nameArg}')">Health</button>
+        <button class="btn btn-sm btn-gold" onclick="editDocumentMeta(${d.id})">Edit</button>
+        <button class="btn btn-sm btn-danger" ${isProcessing?'disabled title="Wait until indexing finishes"':''} onclick="deleteDoc(${d.id},'${nameArg}','${d.status}')">Delete</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderHealthRow(label, value, color='green', note='') {
+  const bg = color === 'amber' ? 'var(--amber-bg)' : color === 'red' ? 'var(--red-bg)' : color === 'blue' ? 'var(--blue-bg)' : 'var(--green-bg)';
+  const border = color === 'amber' ? 'rgba(217,119,6,.2)' : color === 'red' ? 'rgba(192,57,43,.2)' : color === 'blue' ? 'rgba(29,78,216,.2)' : 'rgba(13,122,85,.2)';
+  return `<div class="flex-between" style="padding:12px 16px;background:${bg};border:1px solid ${border};border-radius:10px;gap:12px;">
+    <span style="font-size:14px;font-weight:600;">${label}${note?`<span class="status-note">${note}</span>`:''}</span>
+    <span class="badge badge-${color}">${value}</span>
+  </div>`;
+}
 
 function toast(msg, err=false) {
   const t = document.getElementById('toast');
@@ -467,10 +1057,62 @@ function toast(msg, err=false) {
 }
 
 async function apiFetch(path, opts={}) {
-  return fetch(`${API}${path}`, { ...opts, headers: {
+  const response = await fetch(`${API}${path}`, { ...opts, headers: {
     'Content-Type':'application/json','Authorization':`Bearer ${token}`,
     'ngrok-skip-browser-warning':'true',...(opts.headers||{})
   }});
+  if (response.status === 401) {
+    token = null;
+    currentUser = null;
+    clearAdminSession();
+    showLogin('Your admin session expired. Please sign in again.');
+  }
+  return response;
+}
+
+async function loadKbCategories() {
+  renderKbCategoryOptions();
+  try {
+    const r = await apiFetch('/kb/categories');
+    const d = await r.json();
+    if (r.ok) renderKbCategoryOptions(d.categories, d.default || KB_CATEGORIES[0]);
+  } catch (_) {
+    renderKbCategoryOptions();
+  }
+}
+
+async function restoreAdminSession() {
+  renderKbCategoryOptions();
+  const raw = localStorage.getItem(ADMIN_SESSION_KEY);
+  if (!raw) {
+    showLogin();
+    return;
+  }
+  try {
+    const saved = JSON.parse(raw);
+    if (!saved?.token) throw new Error('No saved session');
+    token = saved.token;
+    currentUser = saved.user || null;
+
+    const r = await fetch(`${API}/auth/me`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'ngrok-skip-browser-warning': 'true'
+      }
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.detail || 'Saved session expired');
+    if (d.role !== 'admin') throw new Error('Saved session is not an admin account');
+
+    currentUser = { id: d.id, username: d.username, email: d.email, role: d.role };
+    saveAdminSession();
+    initDashboard();
+  } catch (e) {
+    token = null;
+    currentUser = null;
+    clearAdminSession();
+    showLogin('Please sign in to continue.');
+  }
 }
 
 async function doLogin() {
@@ -489,16 +1131,16 @@ async function doLogin() {
     if (d.role !== 'admin') throw new Error('Access denied: admin account required.');
     token = d.access_token;
     currentUser = { id: d.user_id, username: d.username, role: d.role };
+    saveAdminSession();
     initDashboard();
   } catch(e) { errEl.textContent = e.message; }
 }
 
 function doLogout() {
   token = null; currentUser = null;
-  document.getElementById('dashboard').classList.remove('visible');
-  document.getElementById('login-screen').classList.remove('gone');
+  clearAdminSession();
+  showLogin();
   document.getElementById('l-pass').value = '';
-  document.getElementById('login-err').textContent = '';
 }
 
 function initDashboard() {
@@ -506,6 +1148,7 @@ function initDashboard() {
   document.getElementById('dashboard').classList.add('visible');
   document.getElementById('tb-user').textContent = currentUser.username;
   document.getElementById('tb-avatar').textContent = currentUser.username.charAt(0).toUpperCase();
+  loadKbCategories();
   refreshAll();
 }
 
@@ -519,9 +1162,29 @@ function switchTab(el, name) {
   el.classList.add('active');
   document.querySelectorAll('#tab-overview,#tab-users,#tab-knowledge,#tab-faqs,#tab-queries,#tab-analytics,#tab-performance').forEach(t => t.classList.remove('tab-active'));
   document.getElementById(`tab-${name}`).classList.add('tab-active');
+  closeAdminNav();
 }
 
-/* ── Overview ── */
+function toggleAdminNav() {
+  const nav = document.getElementById('left-nav');
+  const overlay = document.getElementById('admin-nav-overlay');
+  const btn = document.getElementById('admin-menu-btn');
+  const open = nav.classList.toggle('open');
+  overlay.classList.toggle('open', open);
+  if (btn) btn.setAttribute('aria-expanded', String(open));
+}
+
+function closeAdminNav() {
+  const nav = document.getElementById('left-nav');
+  const overlay = document.getElementById('admin-nav-overlay');
+  const btn = document.getElementById('admin-menu-btn');
+  if (nav) nav.classList.remove('open');
+  if (overlay) overlay.classList.remove('open');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+
+
+/* -- Overview -- */
 async function loadOverview() {
   try {
     const r = await apiFetch('/admin/dashboard');
@@ -533,89 +1196,97 @@ async function loadOverview() {
     badge.textContent = unresolved;
     badge.style.display = unresolved > 0 ? 'inline-flex' : 'none';
     document.getElementById('stat-grid').innerHTML = `
-      <div class="stat-card"><span class="stat-icon">👥</span><div class="stat-lbl">Total Users</div><div class="stat-val">${t.users??0}</div><div class="stat-sub">Registered accounts</div></div>
-      <div class="stat-card green"><span class="stat-icon">💬</span><div class="stat-lbl">Consultations</div><div class="stat-val">${t.messages??0}</div><div class="stat-sub">Legal queries processed</div></div>
-      <div class="stat-card gold"><span class="stat-icon">📚</span><div class="stat-lbl">Knowledge Docs</div><div class="stat-val">${t.docs??t.indexed_documents??0}</div><div class="stat-sub">Indexed reference files</div></div>
-      <div class="stat-card red"><span class="stat-icon">❓</span><div class="stat-lbl">Not Found in KB</div><div class="stat-val">${unresolved}</div><div class="stat-sub">Queries without KB answers</div></div>`;
+      <div class="stat-card"><span class="stat-icon">Users</span><div class="stat-lbl">Total Users</div><div class="stat-val">${t.users??0}</div><div class="stat-sub">Registered accounts</div></div>
+      <div class="stat-card green"><span class="stat-icon">Chats</span><div class="stat-lbl">Consultations</div><div class="stat-val">${t.messages??0}</div><div class="stat-sub">Legal queries processed</div></div>
+      <div class="stat-card gold"><span class="stat-icon">KB</span><div class="stat-lbl">Knowledge Docs</div><div class="stat-val">${t.docs??t.indexed_documents??0}</div><div class="stat-sub">Indexed reference files</div></div>
+      <div class="stat-card red"><span class="stat-icon">Review</span><div class="stat-lbl">Not Found in KB</div><div class="stat-val">${unresolved}</div><div class="stat-sub">Queries without KB answers</div></div>`;
     const ii = d.intent_distribution || [];
     document.getElementById('intent-chart').innerHTML = ii.length
-      ? `<div class="tbl-wrap"><table><thead><tr><th>Intent</th><th>Count</th></tr></thead><tbody>${ii.map(i=>`<tr><td class="td-strong">${(i.intent||'').replace(/_/g,' ').toUpperCase()}</td><td><span class="badge badge-navy">${i.count}</span></td></tr>`).join('')}</tbody></table></div>`
+      ? `<div class="tbl-wrap"><table><thead><tr><th>Intent</th><th>Count</th></tr></thead><tbody>${ii.map(i=>`<tr><td class="td-strong">${esc((i.intent||'').replace(/_/g,' ').toUpperCase())}</td><td><span class="badge badge-navy">${i.count}</span></td></tr>`).join('')}</tbody></table></div>`
       : '<div class="empty">No query data yet.</div>';
     const vv = d.daily_volume || [];
     document.getElementById('vol-table').innerHTML = vv.length
-      ? `<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Queries</th></tr></thead><tbody>${vv.map(v=>`<tr><td class="td-mono">${v.date||v.DATE}</td><td><strong>${v.count}</strong></td></tr>`).join('')}</tbody></table></div>`
+      ? `<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Queries</th></tr></thead><tbody>${vv.map(v=>`<tr><td class="td-mono">${esc(v.date||v.DATE)}</td><td><strong>${v.count}</strong></td></tr>`).join('')}</tbody></table></div>`
       : '<div class="empty">No volume data yet.</div>';
   } catch(e) {
-    ['stat-grid','intent-chart','vol-table'].forEach(id=>{document.getElementById(id).innerHTML=`<div class="err-msg">❌ ${e.message}</div>`;});
+    ['stat-grid','intent-chart','vol-table'].forEach(id=>{const el=document.getElementById(id); if(el) el.innerHTML=`<div class="err-msg">${esc(e.message)}</div>`;});
   }
 }
 
-/* ── Users ── */
+/* -- Users -- */
 async function loadUsers() {
   const tb = document.getElementById('users-tbody');
   try {
     const r = await apiFetch('/admin/users');
     const users = await r.json();
-    if (!r.ok) throw new Error(users.detail||'Failed');
+    if (!r.ok) throw new Error(users.detail || 'Failed');
     allUsers = users;
     renderUsers(users);
-    document.getElementById('um-total').textContent  = users.length;
+    document.getElementById('um-total').textContent = users.length;
     document.getElementById('um-active').textContent = users.filter(u=>u.is_active).length;
     document.getElementById('um-admins').textContent = users.filter(u=>u.role==='admin').length;
-  } catch(e) { tb.innerHTML=`<tr><td colspan="8"><div class="err-msg">❌ ${e.message}</div></td></tr>`; }
+  } catch(e) {
+    tb.innerHTML = `<tr><td colspan="8"><div class="err-msg">${esc(e.message)}</div></td></tr>`;
+  }
 }
 
 function renderUsers(users) {
   const tb = document.getElementById('users-tbody');
   if (!users.length) { tb.innerHTML='<tr><td colspan="8" class="empty">No users found.</td></tr>'; return; }
   tb.innerHTML = users.map((u,i)=>`<tr>
-    <td class="td-mono">${i+1}</td><td class="td-strong">${u.username}</td><td>${u.email}</td>
-    <td><span class="badge ${u.role==='admin'?'badge-navy':'badge-gray'}">${u.role.toUpperCase()}</span></td>
-    <td>${u.language_preference.toUpperCase()}</td>
+    <td class="td-mono">${i+1}</td>
+    <td class="td-strong">${esc(u.username)}</td>
+    <td>${esc(u.email)}</td>
+    <td><span class="badge ${u.role==='admin'?'badge-navy':'badge-gray'}">${esc(String(u.role).toUpperCase())}</span></td>
+    <td>${esc(String(u.language_preference||'en').toUpperCase())}</td>
     <td class="td-mono">${new Date(u.created_at).toLocaleDateString()}</td>
     <td><span class="badge ${u.is_active?'badge-green':'badge-red'}">${u.is_active?'ACTIVE':'SUSPENDED'}</span></td>
-    <td><button class="btn btn-sm ${u.role==='admin'?'btn-danger':'btn-success'}" onclick="toggleRole(${u.id},'${u.role}')">${u.role==='admin'?'Revoke Admin':'Grant Admin'}</button></td>
+    <td><button class="btn btn-sm ${u.role==='admin'?'btn-danger':'btn-success'}" onclick="toggleRole(${u.id},'${jsArg(u.role)}')">${u.role==='admin'?'Revoke Admin':'Grant Admin'}</button></td>
   </tr>`).join('');
 }
 
 function filterUsers() {
   const q = document.getElementById('user-search').value.toLowerCase();
-  renderUsers(allUsers.filter(u=>u.username.toLowerCase().includes(q)||u.email.toLowerCase().includes(q)||u.role.toLowerCase().includes(q)));
+  renderUsers(allUsers.filter(u => String(u.username).toLowerCase().includes(q) || String(u.email).toLowerCase().includes(q) || String(u.role).toLowerCase().includes(q)));
 }
 
 async function toggleRole(id, cur) {
-  const next = cur==='admin'?'user':'admin';
+  const next = cur === 'admin' ? 'user' : 'admin';
   if (!confirm(`Update user privileges to "${next.toUpperCase()}"?`)) return;
   try {
-    const r = await apiFetch(`/admin/users/${id}/role?role=${next}`,{method:'PUT'});
+    const r = await apiFetch(`/admin/users/${id}/role?role=${next}`, {method:'PUT'});
     if (!r.ok) throw new Error('Update failed.');
-    toast(`Privileges updated to ${next.toUpperCase()}`); loadUsers();
-  } catch(e) { toast(e.message,true); }
+    toast(`Privileges updated to ${next.toUpperCase()}`);
+    loadUsers(); loadOverview();
+  } catch(e) { toast(e.message, true); }
 }
 
-/* ── FAQs ── */
+/* -- FAQs -- */
 async function loadFAQs() {
   const tb = document.getElementById('faqs-tbody');
   try {
     const r = await apiFetch('/admin/faqs');
     let faqs = await r.json();
-    if (!r.ok) throw new Error(faqs.detail||'Failed');
-    faqs = faqs.sort((a,b)=>(b.view_count||0)-(a.view_count||0));
-    if (!faqs.length) { tb.innerHTML='<tr><td colspan="7" class="empty">No FAQs yet.</td></tr>'; return; }
-    tb.innerHTML = faqs.map((f,i)=>{
-      const n=f.view_count||0;
-      const tag=n>=50?'🔥 Hot':n>=20?'📈 Trending':n>=5?'👍 Popular':'';
-      return `<tr>
-        <td class="td-mono">${i+1}</td>
-        <td style="max-width:240px;" class="td-strong">${f.question}</td>
-        <td style="max-width:260px;font-size:12px;color:var(--muted);">${(f.answer||'').substring(0,80)}…</td>
-        <td><span class="badge badge-gray">${f.category||'General'}</span></td>
-        <td><span class="badge badge-gold">${f.language.toUpperCase()}</span></td>
-        <td><strong>${n}</strong> ${tag?`<span class="pop-tag" style="margin-left:4px;">${tag}</span>`:''}</td>
-        <td><button class="btn btn-sm btn-danger" onclick="deleteFAQ(${f.id})">Delete</button></td>
-      </tr>`;
-    }).join('');
-  } catch(e) { tb.innerHTML=`<tr><td colspan="7"><div class="err-msg">❌ ${e.message}</div></td></tr>`; }
+    if (!r.ok) throw new Error(faqs.detail || 'Failed');
+    faqCache = faqs.sort((a,b)=>(num(b.view_count)-num(a.view_count)) || new Date(b.updated_at||0) - new Date(a.updated_at||0));
+    if (!faqCache.length) { tb.innerHTML='<tr><td colspan="8" class="empty">No FAQs yet.</td></tr>'; return; }
+    tb.innerHTML = faqCache.map((f,i)=>`<tr>
+      <td class="td-mono">${i+1}</td>
+      <td style="max-width:240px;" class="td-strong">${esc(f.question)}</td>
+      <td style="max-width:260px;font-size:12px;color:var(--muted);">${esc((f.answer||'').substring(0,90))}${(f.answer||'').length>90?'...':''}</td>
+      <td><span class="badge badge-gray">${esc(f.category||'General')}</span></td>
+      <td><span class="badge badge-gold">${esc(String(f.language||'en').toUpperCase())}</span></td>
+      <td><strong>${num(f.view_count).toLocaleString()}</strong></td>
+      <td class="td-mono">${dateLabel(f.updated_at||f.created_at)}</td>
+      <td><div style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn btn-sm btn-gold" onclick="editFAQ(${f.id})">Edit</button><button class="btn btn-sm btn-danger" onclick="deleteFAQ(${f.id})">Delete</button></div></td>
+    </tr>`).join('');
+  } catch(e) { tb.innerHTML=`<tr><td colspan="8"><div class="err-msg">${esc(e.message)}</div></td></tr>`; }
+}
+
+function resetFAQForm() {
+  editingFaqId = null;
+  ['faq-q','faq-a','faq-cat'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('faq-lang').value='en';
 }
 
 async function addFAQ() {
@@ -623,11 +1294,29 @@ async function addFAQ() {
   const a=document.getElementById('faq-a').value.trim();
   if(!q||!a){toast('Question and answer are required.',true);return;}
   try {
-    const r=await apiFetch('/admin/faqs',{method:'POST',body:JSON.stringify({question:q,answer:a,category:document.getElementById('faq-cat').value.trim(),language:document.getElementById('faq-lang').value})});
-    if(!r.ok) throw new Error('Publish failed.');
-    ['faq-q','faq-a','faq-cat'].forEach(id=>document.getElementById(id).value='');
-    toast('FAQ published.'); loadFAQs();
+    const wasEditing = editingFaqId !== null;
+    const payload={question:q,answer:a,category:document.getElementById('faq-cat').value.trim(),language:document.getElementById('faq-lang').value};
+    const path=editingFaqId?`/admin/faqs/${editingFaqId}`:'/admin/faqs';
+    const method=editingFaqId?'PUT':'POST';
+    const r=await apiFetch(path,{method,body:JSON.stringify(payload)});
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(data.detail || 'Publish failed.');
+    resetFAQForm();
+    toast(wasEditing?'FAQ updated.':'FAQ published.');
+    loadFAQs();
   } catch(e){toast(e.message,true);}
+}
+
+function editFAQ(id) {
+  const faq = faqCache.find(item => Number(item.id) === Number(id));
+  if(!faq){toast('FAQ not found.',true);return;}
+  editingFaqId = Number(id);
+  document.getElementById('faq-q').value = faq.question || '';
+  document.getElementById('faq-a').value = faq.answer || '';
+  document.getElementById('faq-cat').value = faq.category || '';
+  document.getElementById('faq-lang').value = faq.language || 'en';
+  document.getElementById('faq-q').focus();
+  toast('FAQ loaded into the form for editing.');
 }
 
 async function deleteFAQ(id) {
@@ -639,62 +1328,478 @@ async function deleteFAQ(id) {
   } catch(e){toast(e.message,true);}
 }
 
-/* ── Knowledge Base ── */
+async function exportFAQs() {
+  try {
+    const r=await apiFetch('/admin/faqs/export');
+    const rows=await r.json();
+    if(!r.ok) throw new Error(rows.detail||'Failed to export FAQs.');
+    const headers=['id','question','answer','category','language','view_count','created_at','updated_at'];
+    const csv=[headers.join(',')].concat((rows||[]).map(row=>headers.map(h=>csvCell(row[h])).join(','))).join('\n');
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=`laborlens-faqs-${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast('FAQ export ready.');
+  } catch(e){toast(e.message,true);}
+}
+
+async function importFAQs(input) {
+  const file=input?.files?.[0];
+  if(!file) return;
+  try{
+    const text=await file.text();
+    let items=[];
+    if(file.name.toLowerCase().endsWith('.json')){
+      const parsed=JSON.parse(text);
+      items=Array.isArray(parsed)?parsed:(parsed.items||[]);
+    }else{
+      const lines=text.split(/\r?\n/).filter(Boolean);
+      if(lines.length<2) throw new Error('FAQ import file is empty.');
+      const headers=lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,'').toLowerCase());
+      items=lines.slice(1).map(line=>{
+        const cells=[]; let cur=''; let inQuotes=false;
+        for(let i=0;i<line.length;i++){
+          const ch=line[i];
+          if(ch === '"'){
+            if(inQuotes && line[i+1] === '"'){ cur+='"'; i++; }
+            else inQuotes=!inQuotes;
+          }else if(ch===',' && !inQuotes){
+            cells.push(cur); cur='';
+          }else cur+=ch;
+        }
+        cells.push(cur);
+        const row={};
+        headers.forEach((h,idx)=>row[h]=String(cells[idx]||'').trim());
+        return {
+          question: row.question || '',
+          answer: row.answer || '',
+          category: row.category || '',
+          language: row.language || 'en'
+        };
+      }).filter(item=>item.question && item.answer);
+    }
+    const r=await apiFetch('/admin/faqs/import',{method:'POST',body:JSON.stringify({items})});
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.detail||'Failed to import FAQs.');
+    toast(`Imported ${data.created||0} FAQs.`);
+    loadFAQs();
+  }catch(e){toast(e.message,true);}
+  input.value='';
+}
+
+/* -- Knowledge Base -- */
+function statusBadge(d, vectorMissing=false) {
+  const s=(d.status||'pending').toLowerCase();
+  if(vectorMissing) return '<span class="badge badge-amber">NEEDS RE-INDEX</span><span class="status-note">Upload again to rebuild searchable chunks.</span>';
+  if(s==='indexed') return '<span class="badge badge-green">INDEXED</span>';
+  if(s==='error' && String(d.error_message||'').toLowerCase().includes('chunks were cleared')) return '<span class="badge badge-amber">NEEDS RE-INDEX</span><span class="status-note">Upload again to rebuild searchable chunks.</span>';
+  if(s==='error') return '<span class="badge badge-red">ERROR</span>';
+  if(s==='processing') return '<span class="badge badge-amber">PROCESSING</span><span class="status-note">Chunking and indexing...</span>';
+  return `<span class="badge badge-gray">${esc(s.toUpperCase())}</span>`;
+}
+
+function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
+
 async function loadDocuments() {
   const tb=document.getElementById('docs-tbody');
+  let searchableChunks=null;
   try {
     const sr=await apiFetch('/kb/stats');
     if(sr.ok){
-      const s=await sr.json();
-      const chunks=s.chroma?.total_chunks??0;
-      document.getElementById('kb-stats').innerHTML=`📊 <strong>${chunks} legal segments</strong> indexed in vector database.`;
-      document.getElementById('kb-chunks').textContent=chunks.toLocaleString();
+      const stats=await sr.json();
+      const summary=kbSummary(stats);
+      searchableChunks=summary.chunks;
+      const modelNote=stats.chroma?.embedding_model ? `<span class="status-note">Embedding model: ${esc(stats.chroma.embedding_model)}</span>` : '';
+      const resetNote=stats.chroma?.last_reset_reason ? `<span class="status-note" style="color:var(--amber);">Vector DB was reset because the embedding model changed. Re-upload documents to rebuild chunks.</span>` : '';
+      document.getElementById('kb-stats').innerHTML=summary.chunks>0
+        ? `<strong>${summary.chunks.toLocaleString()} searchable chunks</strong> available across ${summary.activeCategories||1} RAG ${(summary.activeCategories||1)===1?'category':'categories'}.${modelNote}`
+        : `<strong>No searchable chunks yet.</strong> Upload a legal document and wait for indexing to finish.${modelNote}${resetNote}`;
+      document.getElementById('kb-chunks').textContent=summary.chunks.toLocaleString();
     }
     const dr=await apiFetch('/kb/documents');
     const docs=await dr.json();
     if(!dr.ok) throw new Error(docs.detail||'Failed');
-    document.getElementById('kb-docs-count').textContent=docs.length;
-    if(!docs.length){tb.innerHTML='<tr><td colspan="8" class="empty">Knowledge base is empty.</td></tr>';return;}
-    tb.innerHTML=docs.map((d,i)=>`<tr>
-      <td class="td-mono">${i+1}</td><td class="td-strong">${d.original_filename}</td>
-      <td><span class="badge badge-gray">${d.file_type?.includes('pdf')?'PDF':'DOCX'}</span></td>
-      <td>${d.file_size?(d.file_size/1048576).toFixed(2)+' MB':'—'}</td>
-      <td><strong>${d.chunk_count??0}</strong></td>
-      <td><span class="badge ${d.status==='indexed'?'badge-green':'badge-amber'}">${d.status.toUpperCase()}</span></td>
-      <td class="td-mono">${new Date(d.created_at).toLocaleDateString()}</td>
-      <td><button class="btn btn-sm btn-danger" onclick="deleteDoc(${d.id},'${d.original_filename}')">Purge</button></td>
-    </tr>`).join('');
-  } catch(e){tb.innerHTML=`<tr><td colspan="8"><div class="err-msg">❌ ${e.message}</div></td></tr>`;}
+    kbDocumentsCache = Array.isArray(docs) ? docs : [];
+    const hasSearchableChunks=searchableChunks===null
+      ? Number(document.getElementById('kb-chunks').textContent.replace(/,/g,''))>0
+      : searchableChunks>0;
+      const readyCount=hasSearchableChunks
+        ? docs.filter(d=>d.status==='indexed' && (d.chunk_count??0)>0 && d.is_active && String(d.version_status||'active').toLowerCase()==='active').length
+        : 0;
+    document.getElementById('kb-docs-count').textContent=readyCount;
+    kbSearchableChunks = searchableChunks;
+    renderDocumentsTable();
+    if(docs.some(d=>d.status==='processing'||d.status==='pending')) setTimeout(loadDocuments,3000);
+  } catch(e){tb.innerHTML=`<tr><td colspan="9"><div class="err-msg">Error: ${esc(e.message)}</div></td></tr>`;}
 }
 
 async function uploadFile(input) {
   const file=input.files[0]; if(!file) return;
   const msg=document.getElementById('upload-msg');
-  msg.innerHTML=`<div style="margin-top:14px;padding:14px;background:var(--amber-bg);color:var(--amber);border-radius:10px;font-size:13px;font-weight:600;">⏳ Transmitting <strong>${file.name}</strong>…</div>`;
+  const category=document.getElementById('kb-category')?.value||KB_CATEGORIES[0];
+  msg.innerHTML=`<div style="margin-top:14px;padding:14px;background:var(--amber-bg);color:var(--amber);border-radius:10px;font-size:13px;font-weight:600;">Uploading <strong>${esc(file.name)}</strong> to ${esc(category)}...</div>`;
   try {
-    const form=new FormData(); form.append('file',file);
+    const form=new FormData();
+    form.append('file',file);
+    form.append('category',category);
+    form.append('document_title',document.getElementById('kb-title')?.value||'');
+    form.append('source_name',document.getElementById('kb-source')?.value||'');
+    form.append('source_url',document.getElementById('kb-source-url')?.value||'');
+    form.append('law_number',document.getElementById('kb-law-number')?.value||'');
+    form.append('article_section',document.getElementById('kb-article-section')?.value||'');
+    form.append('issuing_agency',document.getElementById('kb-issuing-agency')?.value||'');
+    form.append('date_issued',document.getElementById('kb-date-issued')?.value||'');
+    form.append('effective_date',document.getElementById('kb-effective-date')?.value||'');
+    form.append('date_downloaded',document.getElementById('kb-date-downloaded')?.value||'');
+    form.append('superseding_document',document.getElementById('kb-superseding-document')?.value||'');
+    form.append('law_version',document.getElementById('kb-version')?.value||'');
+    form.append('version_status',document.getElementById('kb-version-status')?.value||'active');
     const r=await fetch(`${API}/kb/upload`,{method:'POST',headers:{'Authorization':`Bearer ${token}`,'ngrok-skip-browser-warning':'true'},body:form});
     const d=await r.json();
     if(!r.ok) throw new Error(d.detail||'Upload failed');
-    msg.innerHTML=`<div style="margin-top:14px;padding:14px;background:var(--green-bg);color:var(--green);border-radius:10px;font-size:13px;font-weight:600;">✅ <strong>${file.name}</strong> successfully ingested.</div>`;
-    toast('Document ingested'); setTimeout(loadDocuments,2000);
+    loadDocuments();
+    const done=await waitForDocumentIndexed(d.doc_id,file.name,msg);
+    msg.innerHTML=`<div style="margin-top:14px;padding:14px;background:var(--green-bg);color:var(--green);border-radius:10px;font-size:13px;font-weight:600;"><strong>${esc(done.original_filename||file.name)}</strong> indexed in ${esc(done.category||category)} with ${done.chunk_count??0} chunks.</div>`;
+    toast('Document indexed');
+    ['kb-title','kb-source','kb-source-url','kb-law-number','kb-article-section','kb-issuing-agency','kb-date-issued','kb-effective-date','kb-date-downloaded','kb-superseding-document','kb-version'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});
+    const statusField=document.getElementById('kb-version-status'); if(statusField) statusField.value='active';
+    loadDocuments(); loadOverview(); loadAnalytics(); loadPerformance();
   } catch(e){
-    msg.innerHTML=`<div style="margin-top:14px;padding:14px;background:var(--red-bg);color:var(--red);border-radius:10px;font-size:13px;">❌ ${e.message}</div>`;
+    msg.innerHTML=`<div style="margin-top:14px;padding:14px;background:var(--red-bg);color:var(--red);border-radius:10px;font-size:13px;">${esc(e.message)}</div>`;
     toast(e.message,true);
   }
   input.value='';
 }
 
-async function deleteDoc(id, name) {
-  if(!confirm(`Purge "${name}" and all vectors?`)) return;
+async function waitForDocumentIndexed(docId,fileName,msg) {
+  for(let i=0;i<90;i++){
+    const r=await apiFetch(`/kb/documents/${docId}`);
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.detail||'Unable to check indexing status.');
+    if(d.status==='indexed') return d;
+    if(d.status==='error') throw new Error(d.error_message||'Document indexing failed.');
+    msg.innerHTML=`<div style="margin-top:14px;padding:14px;background:var(--amber-bg);color:var(--amber);border-radius:10px;font-size:13px;font-weight:600;">Indexing <strong>${esc(fileName)}</strong> in ${esc(d.category||KB_CATEGORIES[0])}... ${d.chunk_count??0} chunks ready so far.</div>`;
+    await sleep(1500);
+  }
+  throw new Error('Indexing is still running. Refresh the document list to check status.');
+}
+
+async function deleteDoc(id,name,status='') {
+  if(status==='processing'||status==='pending'){toast('Wait until indexing finishes before deleting this document.',true);return;}
+  if(!confirm(`Permanently delete "${name}" from uploads and vector database?`)) return;
   try {
     const r=await apiFetch(`/kb/documents/${id}`,{method:'DELETE'});
-    if(!r.ok) throw new Error('Failed.');
-    toast('Purged.'); loadDocuments();
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(d.detail||'Failed.');
+    toast(`Deleted ${d.deleted_chunks??0} chunks and the uploaded file.`);
+    loadDocuments(); loadOverview(); loadAnalytics(); loadPerformance();
   } catch(e){toast(e.message,true);}
 }
 
-/* ── Unresolved Queries ── */
+async function viewDocHealth(id,name='Document Health') {
+  revokeDocObjectUrl();
+  docContentState={id,offset:0,limit:25,total:0,name:name||'Document Health'};
+  document.getElementById('doc-modal').classList.add('show');
+  document.getElementById('doc-modal-title').textContent=name||'Document Health';
+  document.getElementById('doc-modal-sub').textContent='Processing and indexing status';
+  document.getElementById('doc-modal-body').innerHTML='<div class="loading">Loading document health...</div>';
+  document.getElementById('doc-modal-foot').innerHTML='';
+  try{
+    const r=await apiFetch(`/kb/documents/${id}/health`);
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.detail||'Unable to load document health.');
+    const doc=data.document||{};
+    const health=data.health||{};
+    const stages=health.stages||{};
+    const stageCard=(label,key,note='')=>`<div class="mini-metric"><div class="mini-metric-lbl">${label}</div><div class="mini-metric-val" style="font-size:18px;">${stages[key]?'YES':'NO'}</div>${note?`<div class="status-note">${note}</div>`:''}</div>`;
+    document.getElementById('doc-modal-sub').textContent=`${doc.category||KB_CATEGORIES[0]} | ${(doc.status||'').toUpperCase()} | ${versionStatusBadge(doc.version_status,doc.is_active).replace(/<[^>]+>/g,' ')}`;
+    document.getElementById('doc-modal-body').innerHTML=`
+      <div class="doc-meta-grid">
+        ${stageCard('Uploaded file','uploaded', health.file_exists?'File exists on server':'File missing on server')}
+        ${stageCard('Text extracted','text_extracted', `${num(health.text_char_count).toLocaleString()} characters`)}
+        ${stageCard('OCR used','ocr_used', `Method: ${esc(String(health.extraction_method||'none').toUpperCase())}`)}
+        ${stageCard('Chunked','chunked', `${num(health.chunk_count).toLocaleString()} chunks`)}
+        ${stageCard('Embedded','embedded','Added to vector database')}
+        ${stageCard('Ready','ready', `Stage: ${esc(health.processing_stage||'uploaded')}`)}
+      </div>
+      <div class="full-doc-card">
+        <div class="full-doc-toolbar"><span>${esc(doc.document_title||doc.original_filename||'Document')}</span><span>${num(health.page_count)} pages</span></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">
+          <div class="mini-metric"><div class="mini-metric-lbl">Version status</div><div class="mini-metric-val" style="font-size:18px;">${esc(String(doc.version_status||'active').toUpperCase())}</div></div>
+          <div class="mini-metric"><div class="mini-metric-lbl">Visibility</div><div class="mini-metric-val" style="font-size:18px;">${doc.is_active?'ACTIVE':'INACTIVE'}</div></div>
+          <div class="mini-metric"><div class="mini-metric-lbl">Processing stage</div><div class="mini-metric-val" style="font-size:18px;">${esc(String(doc.processing_stage||'uploaded').toUpperCase())}</div></div>
+          <div class="mini-metric"><div class="mini-metric-lbl">Last indexed</div><div class="mini-metric-val" style="font-size:18px;">${esc(dateLabel(doc.last_indexed_at||doc.created_at))}</div></div>
+        </div>
+      </div>`;
+    document.getElementById('doc-modal-foot').innerHTML=`<button class="btn btn-sm btn-primary" onclick="editDocumentMeta(${id})">Edit Metadata</button><button class="btn btn-sm btn-primary" onclick="viewDoc(${id},'${jsArg(doc.original_filename||name)}')">Open Original</button>`;
+  }catch(e){
+    document.getElementById('doc-modal-body').innerHTML=`<div class="err-msg">${esc(e.message)}</div>`;
+  }
+}
+
+async function editDocumentMeta(id) {
+  revokeDocObjectUrl();
+  docContentState={id,offset:0,limit:25,total:0,name:'Document Metadata'};
+  document.getElementById('doc-modal').classList.add('show');
+  document.getElementById('doc-modal-title').textContent='Document Metadata';
+  document.getElementById('doc-modal-sub').textContent='Edit source link, category, version status, and visibility';
+  document.getElementById('doc-modal-body').innerHTML='<div class="loading">Loading document metadata...</div>';
+  document.getElementById('doc-modal-foot').innerHTML='';
+  try{
+    const r=await apiFetch(`/kb/documents/${id}`);
+    const doc=await r.json();
+    if(!r.ok) throw new Error(doc.detail||'Unable to load document metadata.');
+    const categoryOptions=(KB_CATEGORIES||[]).map(cat=>`<option value="${esc(cat)}" ${cat===(doc.category||KB_CATEGORIES[0])?'selected':''}>${esc(cat)}</option>`).join('');
+    const versionOptions=DOC_VERSION_STATUSES.map(status=>`<option value="${status}" ${status===String(doc.version_status||'active').toLowerCase()?'selected':''}>${status.charAt(0).toUpperCase()+status.slice(1)}</option>`).join('');
+    document.getElementById('doc-modal-body').innerHTML=`
+      <div class="form-grid">
+        <div class="form-group"><label>Document Title</label><input type="text" id="doc-edit-title" value="${esc(doc.document_title||'')}"/></div>
+        <div class="form-row">
+          <div class="form-group"><label>Official Source</label><input type="text" id="doc-edit-source" value="${esc(doc.source_name||'')}"/></div>
+          <div class="form-group"><label>Law Year / Version</label><input type="text" id="doc-edit-version" value="${esc(doc.law_version||'')}"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Law / Issuance Number</label><input type="text" id="doc-edit-law-number" value="${esc(doc.law_number||'')}"/></div>
+          <div class="form-group"><label>Article / Section</label><input type="text" id="doc-edit-article-section" value="${esc(doc.article_section||'')}"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Issuing Agency</label><input type="text" id="doc-edit-issuing-agency" value="${esc(doc.issuing_agency||'')}"/></div>
+          <div class="form-group"><label>Date Issued</label><input type="text" id="doc-edit-date-issued" value="${esc(doc.date_issued||'')}"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Effective Date</label><input type="text" id="doc-edit-effective-date" value="${esc(doc.effective_date||'')}"/></div>
+          <div class="form-group"><label>Date Downloaded</label><input type="text" id="doc-edit-date-downloaded" value="${esc(doc.date_downloaded||'')}"/></div>
+        </div>
+        <div class="form-group"><label>Superseding / Amending Document</label><input type="text" id="doc-edit-superseding-document" value="${esc(doc.superseding_document||'')}"/></div>
+        <div class="form-group"><label>Original Link / Source URL</label><input type="url" id="doc-edit-source-url" value="${esc(doc.source_url||'')}"/></div>
+        <div class="form-row">
+          <div class="form-group"><label>Category</label><select id="doc-edit-category">${categoryOptions}</select></div>
+          <div class="form-group"><label>Version Status</label><select id="doc-edit-version-status">${versionOptions}</select></div>
+        </div>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);"><input type="checkbox" id="doc-edit-active" ${doc.is_active?'checked':''}/> Active for chatbot retrieval</label>
+      </div>`;
+    document.getElementById('doc-modal-foot').innerHTML=`<button class="btn btn-sm btn-primary" onclick="saveDocumentMeta(${id})">Save Changes</button><button class="btn btn-sm btn-gold" onclick="viewDocHealth(${id},'${jsArg(doc.original_filename||'Document Health')}')">View Health</button>`;
+  }catch(e){
+    document.getElementById('doc-modal-body').innerHTML=`<div class="err-msg">${esc(e.message)}</div>`;
+  }
+}
+
+async function saveDocumentMeta(id) {
+  try{
+    const payload={
+      document_title: document.getElementById('doc-edit-title')?.value?.trim()||'',
+      source_name: document.getElementById('doc-edit-source')?.value?.trim()||'',
+      source_url: document.getElementById('doc-edit-source-url')?.value?.trim()||'',
+      law_number: document.getElementById('doc-edit-law-number')?.value?.trim()||'',
+      article_section: document.getElementById('doc-edit-article-section')?.value?.trim()||'',
+      issuing_agency: document.getElementById('doc-edit-issuing-agency')?.value?.trim()||'',
+      date_issued: document.getElementById('doc-edit-date-issued')?.value?.trim()||'',
+      effective_date: document.getElementById('doc-edit-effective-date')?.value?.trim()||'',
+      date_downloaded: document.getElementById('doc-edit-date-downloaded')?.value?.trim()||'',
+      superseding_document: document.getElementById('doc-edit-superseding-document')?.value?.trim()||'',
+      law_version: document.getElementById('doc-edit-version')?.value?.trim()||'',
+      category: document.getElementById('doc-edit-category')?.value||KB_CATEGORIES[0],
+      is_active: !!document.getElementById('doc-edit-active')?.checked,
+      version_status: document.getElementById('doc-edit-version-status')?.value||'active'
+    };
+    const r=await apiFetch(`/kb/documents/${id}/metadata`,{method:'PUT',body:JSON.stringify(payload)});
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.detail||'Failed to update document metadata.');
+    toast('Document metadata updated.');
+    loadDocuments(); loadAnalytics(); loadPerformance();
+    await editDocumentMeta(id);
+  }catch(e){toast(e.message,true);}
+}
+
+async function viewDoc(id,name,offset=0) {
+  revokeDocObjectUrl();
+  docContentState={id,offset,limit:25,total:0,name:name||'Document Content'};
+  document.getElementById('doc-modal').classList.add('show');
+  document.getElementById('doc-modal-title').textContent=name||'Document Content';
+  document.getElementById('doc-modal-sub').textContent='Original uploaded PDF/Word file';
+  document.getElementById('doc-modal-body').innerHTML='<div class="loading">Loading original uploaded file...</div>';
+  document.getElementById('doc-modal-foot').innerHTML='';
+  await loadDocOriginal();
+}
+
+async function loadDocOriginal() {
+  revokeDocObjectUrl();
+  const state=docContentState;
+  const body=document.getElementById('doc-modal-body');
+  const foot=document.getElementById('doc-modal-foot');
+  body.innerHTML='<div class="loading">Loading original uploaded file...</div>';
+  foot.innerHTML='';
+  try{
+    const metaRes=await apiFetch(`/kb/documents/${state.id}`);
+    const doc=await metaRes.json();
+    if(!metaRes.ok) throw new Error(doc.detail||'Unable to load document details.');
+    const fileRes=await fetch(`${API}/kb/documents/${state.id}/file`,{
+      headers:{'Authorization':`Bearer ${token}`,'ngrok-skip-browser-warning':'true'}
+    });
+    if(fileRes.status===401){
+      token=null; currentUser=null; clearAdminSession();
+      showLogin('Your admin session expired. Please sign in again.');
+      return;
+    }
+    if(!fileRes.ok){
+      const err=await fileRes.json().catch(()=>({detail:'Unable to load original uploaded file.'}));
+      throw new Error(err.detail||'Unable to load original uploaded file.');
+    }
+    const blob=await fileRes.blob();
+    docObjectUrl=URL.createObjectURL(blob);
+    const docCategory=doc.category||KB_CATEGORIES[0];
+    const docTitle=doc.document_title||doc.original_filename||state.name||'Original document';
+    const rawSourceUrl=String(doc.source_url||'').trim();
+    const sourceUrl=safeUrl(doc.source_url);
+    const sourceLine=sourceUrl
+      ? `<a class="source-url-text" href="${esc(sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(rawSourceUrl)}</a>`
+      : 'No source link saved';
+    const fileType=String(doc.file_type||'').toLowerCase();
+    const lowerName=String(doc.original_filename||'').toLowerCase();
+    const isPdf=fileType==='pdf' || blob.type==='application/pdf' || lowerName.endsWith('.pdf');
+    const isImage=['png','jpg','jpeg','tif','tiff','bmp','webp'].includes(fileType) || blob.type.startsWith('image/') || /\.(png|jpe?g|tiff?|bmp|webp)$/.test(lowerName);
+    const fileKind=isPdf?'PDF':isImage?'scanned image':'Word document';
+    const fileName=doc.original_filename||state.name||'document';
+    const fileHref=esc(docObjectUrl);
+    const downloadName=esc(fileName);
+    document.getElementById('doc-modal-sub').textContent=`${docCategory} | Original ${fileKind} | status: ${(doc.status||'').toUpperCase()}`;
+    body.innerHTML=`
+      <div class="original-view-note">
+        <span class="view-mode-pill">Original File</span>
+        <div><strong>Viewing the exact uploaded ${fileKind}, not extracted text and not vector chunks.</strong><br/>This is the unedited file saved in the knowledge base.</div>
+      </div>
+      <div class="doc-meta-grid">
+        <div class="mini-metric"><div class="mini-metric-lbl">Status</div><div class="mini-metric-val" style="font-size:18px;">${esc((doc.status||'').toUpperCase())}</div></div>
+        <div class="mini-metric"><div class="mini-metric-lbl">Original File</div><div class="mini-metric-val" style="font-size:18px;">${esc(fileKind)}</div></div>
+        <div class="mini-metric"><div class="mini-metric-lbl">Size</div><div class="mini-metric-val" style="font-size:18px;">${doc.file_size?(doc.file_size/1048576).toFixed(2)+' MB':'-'}</div></div>
+        <div class="mini-metric"><div class="mini-metric-lbl">Category</div><div class="mini-metric-val" style="font-size:18px;">${esc(docCategory)}</div></div>
+        <div class="mini-metric"><div class="mini-metric-lbl">Original Link</div><div class="mini-metric-val" style="font-size:13px;line-height:1.35;">${sourceLine}</div></div>
+      </div>
+      <div class="full-doc-card">
+        <div class="full-doc-toolbar"><span>${esc(docTitle)}</span><span>${esc(fileName)}</span></div>
+        ${isPdf
+          ? `<iframe class="original-file-frame" src="${fileHref}" title="${esc(docTitle)}"></iframe>`
+          : isImage
+            ? `<img class="original-image-preview" src="${fileHref}" alt="${esc(docTitle)}"/>`
+            : `<div class="original-file-card">
+              <span class="view-mode-pill">DOCX</span>
+              <div><strong>Word files cannot be rendered faithfully inside the browser.</strong><br/>Use the button below to open or download the exact original Word document.</div>
+              <div class="original-file-actions">
+                <a class="btn btn-primary" href="${fileHref}" download="${downloadName}">Open / Download Original Word File</a>
+              </div>
+            </div>`}
+      </div>`;
+    foot.innerHTML=`<span style="font-size:12px;color:var(--muted);align-self:center;">Showing the exact uploaded file. Text preview and chunks are generated views.</span>
+      <a class="btn btn-sm btn-gold" href="${fileHref}" download="${downloadName}">Download original</a>
+      <button class="btn btn-sm btn-primary" onclick="loadDocTextPreview()">Text preview</button>
+      <button class="btn btn-sm btn-primary" ${(doc.chunk_count??0)>0?'':'disabled'} onclick="loadDocContentPage(0)">View indexed chunks</button>`;
+  }catch(e){
+    body.innerHTML=`<div class="err-msg">${esc(e.message)}</div>`;
+    foot.innerHTML='<span style="font-size:12px;color:var(--muted);align-self:center;">The original uploaded file may be missing from disk.</span>';
+  }
+}
+
+async function loadDocTextPreview() {
+  revokeDocObjectUrl();
+  const state=docContentState;
+  const body=document.getElementById('doc-modal-body');
+  const foot=document.getElementById('doc-modal-foot');
+  body.innerHTML='<div class="loading">Loading readable text preview...</div>';
+  foot.innerHTML='';
+  try{
+    const r=await apiFetch(`/kb/documents/${state.id}/original-content`);
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.detail||'Unable to load readable text preview.');
+    const doc=data.document||{};
+    const docCategory=doc.category||KB_CATEGORIES[0];
+    const text=data.text||'';
+    const docTitle=doc.document_title||doc.original_filename||state.name||'Readable text preview';
+    const rawSourceUrl=String(doc.source_url||'').trim();
+    const sourceUrl=safeUrl(doc.source_url);
+    const sourceLine=sourceUrl
+      ? `<a class="source-url-text" href="${esc(sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(rawSourceUrl)}</a>`
+      : 'No source link saved';
+    const pageLabel=data.format==='pdf'
+      ? `${data.page_count||0} pages`
+      : `${text.split(/\n\n+/).filter(Boolean).length} sections`;
+    document.getElementById('doc-modal-sub').textContent=`${docCategory} | Text preview from ${String(data.format||doc.file_type||'document').toUpperCase()} | status: ${(doc.status||'').toUpperCase()}`;
+    body.innerHTML=`
+      <div class="original-view-note">
+        <span class="view-mode-pill">Text Preview</span>
+        <div><strong>This is extracted readable text, not the original file layout.</strong><br/>Go back to Original File to view/download the unedited PDF/DOCX.</div>
+      </div>
+      <div class="doc-meta-grid">
+        <div class="mini-metric"><div class="mini-metric-lbl">Status</div><div class="mini-metric-val" style="font-size:18px;">${esc((doc.status||'').toUpperCase())}</div></div>
+        <div class="mini-metric"><div class="mini-metric-lbl">Text Preview</div><div class="mini-metric-val" style="font-size:18px;">${esc(pageLabel)}</div></div>
+        <div class="mini-metric"><div class="mini-metric-lbl">Size</div><div class="mini-metric-val" style="font-size:18px;">${doc.file_size?(doc.file_size/1048576).toFixed(2)+' MB':'-'}</div></div>
+        <div class="mini-metric"><div class="mini-metric-lbl">Original Link</div><div class="mini-metric-val" style="font-size:13px;line-height:1.35;">${sourceLine}</div></div>
+      </div>
+      <div class="full-doc-card">
+        <div class="full-doc-toolbar"><span>${esc(docTitle)}</span><span>${text.length.toLocaleString()} characters</span></div>
+        <pre class="full-doc-text">${esc(text)}</pre>
+      </div>`;
+    foot.innerHTML=`<button class="btn btn-sm btn-primary" onclick="loadDocOriginal()">Back to Original File</button>
+      <button class="btn btn-sm btn-primary" ${(doc.chunk_count??0)>0?'':'disabled'} onclick="loadDocContentPage(0)">View indexed chunks</button>`;
+  }catch(e){
+    body.innerHTML=`<div class="err-msg">${esc(e.message)}</div>`;
+    foot.innerHTML='<button class="btn btn-sm btn-primary" onclick="loadDocOriginal()">Back to Original File</button>';
+  }
+}
+
+async function loadDocContentPage(offset=0) {
+  revokeDocObjectUrl();
+  const state=docContentState;
+  state.offset=Math.max(offset,0);
+  const body=document.getElementById('doc-modal-body');
+  const foot=document.getElementById('doc-modal-foot');
+  try{
+    const r=await apiFetch(`/kb/documents/${state.id}/content?limit=${state.limit}&offset=${state.offset}`);
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.detail||'Unable to load document content.');
+    state.total=data.total_chunks||0;
+    const doc=data.document||{};
+    const docCategory=doc.category||KB_CATEGORIES[0];
+    document.getElementById('doc-modal-sub').textContent=`${docCategory} | ${state.total} indexed chunks | status: ${(doc.status||'').toUpperCase()}`;
+    if(!data.chunks?.length){
+      body.innerHTML='<div class="empty">No indexed content is available for this document yet.</div>';
+    }else{
+      body.innerHTML=`
+        <div class="doc-meta-grid">
+          <div class="mini-metric"><div class="mini-metric-lbl">Status</div><div class="mini-metric-val" style="font-size:18px;">${esc((doc.status||'').toUpperCase())}</div></div>
+          <div class="mini-metric"><div class="mini-metric-lbl">Chunks</div><div class="mini-metric-val" style="font-size:18px;">${state.total}</div></div>
+          <div class="mini-metric"><div class="mini-metric-lbl">Size</div><div class="mini-metric-val" style="font-size:18px;">${doc.file_size?(doc.file_size/1048576).toFixed(2)+' MB':'-'}</div></div>
+          <div class="mini-metric"><div class="mini-metric-lbl">Category</div><div class="mini-metric-val" style="font-size:18px;">${esc(docCategory)}</div></div>
+        </div>
+        ${data.chunks.map((c,idx)=>`<div class="chunk-card">
+          <div class="chunk-head"><span>Chunk ${state.offset+idx+1}</span><span>${esc(c.metadata?.category||docCategory)} | ${c.metadata?.page?`Page ${esc(c.metadata.page)}`:'Document text'}</span></div>
+          <div class="chunk-text">${esc(c.text)}</div>
+        </div>`).join('')}`;
+    }
+    const prevDisabled=state.offset<=0?'disabled':'';
+    const nextDisabled=state.offset+state.limit>=state.total?'disabled':'';
+    foot.innerHTML=`<button class="btn btn-sm btn-primary" onclick="loadDocOriginal()">Back to Original File</button>
+      <button class="btn btn-sm btn-primary" onclick="loadDocTextPreview()">Text preview</button>
+      <button class="btn btn-sm btn-primary" ${prevDisabled} onclick="loadDocContentPage(${Math.max(0,state.offset-state.limit)})">Previous</button>
+      <span style="font-size:12px;color:var(--muted);align-self:center;">Showing ${state.total?state.offset+1:0}-${Math.min(state.offset+state.limit,state.total)} of ${state.total}</span>
+      <button class="btn btn-sm btn-primary" ${nextDisabled} onclick="loadDocContentPage(${state.offset+state.limit})">Next</button>`;
+  }catch(e){
+    body.innerHTML=`<div class="err-msg">${esc(e.message)}</div>`;
+    foot.innerHTML='';
+  }
+}
+
+function closeDocModal(e) {
+  if(e && e.target && e.target.id!=='doc-modal') return;
+  revokeDocObjectUrl();
+  document.getElementById('doc-modal').classList.remove('show');
+}
+
+/* -- Unresolved Queries -- */
 async function loadUnresolved() {
   const tb=document.getElementById('queries-tbody');
   const label=document.getElementById('unresolved-label');
@@ -706,27 +1811,22 @@ async function loadUnresolved() {
     if(!qs.length){
       label.textContent='0 pending';
       badge.style.display='none';
-      tb.innerHTML='<tr><td colspan="7" class="empty" style="color:var(--green);font-weight:600;">✅ All queries matched results in the knowledge base.</td></tr>';
+      tb.innerHTML='<tr><td colspan="8" class="empty" style="color:var(--green);font-weight:600;">All queries matched results in the knowledge base.</td></tr>';
       return;
     }
     label.textContent=`${qs.length} pending review`;
     badge.textContent=qs.length; badge.style.display='inline-flex';
     tb.innerHTML=qs.map((q,i)=>`<tr class="unresolved-row">
       <td class="td-mono">${i+1}</td>
-      <td class="td-strong">${q.username||'—'}</td>
-      <td style="max-width:280px;">
-        <div class="no-kb-tag">NOT FOUND IN KB</div>
-        <div style="font-size:13px;margin-top:4px;">${q.query_text}</div>
-      </td>
-      <td><span class="badge badge-amber">${(q.intent||'').replace(/_/g,' ').toUpperCase()}</span></td>
+      <td class="td-strong">${esc(q.username||'-')}</td>
+      <td style="max-width:280px;"><div class="no-kb-tag">NOT FOUND IN KB</div><div style="font-size:13px;margin-top:4px;">${esc(q.query_text)}</div></td>
+      <td><span class="badge badge-amber">${esc((q.intent||'').replace(/_/g,' ').toUpperCase())}</span></td>
+      <td style="max-width:250px;font-size:12px;color:var(--muted);">${esc(unresolvedSuggestionText(q.intent))}</td>
       <td class="td-mono">${q.response_time_ms??0}ms</td>
-      <td class="td-mono">${new Date(q.created_at).toLocaleDateString()}</td>
-      <td><div style="display:flex;gap:6px;flex-wrap:wrap;">
-        <button class="btn btn-sm btn-success" onclick="resolveQ(${q.id})">✅ Resolve</button>
-        <button class="btn btn-sm btn-gold" onclick="addToFAQ('${q.query_text.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">📝 Add FAQ</button>
-      </div></td>
+      <td class="td-mono">${dateLabel(q.created_at)}</td>
+      <td><div style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn btn-sm btn-success" onclick="resolveQ(${q.id})">Resolve</button><button class="btn btn-sm btn-gold" onclick="addToFAQ('${jsArg(q.query_text)}')">Add FAQ</button></div></td>
     </tr>`).join('');
-  } catch(e){tb.innerHTML=`<tr><td colspan="7"><div class="err-msg">❌ ${e.message}</div></td></tr>`;}
+  } catch(e){tb.innerHTML=`<tr><td colspan="8"><div class="err-msg">${esc(e.message)}</div></td></tr>`;}
 }
 
 async function resolveQ(id) {
@@ -738,6 +1838,7 @@ async function resolveQ(id) {
 }
 
 function addToFAQ(q) {
+  editingFaqId = null;
   document.getElementById('faq-q').value=q;
   document.getElementById('faq-a').value='';
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -748,87 +1849,379 @@ function addToFAQ(q) {
   toast('Query copied to FAQ form. Write an answer and publish it.');
 }
 
-/* ── Analytics ── */
+/* -- Analytics -- */
+function csvCell(value) {
+  const text=String(value??'').replace(/\r?\n/g,' ').replace(/"/g,'""');
+  return `"${text}"`;
+}
+
+async function exportChatLogs() {
+  try {
+    const r=await apiFetch('/admin/chat-logs');
+    const rows=await r.json();
+    if(!r.ok) throw new Error(rows.detail||'Failed to export logs.');
+    const headers=['id','session_id','username','email','role','content','language','intent','confidence_level','confidence_reason','feedback_rating','feedback_comment','created_at'];
+    const csv=[headers.join(',')].concat((rows||[]).map(row=>headers.map(h=>csvCell(row[h])).join(','))).join('\n');
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=`laborlens-chat-logs-${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast('Chat logs exported.');
+  } catch(e){toast(e.message,true);}
+}
+
+async function exportAnalyticsReport() {
+  try {
+    const [dashboardRes, performanceRes, feedbackRes] = await Promise.all([
+      apiFetch('/admin/dashboard'),
+      apiFetch('/admin/query-performance'),
+      apiFetch('/admin/feedback')
+    ]);
+    const dashboard = await dashboardRes.json();
+    const performance = await performanceRes.json();
+    const feedback = await feedbackRes.json();
+    if(!dashboardRes.ok) throw new Error(dashboard.detail || 'Failed to export dashboard report.');
+    if(!performanceRes.ok) throw new Error(performance.detail || 'Failed to export performance report.');
+    if(!feedbackRes.ok) throw new Error(feedback.detail || 'Failed to export feedback report.');
+
+    const t = dashboard.totals || {};
+    const r = dashboard.resolution_summary || {};
+    const f = dashboard.feedback_summary || {};
+    const lines = [];
+    lines.push('LaborLens Analytics Report');
+    lines.push(`Generated,${csvCell(new Date().toLocaleString())}`);
+    lines.push('');
+    lines.push('Summary');
+    lines.push('Metric,Value');
+    [
+      ['Registered users', t.users || 0],
+      ['Sessions', t.sessions || 0],
+      ['Total queries', r.total_queries ?? t.messages ?? 0],
+      ['Indexed documents', t.docs || 0],
+      ['Resolved queries', r.resolved_queries || 0],
+      ['Unresolved queries', r.unresolved_queries ?? dashboard.unresolved ?? 0],
+      ['Resolution rate', `${pct(r.resolved_queries, r.total_queries)}%`],
+      ['Average response time', `${num(r.avg_response_ms)} ms`],
+      ['Helpful feedback', f.helpful || 0],
+      ['Not helpful feedback', f.not_helpful || 0],
+      ['Satisfaction rate', `${pct(f.helpful, f.total)}%`]
+    ].forEach(row => lines.push(row.map(csvCell).join(',')));
+
+    lines.push('');
+    lines.push('Top Questions');
+    lines.push('Question,Intent,Times Asked,Last Asked');
+    (dashboard.top_questions || []).forEach(row => {
+      lines.push([row.question, row.intent, row.count, row.last_asked].map(csvCell).join(','));
+    });
+
+    lines.push('');
+    lines.push('Intent Breakdown');
+    lines.push('Intent,Count');
+    (dashboard.intent_distribution || []).forEach(row => {
+      lines.push([row.intent, row.count].map(csvCell).join(','));
+    });
+
+    lines.push('');
+    lines.push('Language Distribution');
+    lines.push('Language,Count');
+    (dashboard.language_distribution || []).forEach(row => {
+      lines.push([languageLabel(row.language), row.count].map(csvCell).join(','));
+    });
+
+    lines.push('');
+    lines.push('Recent Performance');
+    lines.push('Query,User,Intent,Response Time,Result,Date');
+    (performance || []).slice(0, 100).forEach(row => {
+      lines.push([
+        row.query_text,
+        row.username || 'Guest',
+        row.intent,
+        `${row.response_time_ms || 0} ms`,
+        row.result_status,
+        row.created_at
+      ].map(csvCell).join(','));
+    });
+
+    lines.push('');
+    lines.push('Feedback Review');
+    lines.push('User,Rating,Intent,Source Match,Answer Snippet,Date');
+    (feedback || []).forEach(row => {
+      lines.push([
+        row.username || row.email || '-',
+        row.rating,
+        row.intent,
+        row.confidence_level,
+        String(row.assistant_answer || '').replace(/\s+/g, ' ').slice(0, 180),
+        row.created_at
+      ].map(csvCell).join(','));
+    });
+
+    const blob = new Blob([lines.join('\n')], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `laborlens-analytics-report-${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast('Analytics report exported.');
+  } catch(e) {
+    toast(e.message, true);
+  }
+}
+
 async function loadAnalytics() {
   try {
     const r=await apiFetch('/admin/dashboard');
     const d=await r.json();
     if(!r.ok) throw new Error(d.detail||'Failed');
     const t=d.totals||{};
-    const unresolved=d.unresolved??d.unresolved_queries??0;
-    const total=t.messages||1;
-    const resolvedPct=Math.round(((total-unresolved)/total)*100);
+    const resolution=d.resolution_summary||{};
+    const feedback=d.feedback_summary||{};
+    const totalQueries=num(resolution.total_queries, num(t.messages));
+    const resolved=num(resolution.resolved_queries, Math.max(0, totalQueries - num(d.unresolved)));
+    const resolvedPct=pct(resolved, totalQueries);
+    const satTotal=num(feedback.total);
+    const satPct=pct(feedback.helpful, satTotal);
     document.getElementById('analytics-stats').innerHTML=`
-      <div class="stat-card blue"><span class="stat-icon">📨</span><div class="stat-lbl">Total Queries</div><div class="stat-val">${t.messages??0}</div><div class="stat-sub">All time</div></div>
-      <div class="stat-card green"><span class="stat-icon">✅</span><div class="stat-lbl">KB Resolution Rate</div><div class="stat-val">${resolvedPct}%</div><div class="stat-sub">Queries answered by KB</div></div>
-      <div class="stat-card gold"><span class="stat-icon">❓</span><div class="stat-lbl">Sessions</div><div class="stat-val">${t.sessions??0}</div><div class="stat-sub">Conversations</div></div>
-      <div class="stat-card purple"><span class="stat-icon">👥</span><div class="stat-lbl">Total Users</div><div class="stat-val">${t.users??0}</div><div class="stat-sub">Registered</div></div>`;
+      <div class="stat-card blue"><span class="stat-icon">Queries</span><div class="stat-lbl">Total Queries</div><div class="stat-val">${totalQueries.toLocaleString()}</div><div class="stat-sub">All time</div></div>
+      <div class="stat-card green"><span class="stat-icon">KB</span><div class="stat-lbl">KB Resolution Rate</div><div class="stat-val">${resolvedPct}%</div><div class="stat-sub">Queries answered by KB</div></div>
+      <div class="stat-card gold"><span class="stat-icon">Sessions</span><div class="stat-lbl">Sessions</div><div class="stat-val">${num(t.sessions).toLocaleString()}</div><div class="stat-sub">Conversations</div></div>
+      <div class="stat-card purple"><span class="stat-icon">Users</span><div class="stat-lbl">Total Users</div><div class="stat-val">${num(t.users).toLocaleString()}</div><div class="stat-sub">Registered</div></div>
+      <div class="stat-card green"><span class="stat-icon">Feedback</span><div class="stat-lbl">User Satisfaction</div><div class="stat-val">${satTotal?satPct+'%':'—'}</div><div class="stat-sub">${satTotal} ratings</div></div>`;
+    document.getElementById('analytics-stats').insertAdjacentHTML('beforeend',
+      `<div class="stat-card red"><span class="stat-icon">Review</span><div class="stat-lbl">Pending Review</div><div class="stat-val">${num(t.review_queue_pending).toLocaleString()}</div><div class="stat-sub">Not helpful or weak source match</div></div>`);
     const ii=d.intent_distribution||[];
-    const maxC=ii.length?Math.max(...ii.map(i=>i.count),1):1;
+    const maxC=ii.length?Math.max(...ii.map(i=>num(i.count)),1):1;
     document.getElementById('analytics-intent').innerHTML=ii.length
-      ?ii.map(i=>`<div style="margin-bottom:14px;"><div class="flex-between" style="margin-bottom:5px;"><span style="font-size:13px;font-weight:600;">${(i.intent||'').replace(/_/g,' ')}</span><span style="font-size:12px;color:var(--muted);">${i.count} queries</span></div><div class="progress-bar"><div class="progress-fill" style="width:${Math.round((i.count/maxC)*100)}%"></div></div></div>`).join('')
+      ?ii.map(i=>`<div style="margin-bottom:14px;"><div class="flex-between" style="margin-bottom:5px;"><span style="font-size:13px;font-weight:600;">${esc((i.intent||'general').replace(/_/g,' '))}</span><span style="font-size:12px;color:var(--muted);">${num(i.count).toLocaleString()} queries</span></div><div class="progress-bar"><div class="progress-fill" style="width:${pct(i.count,maxC)}%"></div></div></div>`).join('')
       :'<div class="empty">No intent data yet.</div>';
     const vv=d.daily_volume||[];
-    const maxV=vv.length?Math.max(...vv.map(v=>v.count),1):1;
+    const maxV=vv.length?Math.max(...vv.map(v=>num(v.count)),1):1;
     document.getElementById('analytics-volume').innerHTML=vv.length
-      ?`<div class="sparkline">${vv.map(v=>`<div class="spark-bar gold" style="height:${Math.max(6,Math.round((v.count/maxV)*100))}%" title="${v.date||v.DATE}: ${v.count}"></div>`).join('')}</div><div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Queries</th></tr></thead><tbody>${vv.map(v=>`<tr><td class="td-mono">${v.date||v.DATE}</td><td><strong>${v.count}</strong></td></tr>`).join('')}</tbody></table></div>`
+      ?`<div class="sparkline">${vv.map(v=>`<div class="spark-bar gold" style="height:${Math.max(6,pct(v.count,maxV))}%" title="${esc(dateLabel(v.date||v.DATE))}: ${num(v.count)}"></div>`).join('')}</div><div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Queries</th></tr></thead><tbody>${vv.map(v=>`<tr><td class="td-mono">${esc(dateLabel(v.date||v.DATE))}</td><td><strong>${num(v.count).toLocaleString()}</strong></td></tr>`).join('')}</tbody></table></div>`
       :'<div class="empty">No data yet.</div>';
-    // Language distribution from users
-    const total2=allUsers.length||1;
     const lc={en:0,fil:0,hil:0};
-    allUsers.forEach(u=>{const l=u.language_preference;if(l in lc)lc[l]++;});
-    ['en','fil','hil'].forEach(l=>{
-      document.getElementById(`lang-${l}`).textContent=lc[l];
-      document.getElementById(`lang-${l}-bar`).style.width=Math.round((lc[l]/total2)*100)+'%';
+    (d.language_distribution||[]).forEach(row=>{
+      const l=String(row.language||'en').toLowerCase();
+      if(l in lc) lc[l]+=num(row.count);
     });
-    document.getElementById('top-questions-tbody').innerHTML=ii.length
-      ?ii.sort((a,b)=>b.count-a.count).map((item,idx)=>`<tr><td><span style="font-family:var(--serif);font-size:16px;">${idx===0?'🥇':idx===1?'🥈':idx===2?'🥉':'#'+(idx+1)}</span></td><td class="td-strong">${(item.intent||'').replace(/_/g,' ')}</td><td><strong>${item.count}</strong></td><td>${item.count>=20?'<span class="badge badge-red">🔥 Hot</span>':item.count>=10?'<span class="badge badge-amber">📈 Rising</span>':'<span class="badge badge-gray">Steady</span>'}</td></tr>`).join('')
+    const totalLang=Math.max(1, lc.en+lc.fil+lc.hil);
+    ['en','fil','hil'].forEach(l=>{
+      const countEl=document.getElementById(`lang-${l}`);
+      const barEl=document.getElementById(`lang-${l}-bar`);
+      if(countEl) countEl.textContent=lc[l];
+      if(barEl) barEl.style.width=pct(lc[l],totalLang)+'%';
+    });
+    const top=document.getElementById('top-questions-tbody');
+    const topQuestions=d.top_questions||[];
+    if(top) top.innerHTML=topQuestions.length
+      ?topQuestions.map((item,idx)=>`<tr><td>#${idx+1}</td><td class="td-strong" style="max-width:520px;">${esc(item.question||'-')}<span class="status-note">${esc((item.intent||'general').replace(/_/g,' '))} | Last asked: ${esc(dateLabel(item.last_asked))}</span></td><td><strong>${num(item.count).toLocaleString()}</strong></td><td>${num(item.count)>=20?'<span class="badge badge-red">Hot</span>':num(item.count)>=10?'<span class="badge badge-amber">Rising</span>':'<span class="badge badge-gray">Steady</span>'}</td></tr>`).join('')
       :'<tr><td colspan="4" class="empty">No data yet.</td></tr>';
-  } catch(e){['analytics-stats','analytics-intent','analytics-volume'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=`<div class="err-msg">❌ ${e.message}</div>`;});}
+    await loadFeedbackAnalytics();
+    await loadReviewQueue();
+    await loadAuditLogs();
+  } catch(e){
+    ['analytics-stats','analytics-intent','analytics-volume'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=`<div class="err-msg">${esc(e.message)}</div>`;});
+    const top=document.getElementById('top-questions-tbody');
+    if(top) top.innerHTML=`<tr><td colspan="4"><div class="err-msg">${esc(e.message)}</div></td></tr>`;
+    const feedback=document.getElementById('feedback-tbody');
+    if(feedback) feedback.innerHTML=`<tr><td colspan="7"><div class="err-msg">${esc(e.message)}</div></td></tr>`;
+    const reviewQueue=document.getElementById('review-queue-tbody');
+    if(reviewQueue) reviewQueue.innerHTML=`<tr><td colspan="6"><div class="err-msg">${esc(e.message)}</div></td></tr>`;
+    const audit=document.getElementById('audit-tbody');
+    if(audit) audit.innerHTML=`<tr><td colspan="6"><div class="err-msg">${esc(e.message)}</div></td></tr>`;
+  }
 }
 
-/* ── Performance ── */
+async function loadFeedbackAnalytics() {
+  const tb=document.getElementById('feedback-tbody');
+  if(!tb) return;
+  try {
+    const r=await apiFetch('/admin/feedback');
+    const rows=await r.json();
+    if(!r.ok) throw new Error(rows.detail||'Failed to load feedback.');
+    if(!rows.length){
+      tb.innerHTML='<tr><td colspan="7" class="empty">No feedback yet.</td></tr>';
+      return;
+    }
+    tb.innerHTML=rows.map((row,i)=>{
+      const isYes=row.rating==='yes';
+      const answer=String(row.assistant_answer||'').replace(/\s+/g,' ').slice(0,150);
+      return `<tr>
+        <td class="td-mono">${i+1}</td>
+        <td class="td-strong">${esc(row.username||row.email||'-')}</td>
+        <td>${isYes?'<span class="badge badge-green">HELPFUL</span>':'<span class="badge badge-red">NOT HELPFUL</span>'}</td>
+        <td><span class="badge badge-gray">${esc((row.intent||'-').replace(/_/g,' ').toUpperCase())}</span></td>
+        <td>${row.confidence_level?`<span class="badge badge-blue">${esc(row.confidence_level)}</span><span class="status-note">${esc(row.confidence_reason||'')}</span>`:'-'}</td>
+        <td style="max-width:360px;">${esc(answer)}${answer.length>=150?'...':''}${row.comment?`<span class="status-note">Comment: ${esc(row.comment)}</span>`:''}${row.review_status?`<span class="status-note">Review: ${esc(String(row.review_status).toUpperCase())}${row.reviewer_name?` by ${esc(row.reviewer_name)}`:''}</span>`:''}</td>
+        <td class="td-mono">${new Date(row.created_at).toLocaleDateString()}</td>
+      </tr>`;
+    }).join('');
+  } catch(e){
+    tb.innerHTML=`<tr><td colspan="7"><div class="err-msg">${esc(e.message)}</div></td></tr>`;
+  }
+}
+
+async function loadReviewQueue() {
+  const tb=document.getElementById('review-queue-tbody');
+  if(!tb) return;
+  try{
+    const r=await apiFetch('/admin/review-queue');
+    const rows=await r.json();
+    if(!r.ok) throw new Error(rows.detail||'Failed to load review queue.');
+    if(!rows.length){
+      tb.innerHTML='<tr><td colspan="6" class="empty">No review items waiting.</td></tr>';
+      return;
+    }
+    tb.innerHTML=rows.map((row,i)=>{
+      const badge=row.review_status==='reviewed'?'badge-green':row.review_status==='dismissed'?'badge-gray':'badge-amber';
+      const question=String(row.user_question||'').trim() || String(row.assistant_answer||'').slice(0,120);
+      return `<tr>
+        <td class="td-mono">${i+1}</td>
+        <td style="max-width:360px;"><div class="td-strong">${esc(question)}</div>${row.comment?`<span class="status-note">Feedback: ${esc(row.comment)}</span>`:''}${row.admin_notes?`<span class="status-note">Admin note: ${esc(row.admin_notes)}</span>`:''}</td>
+        <td>${row.rating==='no'?'<span class="badge badge-red">NOT HELPFUL</span>':'<span class="badge badge-green">HELPFUL</span>'}</td>
+        <td>${row.confidence_level?`<span class="badge badge-blue">${esc(row.confidence_level)}</span><span class="status-note">${esc(row.confidence_reason||'')}</span>`:'-'}</td>
+        <td><span class="badge ${badge}">${esc(String(row.review_status||'pending').toUpperCase())}</span>${row.reviewer_name?`<span class="status-note">By ${esc(row.reviewer_name)}</span>`:''}</td>
+        <td><div style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn btn-sm btn-success" onclick="updateReviewQueue(${row.id},'reviewed')">Mark Reviewed</button><button class="btn btn-sm btn-gold" onclick="updateReviewQueue(${row.id},'dismissed')">Dismiss</button><button class="btn btn-sm btn-primary" onclick="addToFAQ('${jsArg(question)}')">Add FAQ</button></div></td>
+      </tr>`;
+    }).join('');
+  }catch(e){
+    tb.innerHTML=`<tr><td colspan="6"><div class="err-msg">${esc(e.message)}</div></td></tr>`;
+  }
+}
+
+async function updateReviewQueue(id, reviewStatus) {
+  const note = prompt('Optional admin note for this review item:', '') || '';
+  try{
+    const r=await apiFetch(`/admin/review-queue/${id}`,{method:'PUT',body:JSON.stringify({review_status:reviewStatus,admin_notes:note})});
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(data.detail||'Failed to update review queue item.');
+    toast('Review queue updated.');
+    loadReviewQueue(); loadAnalytics();
+  }catch(e){toast(e.message,true);}
+}
+
+async function loadAuditLogs() {
+  const tb=document.getElementById('audit-tbody');
+  if(!tb) return;
+  try{
+    const r=await apiFetch('/admin/audit-logs');
+    const rows=await r.json();
+    if(!r.ok) throw new Error(rows.detail||'Failed to load audit log.');
+    if(!rows.length){
+      tb.innerHTML='<tr><td colspan="6" class="empty">No audit log entries yet.</td></tr>';
+      return;
+    }
+    tb.innerHTML=rows.map((row,i)=>{
+      const details=typeof row.details==='string' ? row.details : JSON.stringify(row.details||{});
+      return `<tr>
+        <td class="td-mono">${i+1}</td>
+        <td class="td-strong">${esc(String(row.action||'').replace(/_/g,' '))}</td>
+        <td>${esc(row.target_type||'-')} ${row.target_id?`<span class="status-note">#${esc(row.target_id)}</span>`:''}</td>
+        <td style="max-width:360px;">${esc(details).slice(0,200)}${String(details).length>200?'...':''}</td>
+        <td>${esc(row.admin_username||'-')}</td>
+        <td class="td-mono">${dateLabel(row.created_at)}</td>
+      </tr>`;
+    }).join('');
+  }catch(e){
+    tb.innerHTML=`<tr><td colspan="6"><div class="err-msg">${esc(e.message)}</div></td></tr>`;
+  }
+}
+
+async function downloadSystemBackup() {
+  try{
+    const r=await apiFetch('/admin/system-backup');
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.detail||'Failed to create system backup.');
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json;charset=utf-8;'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=`laborlens-system-backup-${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast('System backup exported.');
+  }catch(e){toast(e.message,true);}
+}
+
+/* -- Performance -- */
+function asBool(value) {
+  return value === true || value === 1 || value === '1' || String(value).toLowerCase() === 'true';
+}
+
+function performanceResultBadge(row) {
+  const status = String(row.result_status || '').toLowerCase();
+  if (status === 'kb_found') return '<span class="badge badge-green">KB FOUND</span>';
+  if (status === 'clarified') return '<span class="badge badge-amber">CLARIFIED</span>';
+  if (status === 'handled') return '<span class="badge badge-blue">HANDLED</span>';
+  if (status === 'not_found' || !asBool(row.resolved)) return '<span class="badge badge-red">NOT FOUND</span>';
+  return '<span class="badge badge-green">RESOLVED</span>';
+}
+
 async function loadPerformance() {
   try {
-    const r=await apiFetch('/admin/unresolved-queries');
+    const r=await apiFetch('/admin/query-performance');
     const qs=await r.json();
+    if(!r.ok) throw new Error(qs.detail||'Failed to load performance logs.');
     const dr=await apiFetch('/admin/dashboard');
     const dd=dr.ok?await dr.json():{};
+    const kr=await apiFetch('/kb/stats');
+    const kd=kr.ok?await kr.json():{};
     const t=dd.totals||{};
+    const kb=kbSummary(kd);
     const all=Array.isArray(qs)?qs:[];
     const buckets={fast:0,medium:0,slow:0};
-    all.forEach(q=>{const ms=q.response_time_ms||0;if(ms<500)buckets.fast++;else if(ms<2000)buckets.medium++;else buckets.slow++;});
+    all.forEach(q=>{const ms=num(q.response_time_ms);if(ms<500)buckets.fast++;else if(ms<2000)buckets.medium++;else buckets.slow++;});
     const total=all.length||1;
-    const avgMs=all.length?Math.round(all.reduce((s,q)=>s+(q.response_time_ms||0),0)/all.length):0;
+    const avgMs=all.length?Math.round(all.reduce((s,q)=>s+num(q.response_time_ms),0)/all.length):0;
     document.getElementById('perf-stats').innerHTML=`
-      <div class="stat-card green"><span class="stat-icon">⚡</span><div class="stat-lbl">Avg Response</div><div class="stat-val">${avgMs}<span style="font-size:16px;color:var(--muted);"> ms</span></div><div class="stat-sub">Across all queries</div></div>
-      <div class="stat-card blue"><span class="stat-icon">📊</span><div class="stat-lbl">Total Processed</div><div class="stat-val">${t.messages??all.length}</div><div class="stat-sub">All queries</div></div>
-      <div class="stat-card gold"><span class="stat-icon">🎯</span><div class="stat-lbl">Fast (&lt;500ms)</div><div class="stat-val">${Math.round((buckets.fast/total)*100)}<span style="font-size:16px;color:var(--muted);">%</span></div><div class="stat-sub">Queries</div></div>
-      <div class="stat-card ${buckets.slow>5?'red':'green'}"><span class="stat-icon">🐢</span><div class="stat-lbl">Slow (&gt;2s)</div><div class="stat-val">${buckets.slow}</div><div class="stat-sub">Queries</div></div>`;
+      <div class="stat-card green"><span class="stat-icon">Speed</span><div class="stat-lbl">Avg Response</div><div class="stat-val">${avgMs}<span style="font-size:16px;color:var(--muted);"> ms</span></div><div class="stat-sub">Across recent logs</div></div>
+      <div class="stat-card blue"><span class="stat-icon">Total</span><div class="stat-lbl">Total Processed</div><div class="stat-val">${t.messages??all.length}</div><div class="stat-sub">All queries</div></div>
+      <div class="stat-card ${kb.chunks>0?'gold':'red'}"><span class="stat-icon">KB</span><div class="stat-lbl">Searchable Chunks</div><div class="stat-val">${kb.chunks.toLocaleString()}</div><div class="stat-sub">${kb.indexedDocs} documents ready</div></div>
+      <div class="stat-card ${buckets.slow>5?'red':'green'}"><span class="stat-icon">Slow</span><div class="stat-lbl">Slow (&gt;2s)</div><div class="stat-val">${buckets.slow}</div><div class="stat-sub">Queries</div></div>`;
     document.getElementById('rt-buckets').innerHTML=`
-      <div style="margin-bottom:16px;"><div class="flex-between" style="margin-bottom:6px;"><span style="font-size:13px;font-weight:600;">⚡ Fast (&lt;500ms)</span><span style="font-size:13px;color:var(--green);font-weight:700;">${buckets.fast}</span></div><div class="progress-bar"><div class="progress-fill green" style="width:${Math.round((buckets.fast/total)*100)}%"></div></div></div>
-      <div style="margin-bottom:16px;"><div class="flex-between" style="margin-bottom:6px;"><span style="font-size:13px;font-weight:600;">⏱️ Medium (500ms–2s)</span><span style="font-size:13px;color:var(--amber);font-weight:700;">${buckets.medium}</span></div><div class="progress-bar"><div class="progress-fill gold" style="width:${Math.round((buckets.medium/total)*100)}%"></div></div></div>
-      <div><div class="flex-between" style="margin-bottom:6px;"><span style="font-size:13px;font-weight:600;">🐢 Slow (&gt;2s)</span><span style="font-size:13px;color:var(--red);font-weight:700;">${buckets.slow}</span></div><div class="progress-bar"><div class="progress-fill red" style="width:${Math.round((buckets.slow/total)*100)}%"></div></div></div>`;
+      <div style="margin-bottom:16px;"><div class="flex-between" style="margin-bottom:6px;"><span style="font-size:13px;font-weight:600;">Fast (&lt;500ms)</span><span style="font-size:13px;color:var(--green);font-weight:700;">${buckets.fast}</span></div><div class="progress-bar"><div class="progress-fill green" style="width:${Math.round((buckets.fast/total)*100)}%"></div></div></div>
+      <div style="margin-bottom:16px;"><div class="flex-between" style="margin-bottom:6px;"><span style="font-size:13px;font-weight:600;">Medium (500ms-2s)</span><span style="font-size:13px;color:var(--amber);font-weight:700;">${buckets.medium}</span></div><div class="progress-bar"><div class="progress-fill gold" style="width:${Math.round((buckets.medium/total)*100)}%"></div></div></div>
+      <div><div class="flex-between" style="margin-bottom:6px;"><span style="font-size:13px;font-weight:600;">Slow (&gt;2s)</span><span style="font-size:13px;color:var(--red);font-weight:700;">${buckets.slow}</span></div><div class="progress-bar"><div class="progress-fill red" style="width:${Math.round((buckets.slow/total)*100)}%"></div></div></div>`;
+    const vectorRow = kb.chunks > 0
+      ? renderHealthRow('Vector Database', 'SEARCHABLE', 'green', `${kb.chunks.toLocaleString()} chunks ready`)
+      : renderHealthRow('Vector Database', 'EMPTY', 'amber', 'Upload a document to rebuild searchable chunks');
+    const endpointIsTunnel = API.includes('ngrok');
     document.getElementById('health-items').innerHTML=`
       <div style="display:flex;flex-direction:column;gap:10px;">
-        <div class="flex-between" style="padding:12px 16px;background:var(--green-bg);border:1px solid rgba(13,122,85,.2);border-radius:10px;"><span style="font-size:14px;font-weight:600;">🟢 FastAPI Backend</span><span class="badge badge-green">ONLINE</span></div>
-        <div class="flex-between" style="padding:12px 16px;background:var(--green-bg);border:1px solid rgba(13,122,85,.2);border-radius:10px;"><span style="font-size:14px;font-weight:600;">🟢 ChromaDB (Vector DB)</span><span class="badge badge-green">INDEXED</span></div>
-        <div class="flex-between" style="padding:12px 16px;background:var(--green-bg);border:1px solid rgba(13,122,85,.2);border-radius:10px;"><span style="font-size:14px;font-weight:600;">🟢 Authentication (JWT)</span><span class="badge badge-green">ACTIVE</span></div>
-        <div class="flex-between" style="padding:12px 16px;background:var(--blue-bg);border:1px solid rgba(29,78,216,.2);border-radius:10px;"><span style="font-size:14px;font-weight:600;">🔵 ngrok Tunnel</span><span class="badge badge-blue">CONNECTED</span></div>
+        ${renderHealthRow('FastAPI Backend', 'ONLINE', 'green')}
+        ${vectorRow}
+        ${renderHealthRow('Admin Session', 'ACTIVE', 'green', 'Refresh keeps this session while the token is valid')}
+        ${renderHealthRow(endpointIsTunnel?'ngrok Tunnel':'API Endpoint', endpointIsTunnel?'CONNECTED':'LOCAL', 'blue')}
       </div>`;
     document.getElementById('perf-log-tbody').innerHTML=all.length
-      ?all.slice(0,20).map((q,i)=>{const ms=q.response_time_ms||0;const cls=ms<500?'badge-green':ms<2000?'badge-amber':'badge-red';return`<tr><td class="td-mono">${i+1}</td><td style="max-width:300px;font-size:13px;">${(q.query_text||'').substring(0,60)}…</td><td><span class="badge ${cls}">${ms}ms</span></td><td><span class="badge badge-red">NOT FOUND</span></td><td class="td-mono">${new Date(q.created_at).toLocaleDateString()}</td></tr>`;}).join('')
+      ?all.slice(0,20).map((q,i)=>{const ms=num(q.response_time_ms);const cls=ms<500?'badge-green':ms<2000?'badge-amber':'badge-red';const query=String(q.query_text||'');return`<tr><td class="td-mono">${i+1}</td><td style="max-width:300px;font-size:13px;">${esc(query.substring(0,70))}${query.length>70?'...':''}<span class="status-note">${esc(q.username||'Guest')} - ${esc((q.intent||'general').replace(/_/g,' '))}</span></td><td><span class="badge ${cls}">${ms}ms</span></td><td>${performanceResultBadge(q)}</td><td class="td-mono">${dateLabel(q.created_at)}</td></tr>`;}).join('')
       :'<tr><td colspan="5" class="empty">No performance data yet.</td></tr>';
-  } catch(e){document.getElementById('perf-stats').innerHTML=`<div class="err-msg" style="grid-column:1/-1;">❌ ${e.message}</div>`;}
+  } catch(e){
+    document.getElementById('perf-stats').innerHTML=`<div class="err-msg" style="grid-column:1/-1;">${esc(e.message)}</div>`;
+    document.getElementById('rt-buckets').innerHTML=`<div class="err-msg">${esc(e.message)}</div>`;
+    document.getElementById('health-items').innerHTML=`<div class="err-msg">${esc(e.message)}</div>`;
+    document.getElementById('perf-log-tbody').innerHTML=`<tr><td colspan="5"><div class="err-msg">${esc(e.message)}</div></td></tr>`;
+  }
 }
+
 
 /* ── Startup ── */
 document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeAdminNav();
   if (e.key==='Enter' && !document.getElementById('login-screen').classList.contains('gone')) doLogin();
 });
-// Auto-focus password field since email is pre-filled
 window.addEventListener('load', () => {
-  document.getElementById('l-pass').focus();
+  restoreAdminSession();
 });
 </script>
 </body>
