@@ -1528,6 +1528,33 @@
       font-weight:800!important;
       z-index:3!important;
     }
+    body.app-ready #session-list{padding-bottom:8px!important;}
+    body.app-ready .sess-title{display:block!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;}
+    body.app-ready .sess-actions{align-items:center!important;gap:3px!important;}
+    body.app-ready .sess-mini{
+      width:25px!important;height:25px!important;padding:0!important;border:0!important;border-radius:6px!important;
+      display:grid!important;place-items:center!important;background:rgba(255,255,255,.09)!important;color:#dbeafe!important;
+      font-size:12px!important;cursor:pointer!important;
+    }
+    body.app-ready .sess-mini:hover{background:rgba(255,255,255,.18)!important;color:#fff!important;}
+    body.app-ready .sess-pin{display:none!important;}
+    body.app-ready .sess-item:hover .sess-pin,body.app-ready .sess-pin.is-pinned{display:grid!important;}
+    body.app-ready .sess-pin.is-pinned{background:rgba(249,184,31,.2)!important;color:#ffd12d!important;}
+    body.app-ready .sidebar-bottom-nav{
+      order:5!important;flex:0 0 auto!important;margin-top:10px!important;padding-top:10px!important;
+      border-top:1px solid rgba(255,255,255,.16)!important;display:grid!important;gap:3px!important;
+    }
+    body.app-ready .sidebar-nav-btn{
+      width:100%!important;min-height:36px!important;padding:7px 10px!important;border:0!important;border-radius:7px!important;
+      background:transparent!important;color:#dce9fa!important;display:flex!important;align-items:center!important;gap:10px!important;
+      font:700 12px var(--sans)!important;text-align:left!important;cursor:pointer!important;
+    }
+    body.app-ready .sidebar-nav-btn:hover{background:rgba(255,255,255,.08)!important;color:#fff!important;}
+    body.app-ready .sidebar-nav-btn.logout{color:#fecaca!important;}
+    .sp-profile-card{display:flex;align-items:center;gap:11px;padding:11px;margin:0 0 16px;background:#f5f8fc;border:1px solid #dbe4ef;border-radius:9px;}
+    .sp-profile-avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#0b3b92;color:#fff;font-weight:900;}
+    .sp-profile-name{font-size:13px;font-weight:900;color:#172033;}
+    .sp-profile-role{margin-top:2px;font-size:11px;color:#667085;}
     body.app-ready #chat-area{
       flex:1 1 auto!important;
       min-width:0!important;
@@ -2265,6 +2292,138 @@
         font-size:12px;
       }
     }
+
+    /* Sidebar title tooltip */
+    .session-title-tooltip{
+      position:fixed;
+      z-index:500;
+      max-width:min(320px,calc(100vw - 24px));
+      padding:8px 10px;
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:7px;
+      background:#041b43;
+      color:#f8fbff;
+      box-shadow:0 10px 30px rgba(2,12,32,.35);
+      font:600 12px/1.4 var(--sans);
+      overflow-wrap:anywhere;
+      pointer-events:none;
+      opacity:0;
+      visibility:hidden;
+      transform:translateY(-3px);
+      transition:opacity .12s ease,transform .12s ease,visibility 0s linear .12s;
+    }
+    .session-title-tooltip.visible{
+      opacity:1;
+      visibility:visible;
+      transform:translateY(0);
+      transition-delay:0s;
+    }
+
+    /* Persistent appearance preferences */
+    body.app-ready #app{
+      --ui-copy-size:14px;
+      --ui-small-size:12px;
+      --ui-title-size:22px;
+      --ui-input-size:15px;
+    }
+    body.app-ready.font-small #app{
+      --ui-copy-size:12.5px;
+      --ui-small-size:10.5px;
+      --ui-title-size:19px;
+      --ui-input-size:13px;
+    }
+    body.app-ready.font-large #app{
+      --ui-copy-size:16px;
+      --ui-small-size:13.5px;
+      --ui-title-size:25px;
+      --ui-input-size:17px;
+    }
+    body.app-ready .msg-bubble,
+    body.app-ready .legal-answer .answer-content,
+    body.app-ready .sess-text,
+    body.app-ready .sp-toggle-label,
+    body.app-ready .sp-profile-name,
+    body.app-ready .quick-btn{font-size:var(--ui-copy-size)!important;}
+    body.app-ready .msg-time,
+    body.app-ready .sess-meta,
+    body.app-ready .sp-toggle-sub,
+    body.app-ready .sp-profile-role,
+    body.app-ready .ch-sub,
+    body.app-ready .disclaimer,
+    body.app-ready .source-card-btn,
+    body.app-ready .answer-action-btn,
+    body.app-ready .guided-action-btn{font-size:var(--ui-small-size)!important;}
+    body.app-ready .chat-head-copy #chat-title{font-size:var(--ui-title-size)!important;}
+    body.app-ready #msg-input,
+    body.app-ready .sp-select{font-size:var(--ui-input-size)!important;}
+
+    /* The existing navy workspace remains the default dark theme. */
+    body.app-ready.theme-light,
+    body.app-ready.theme-light #app.visible,
+    body.app-ready.theme-light #body{background:#f5f8fc!important;color:#172033!important;}
+    body.app-ready.theme-light #topbar{
+      background:#ffffff!important;
+      border-bottom-color:#d7e1ee!important;
+      box-shadow:0 2px 12px rgba(15,48,89,.08)!important;
+    }
+    body.app-ready.theme-light .tb-name,
+    body.app-ready.theme-light .tb-status,
+    body.app-ready.theme-light .tb-lang,
+    body.app-ready.theme-light .tb-uname{color:#102b5c!important;}
+    body.app-ready.theme-light .tb-icon-btn,
+    body.app-ready.theme-light .tb-user-chip,
+    body.app-ready.theme-light .tb-logout,
+    body.app-ready.theme-light .tb-lang select{
+      background:#eef4fb!important;
+      border-color:#cbd8e8!important;
+      color:#102b5c!important;
+    }
+    body.app-ready.theme-light .tb-lang option{background:#fff!important;color:#172033!important;}
+    body.app-ready.theme-light #sidebar{
+      background:linear-gradient(180deg,#f8fbff 0%,#eaf2fb 100%)!important;
+      border-right-color:#cad8e9!important;
+      box-shadow:8px 0 26px rgba(15,48,89,.08)!important;
+    }
+    body.app-ready.theme-light .session-search input{
+      background:#fff!important;
+      border-color:#bdcce0!important;
+      color:#172033!important;
+    }
+    body.app-ready.theme-light .session-search input::placeholder{color:#68778e!important;}
+    body.app-ready.theme-light .session-search::after{color:#315b91!important;}
+    body.app-ready.theme-light .sb-section-label,
+    body.app-ready.theme-light .session-group-label,
+    body.app-ready.theme-light .sess-item,
+    body.app-ready.theme-light .sess-text,
+    body.app-ready.theme-light .sidebar-nav-btn{color:#18345f!important;}
+    body.app-ready.theme-light .sess-meta{color:#66778f!important;}
+    body.app-ready.theme-light .sess-icon{color:#315b91!important;}
+    body.app-ready.theme-light .sess-item:hover{background:#dfeafa!important;}
+    body.app-ready.theme-light .sess-item.active{background:#fff7d6!important;color:#7a4d00!important;}
+    body.app-ready.theme-light .sess-item.active .sess-text{color:#7a4d00!important;}
+    body.app-ready.theme-light .session-group-label:not(:first-child)::after{background:#cad8e9!important;}
+    body.app-ready.theme-light .sidebar-bottom-nav{border-top-color:#cad8e9!important;}
+    body.app-ready.theme-light .sidebar-nav-btn:hover{background:#dfeafa!important;color:#102b5c!important;}
+    body.app-ready.theme-light .sidebar-nav-btn.logout{color:#b42335!important;}
+    body.app-ready.theme-light #chat-area,
+    body.app-ready.theme-light #msgs{background:linear-gradient(180deg,#ffffff,#f1f6fc)!important;}
+    body.app-ready.theme-light #chat-header,
+    body.app-ready.theme-light #input-zone,
+    body.app-ready.theme-light #input-box,
+    body.app-ready.theme-light .welcome-state,
+    body.app-ready.theme-light .msg-row.bot .msg-bubble:not(.legal-answer),
+    body.app-ready.theme-light .msg-bubble.legal-answer,
+    body.app-ready.theme-light #typing .typing-bubble{background:#fff!important;}
+    body.app-ready.theme-light #settings-panel,
+    body.app-ready.theme-light .status-popover,
+    body.app-ready.theme-light .modal{background:#fff!important;color:#172033!important;}
+    body.app-ready.theme-light .sp-header{
+      background:#f3f7fc!important;
+      border-bottom-color:#cad8e9!important;
+    }
+    body.app-ready.theme-light .sp-title{color:#102b5c!important;}
+    body.app-ready.theme-light .sp-sub{color:#62728a!important;}
+    body.app-ready.theme-light .sp-close{background:#dfeafa!important;color:#18345f!important;}
   </style>
 </head>
 <body>
@@ -2342,6 +2501,18 @@
           <div class="field"><label for="reset-email">Email Address</label><input type="email" id="reset-email" autocomplete="email" placeholder="you@example.com"/></div>
           <button type="button" class="auth-secondary" onclick="requestPasswordReset()">Send reset instructions</button>
           <p class="auth-msg" id="forgot-msg"></p>
+        </div>
+        <div class="forgot-panel" id="reset-panel" hidden>
+          <div class="forgot-head">
+            <strong>Set new password</strong>
+            <button type="button" class="forgot-close" onclick="closeResetPassword()" aria-label="Close password reset">&times;</button>
+          </div>
+          <p class="forgot-copy">Enter your new password below. The reset link expires after 1 hour.</p>
+          <input type="hidden" id="reset-token"/>
+          <div class="field"><label for="new-pass">New Password</label><input type="password" id="new-pass" autocomplete="new-password" placeholder="At least 8 characters"/></div>
+          <div class="field"><label for="new-pass2">Confirm New Password</label><input type="password" id="new-pass2" autocomplete="new-password" placeholder="Retype your new password"/></div>
+          <button type="button" class="auth-secondary" onclick="submitNewPassword()">Update password</button>
+          <p class="auth-msg" id="reset-msg"></p>
         </div>
       </div>
       <!-- REGISTER -->
@@ -2439,6 +2610,18 @@
           <div><div class="sp-toggle-label">Show Timestamps</div><div class="sp-toggle-sub">Display time on each message</div></div>
           <button class="toggle" id="toggle-timestamps" onclick="togglePreference('timestamps')"></button>
         </div>
+        <div class="sp-toggle-row">
+          <div><div class="sp-toggle-label" id="theme-mode-label">Dark Mode</div><div class="sp-toggle-sub">Switch between dark and light appearance</div></div>
+          <button class="toggle" id="toggle-theme" type="button" onclick="toggleTheme()" aria-label="Toggle dark or light mode" aria-pressed="true"></button>
+        </div>
+        <div class="sp-row" style="margin-top:12px;margin-bottom:0;">
+          <label class="sp-label" for="setting-font-size">Font Size</label>
+          <select class="sp-select" id="setting-font-size" onchange="saveFontSize(this.value)">
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+          </select>
+        </div>
       </div>
       <button class="sp-danger-btn" onclick="confirmClearAll()">🗑️ Clear All Chat History</button>
     </div>
@@ -2454,8 +2637,13 @@
       </div>
       <div class="sb-section-label">Recent Sessions</div>
       <div id="session-list" role="list" aria-label="Recent consultation sessions"></div>
+      <nav class="sidebar-bottom-nav" aria-label="Account navigation">
+        <button class="sidebar-nav-btn" type="button" onclick="openSettingsFromSidebar(event)"><span aria-hidden="true">⚙️</span> Settings</button>
+        <button class="sidebar-nav-btn logout" type="button" onclick="doLogout()"><span aria-hidden="true">🚪</span> Logout</button>
+      </nav>
     </aside>
     <div id="sidebar-overlay" onclick="closeSidebar()"></div>
+    <div class="session-title-tooltip" id="session-title-tooltip" role="tooltip" aria-hidden="true"></div>
 
     <!-- CHAT -->
     <main id="chat-area">
@@ -2527,7 +2715,22 @@
 const API = 'https://plaster-multiply-tint.ngrok-free.dev/api';
 let token = localStorage.getItem('ll_token');
 let currentUser = JSON.parse(localStorage.getItem('ll_user') || 'null');
-let currentSessionId = token ? localStorage.getItem('ll_active_session') : null;
+function activeSessionStorageKey(userId=currentUser?.id) {
+  return userId ? `ll_active_session_${userId}` : '';
+}
+function getStoredActiveSession(userId=currentUser?.id) {
+  const key = activeSessionStorageKey(userId);
+  return key ? localStorage.getItem(key) : null;
+}
+function storeActiveSession(sessionId, userId=currentUser?.id) {
+  const key = activeSessionStorageKey(userId);
+  if (key && sessionId) localStorage.setItem(key, sessionId);
+}
+function clearStoredActiveSession(userId=currentUser?.id) {
+  const key = activeSessionStorageKey(userId);
+  if (key) localStorage.removeItem(key);
+}
+let currentSessionId = token ? getStoredActiveSession(currentUser?.id) : null;
 let lastAssistantIntent = null;
 const GUEST_MESSAGE_LIMIT = 5;
 let isGuest = localStorage.getItem('ll_guest') === '1' && !token;
@@ -2535,15 +2738,39 @@ let guestSessionId = localStorage.getItem('ll_guest_session') || null;
 let guestCount = Number(localStorage.getItem('ll_guest_count') || '0');
 let guestHistory = JSON.parse(localStorage.getItem('ll_guest_history') || '[]');
 let sessionCache = [];
+let sessionLoadSequence = 0;
 let statusCache = null;
 let typingTimer = null;
 let sendingMessage = false;
+let identitySyncPromise = null;
+let sessionTooltipTimer = null;
 
+const DEFAULT_PREFS = Object.freeze({
+  sound:false,
+  compact:false,
+  timestamps:false,
+  theme:'dark',
+  fontSize:'medium'
+});
+function normalizePreferences(value={}) {
+  const prefs = value && typeof value === 'object' ? value : {};
+  return {
+    sound:!!prefs.sound,
+    compact:!!prefs.compact,
+    timestamps:!!prefs.timestamps,
+    theme:prefs.theme === 'light' ? 'light' : 'dark',
+    fontSize:['small','medium','large'].includes(prefs.fontSize) ? prefs.fontSize : 'medium'
+  };
+}
 function getPrefs() {
-  return JSON.parse(localStorage.getItem('ll_prefs') || '{"sound":false,"compact":false,"timestamps":false}');
+  try {
+    return normalizePreferences(JSON.parse(localStorage.getItem('ll_prefs') || '{}'));
+  } catch (_) {
+    return {...DEFAULT_PREFS};
+  }
 }
 function savePrefs(prefs) {
-  localStorage.setItem('ll_prefs', JSON.stringify(prefs));
+  localStorage.setItem('ll_prefs', JSON.stringify(normalizePreferences(prefs)));
 }
 function applyPreferences() {
   const prefs = getPrefs();
@@ -2552,6 +2779,20 @@ function applyPreferences() {
   document.getElementById('toggle-timestamps')?.classList.toggle('on', !!prefs.timestamps);
   document.body.classList.toggle('compact-messages', !!prefs.compact);
   document.body.classList.toggle('show-timestamps', !!prefs.timestamps);
+  const isDark = prefs.theme === 'dark';
+  document.body.classList.toggle('theme-dark', isDark);
+  document.body.classList.toggle('theme-light', !isDark);
+  document.body.classList.toggle('font-small', prefs.fontSize === 'small');
+  document.body.classList.toggle('font-medium', prefs.fontSize === 'medium');
+  document.body.classList.toggle('font-large', prefs.fontSize === 'large');
+  document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+  const themeToggle = document.getElementById('toggle-theme');
+  themeToggle?.classList.toggle('on', isDark);
+  themeToggle?.setAttribute('aria-pressed', String(isDark));
+  const themeLabel = document.getElementById('theme-mode-label');
+  if (themeLabel) themeLabel.textContent = isDark ? 'Dark Mode' : 'Light Mode';
+  const fontSize = document.getElementById('setting-font-size');
+  if (fontSize && fontSize.value !== prefs.fontSize) fontSize.value = prefs.fontSize;
 }
 function togglePreference(name) {
   const prefs = getPrefs();
@@ -2559,6 +2800,18 @@ function togglePreference(name) {
   savePrefs(prefs);
   applyPreferences();
   if (name === 'sound' && prefs.sound) playNotificationSound(true);
+}
+function toggleTheme() {
+  const prefs = getPrefs();
+  prefs.theme = prefs.theme === 'dark' ? 'light' : 'dark';
+  savePrefs(prefs);
+  applyPreferences();
+}
+function saveFontSize(value) {
+  const prefs = getPrefs();
+  prefs.fontSize = ['small','medium','large'].includes(value) ? value : 'medium';
+  savePrefs(prefs);
+  applyPreferences();
 }
 function playNotificationSound(testOnly = false) {
   if (!testOnly && !getPrefs().sound) return;
@@ -2676,6 +2929,22 @@ function prepareAuthUi() {
       </div>
     `);
   }
+  if (loginErr && !document.getElementById('reset-panel')) {
+    loginErr.insertAdjacentHTML('afterend', `
+      <div class="forgot-panel" id="reset-panel" hidden>
+        <div class="forgot-head">
+          <strong>Set new password</strong>
+          <button type="button" class="forgot-close" onclick="closeResetPassword()" aria-label="Close password reset">&times;</button>
+        </div>
+        <p class="forgot-copy">Enter your new password below. The reset link expires after 1 hour.</p>
+        <input type="hidden" id="reset-token"/>
+        <div class="field"><label for="new-pass">New Password</label><input type="password" id="new-pass" autocomplete="new-password" placeholder="At least 8 characters"/></div>
+        <div class="field"><label for="new-pass2">Confirm New Password</label><input type="password" id="new-pass2" autocomplete="new-password" placeholder="Retype your new password"/></div>
+        <button type="button" class="auth-secondary" onclick="submitNewPassword()">Update password</button>
+        <p class="auth-msg" id="reset-msg"></p>
+      </div>
+    `);
+  }
 
   const regGoogle = regForm.querySelector('.google-btn');
   if (regGoogle) {
@@ -2761,11 +3030,19 @@ function prepareSettingsUi() {
   if (danger && !document.querySelector('#settings-panel .sp-secondary-btn')) {
     danger.insertAdjacentHTML('beforebegin', '<button class="sp-secondary-btn" onclick="resetSettings()">Reset Settings</button>');
   }
+  const body = document.querySelector('#settings-panel .sp-body');
+  if (body && !document.getElementById('settings-profile-card')) {
+    body.insertAdjacentHTML('afterbegin', `
+      <div class="sp-profile-card" id="settings-profile-card">
+        <div class="sp-profile-avatar" id="settings-profile-avatar">U</div>
+        <div><div class="sp-profile-name" id="settings-profile-name">User</div><div class="sp-profile-role" id="settings-profile-role">LaborLens account</div></div>
+      </div>`);
+  }
+  updateProfileSummary();
 }
 
 function prepareSidebarUi() {
   const top = document.querySelector('#sidebar .sb-top');
-  const sidebar = document.getElementById('sidebar');
   if (top && !document.getElementById('session-search')) {
     top.insertAdjacentHTML('afterend', `
       <div class="session-search">
@@ -2775,11 +3052,85 @@ function prepareSidebarUi() {
   }
   const search = document.getElementById('session-search');
   if (search) search.placeholder = 'Search conversations';
-  if (sidebar && !document.querySelector('.view-all-conversations')) {
-    sidebar.insertAdjacentHTML('beforeend', '<button class="view-all-conversations" onclick="viewAllConversations()"><span aria-hidden="true">&#9776;</span> View All Conversations</button>');
+  const list = document.getElementById('session-list');
+  if (list && !list.dataset.tooltipScrollListener) {
+    list.addEventListener('scroll', hideSessionTitleTooltip, {passive:true});
+    list.dataset.tooltipScrollListener = 'true';
   }
 }
 
+function getUserDisplayName(user=currentUser) {
+  const candidates = [user?.full_name, user?.fullName, user?.display_name, user?.displayName, user?.name, user?.username];
+  const displayName = candidates.map(value => String(value || '').trim()).find(Boolean);
+  if (displayName) return displayName;
+  const emailName = String(user?.email || '').split('@')[0].trim();
+  return emailName || (isGuest ? 'Guest' : 'User');
+}
+function getUserInitial(user=currentUser) {
+  return getUserDisplayName(user).charAt(0).toUpperCase() || 'U';
+}
+function updateProfileSummary() {
+  const name = getUserDisplayName();
+  const role = isGuest ? 'Guest consultation' : `${currentUser?.role || 'user'} account`;
+  const avatar = document.getElementById('settings-profile-avatar');
+  const nameEl = document.getElementById('settings-profile-name');
+  const roleEl = document.getElementById('settings-profile-role');
+  if (avatar) avatar.textContent = name.charAt(0).toUpperCase();
+  if (nameEl) nameEl.textContent = name;
+  if (roleEl) roleEl.textContent = role;
+}
+function updateUserIdentityUi() {
+  const name = getUserDisplayName();
+  const topbarName = document.getElementById('tb-uname');
+  const topbarAvatar = document.getElementById('tb-avatar');
+  if (topbarName) {
+    topbarName.textContent = name;
+    topbarName.title = name;
+  }
+  if (topbarAvatar) {
+    topbarAvatar.textContent = getUserInitial();
+    topbarAvatar.setAttribute('aria-label', `${name} avatar`);
+  }
+  document.querySelectorAll('.msg-row.user .msg-avatar').forEach(avatar => {
+    avatar.textContent = getUserInitial();
+  });
+  updateProfileSummary();
+}
+async function syncAuthenticatedUser() {
+  if (isGuest || !token) return null;
+  if (identitySyncPromise) return identitySyncPromise;
+  identitySyncPromise = (async () => {
+    try {
+      const response = await authFetch('/auth/me');
+      if (!response.ok) return null;
+      const account = await response.json();
+      const authoritativeName = account.full_name || account.fullName || account.display_name
+        || account.displayName || account.name || account.username;
+      currentUser = {
+        ...currentUser,
+        ...account,
+        full_name:authoritativeName || currentUser?.full_name || currentUser?.username
+      };
+      localStorage.setItem('ll_user', JSON.stringify(currentUser));
+      updateUserIdentityUi();
+      return currentUser;
+    } catch (_) {
+      return null;
+    } finally {
+      identitySyncPromise = null;
+    }
+  })();
+  return identitySyncPromise;
+}
+function openSettingsFromSidebar(event) {
+  event?.stopPropagation();
+  updateProfileSummary();
+  void syncAuthenticatedUser();
+  document.getElementById('settings-panel')?.classList.add('open');
+  document.getElementById('settings-overlay')?.classList.add('open');
+  document.getElementById('settings-btn')?.setAttribute('aria-expanded', 'true');
+  closeSidebar();
+}
 function showAuth() {
   document.getElementById('landing').classList.add('hidden');
   document.getElementById('auth-screen').classList.remove('hidden');
@@ -2840,7 +3191,8 @@ async function continueGoogle() {
     : document.getElementById('login-err');
   visibleError.textContent = '';
   try {
-    const r = await fetch(`${API}/auth/google/start`, {
+    const frontendUrl = window.location.href.split('#')[0];
+    const r = await fetch(`${API}/auth/google/start?frontend_url=${encodeURIComponent(frontendUrl)}`, {
       headers: {'ngrok-skip-browser-warning':'true'}
     });
     const d = await r.json().catch(() => ({}));
@@ -2858,6 +3210,24 @@ function openForgotPassword() {
 }
 function closeForgotPassword() {
   const panel = document.getElementById('forgot-panel');
+  if (panel) panel.hidden = true;
+}
+function openResetPassword(tokenValue='') {
+  showAuth();
+  switchAuthTab('login');
+  closeForgotPassword();
+  const panel = document.getElementById('reset-panel');
+  const tokenInput = document.getElementById('reset-token');
+  const msg = document.getElementById('reset-msg');
+  if (tokenInput) tokenInput.value = tokenValue;
+  if (msg) {
+    msg.style.color = '#667085';
+    msg.textContent = tokenValue ? '' : 'Reset token is missing. Request a new password reset link.';
+  }
+  if (panel) panel.hidden = false;
+}
+function closeResetPassword() {
+  const panel = document.getElementById('reset-panel');
   if (panel) panel.hidden = true;
 }
 async function requestPasswordReset() {
@@ -2878,11 +3248,48 @@ async function requestPasswordReset() {
     });
     const d = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(d.detail || 'Unable to request password reset.');
-    msg.textContent = d.message || 'Password reset instructions have been prepared.';
+    msg.textContent = d.message || 'Password reset instructions have been sent.';
+    if (d.reset_link) {
+      msg.innerHTML = `${escapeHtml(d.message || 'Password reset link prepared for testing.')}<br><a href="${escapeHtml(d.reset_link)}">Open reset link</a>`;
+    }
   } catch(e) {
     msg.style.color = '#b42318';
     msg.textContent = e.message;
   }
+}
+async function submitNewPassword() {
+  const tokenValue = document.getElementById('reset-token')?.value || '';
+  const password = document.getElementById('new-pass')?.value || '';
+  const confirm = document.getElementById('new-pass2')?.value || '';
+  const msg = document.getElementById('reset-msg');
+  msg.style.color = '#08745f';
+  msg.textContent = '';
+  try {
+    if (!tokenValue) throw new Error('Reset token is missing. Request a new reset link.');
+    if (password.length < 8) throw new Error('Password must be at least 8 characters.');
+    if (password !== confirm) throw new Error('Passwords do not match.');
+    const r = await fetch(`${API}/auth/reset-password`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},
+      body: JSON.stringify({token: tokenValue, new_password: password})
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.detail || 'Unable to reset password.');
+    msg.textContent = d.message || 'Password updated. You can now sign in.';
+    document.getElementById('new-pass').value = '';
+    document.getElementById('new-pass2').value = '';
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+  } catch(e) {
+    msg.style.color = '#b42318';
+    msg.textContent = e.message;
+  }
+}
+function handlePasswordResetLink() {
+  const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+  const resetToken = hash.get('reset_token');
+  if (!resetToken) return false;
+  openResetPassword(resetToken);
+  return true;
 }
 function handleGoogleCallback() {
   const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
@@ -2917,20 +3324,22 @@ function startGuestChat() {
   guestHistory = JSON.parse(localStorage.getItem('ll_guest_history') || '[]');
   localStorage.removeItem('ll_token');
   localStorage.removeItem('ll_user');
-  localStorage.removeItem('ll_active_session');
+  localStorage.removeItem('ll_active_session'); // Remove the legacy non-user-scoped key.
   localStorage.setItem('ll_guest', '1');
   initApp();
 }
 function saveAuth(data) {
   token = data.access_token;
   isGuest = false;
-  currentSessionId = localStorage.getItem('ll_active_session') || null;
   currentUser = {
     id: data.user_id,
     username: data.username,
+    full_name: data.full_name || data.fullName || data.display_name || data.displayName || data.name || data.username,
+    email: data.email || '',
     role: data.role,
     language_preference: data.language_preference || localStorage.getItem('ll_lang') || 'en'
   };
+  currentSessionId = getStoredActiveSession(currentUser.id);
   localStorage.setItem('ll_token', token);
   localStorage.setItem('ll_user', JSON.stringify(currentUser));
   localStorage.removeItem('ll_guest');
@@ -2945,7 +3354,7 @@ function doLogout() {
   localStorage.removeItem('ll_guest_session');
   localStorage.removeItem('ll_guest_count');
   localStorage.removeItem('ll_guest_history');
-  localStorage.removeItem('ll_active_session');
+  localStorage.removeItem('ll_active_session'); // Remove the legacy non-user-scoped key.
   if (prefs) localStorage.setItem('ll_prefs', prefs);
   if (lang) localStorage.setItem('ll_lang', lang);
   location.reload();
@@ -2961,15 +3370,14 @@ function initApp() {
   document.getElementById('auth-screen').classList.add('hidden');
   document.getElementById('app').classList.add('visible');
   document.body.classList.toggle('guest-mode', isGuest);
-  const uname = currentUser?.username || 'User';
-  document.getElementById('tb-uname').textContent = uname;
-  document.getElementById('tb-avatar').textContent = uname.charAt(0).toUpperCase();
+  updateUserIdentityUi();
   const savedLang = localStorage.getItem('ll_lang') || 'auto';
   document.getElementById('setting-lang').value = savedLang;
   const topbarLang = document.getElementById('topbar-lang');
   if (topbarLang) topbarLang.value = savedLang;
   document.querySelector('.tb-logout').textContent = isGuest ? 'Sign In' : 'Sign Out';
   applyPreferences();
+  void syncAuthenticatedUser();
   loadSystemStatus();
   setChatHeaderTitle();
   if (isGuest) {
@@ -3069,6 +3477,7 @@ function toggleSettings() {
   const open = panel.classList.toggle('open');
   overlay?.classList.toggle('open', open);
   if (btn) btn.setAttribute('aria-expanded', String(open));
+  if (open) void syncAuthenticatedUser();
 }
 function toggleStatusPopover() {
   document.getElementById('status-popover')?.classList.toggle('open');
@@ -3102,7 +3511,7 @@ function requestLanguageValue() {
   return selected || 'auto';
 }
 function resetSettings() {
-  savePrefs({sound:false,compact:false,timestamps:false});
+  savePrefs(DEFAULT_PREFS);
   localStorage.setItem('ll_lang','auto');
   applyPreferences();
   saveLangSetting('auto');
@@ -3125,6 +3534,7 @@ function toggleSidebar() {
   if (btn) btn.setAttribute('aria-expanded', String(open));
 }
 function closeSidebar() {
+  hideSessionTitleTooltip();
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sidebar-overlay').classList.remove('open');
   const btn = document.getElementById('hamburger');
@@ -3208,35 +3618,69 @@ function renderGuestHistory() {
   lastAssistantIntent = null;
   guestHistory.forEach(m => appendMsg(m.role, m.content, m.created_at, m.sources || [], m));
 }
-async function loadSessions() {
-  if (isGuest) {
-    const list = document.getElementById('session-list');
-    list.innerHTML = `
-      <div class="guest-banner">
-        <strong>Guest preview</strong><br>
-        ${Math.max(GUEST_MESSAGE_LIMIT - guestCount, 0)} of ${GUEST_MESSAGE_LIMIT} guest messages remaining.
-        Sign in to save consultations.
-      </div>
-    `;
-    return;
-  }
+function normalizeSessionTitle(value='') {
+  return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function sessionTimestamp(session) {
+  const date = new Date(session?.updated_at || session?.created_at || 0);
+  return Number.isNaN(date.getTime()) ? 0 : date.getTime();
+}
+function deduplicateSessions(rows) {
+  const byId = new Map();
+  (Array.isArray(rows) ? rows : []).forEach(session => {
+    const id = String(session?.id || '').trim();
+    if (!id) return;
+    const existing = byId.get(id);
+    if (!existing || sessionTimestamp(session) > sessionTimestamp(existing)) byId.set(id, session);
+  });
+  const byTitle = new Map();
+  [...byId.values()].forEach(session => {
+    const titleKey = normalizeSessionTitle(session.title || '');
+    if (!titleKey) {
+      byTitle.set(`id:${session.id}`, session);
+      return;
+    }
+    const existing = byTitle.get(titleKey);
+    const preferCurrent = String(session.id) === String(currentSessionId) && String(existing?.id) !== String(currentSessionId);
+    if (!existing || preferCurrent || sessionTimestamp(session) > sessionTimestamp(existing)) byTitle.set(titleKey, session);
+  });
+  return [...byTitle.values()].sort((a,b) => sessionTimestamp(b) - sessionTimestamp(a));
+}
+function pinnedSessionsStorageKey() {
+  return `ll_pinned_sessions_${currentUser?.id || 'guest'}`;
+}
+function getPinnedSessionIds() {
   try {
-    const r = await authFetch('/chat/sessions');
-    const ss = await r.json();
-    const list = document.getElementById('session-list');
-    list.innerHTML = '';
-    (ss || []).forEach(s => {
-      const el = document.createElement('div');
-      el.className = 'sess-item' + (String(s.id) === String(currentSessionId) ? ' active' : '');
-      const safeTitle = (s.title || 'Legal Consultation').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-      el.innerHTML = `<span class="sess-icon">💬</span><span class="sess-text">${s.title || 'Legal Consultation'}</span><button class="sess-del" title="Delete chat" onclick="confirmDeleteChat(event,'${s.id}','${safeTitle}')">✕</button>`;
-      el.addEventListener('click', function(e) { if (!e.target.closest('.sess-del')) loadSession(s.id, s.title); });
-      list.appendChild(el);
-    });
-  } catch(_) {}
+    return new Set(JSON.parse(localStorage.getItem(pinnedSessionsStorageKey()) || '[]').map(String));
+  } catch (_) {
+    return new Set();
+  }
+}
+function savePinnedSessionIds(ids) {
+  localStorage.setItem(pinnedSessionsStorageKey(), JSON.stringify([...ids]));
+}
+function syncPinnedSessions() {
+  const validIds = new Set(sessionCache.map(session => String(session.id)));
+  const pinned = getPinnedSessionIds();
+  const cleaned = new Set([...pinned].filter(id => validIds.has(id)));
+  if (cleaned.size !== pinned.size) savePinnedSessionIds(cleaned);
+}
+function togglePinnedSession(event, id) {
+  event.stopPropagation();
+  const pinned = getPinnedSessionIds();
+  const key = String(id);
+  if (pinned.has(key)) pinned.delete(key); else pinned.add(key);
+  savePinnedSessionIds(pinned);
+  renderSessions();
+}
+function removePinnedSession(id) {
+  const pinned = getPinnedSessionIds();
+  pinned.delete(String(id));
+  savePinnedSessionIds(pinned);
 }
 async function loadSessions() {
   const list = document.getElementById('session-list');
+  const requestSequence = ++sessionLoadSequence;
   if (isGuest) {
     list.innerHTML = `
       <div class="guest-banner">
@@ -3249,20 +3693,55 @@ async function loadSessions() {
   }
   try {
     const r = await authFetch('/chat/sessions');
+    if (!r.ok) throw new Error('Unable to load conversations.');
     const ss = await r.json();
-    sessionCache = Array.isArray(ss) ? ss : [];
+    if (requestSequence !== sessionLoadSequence) return;
+    sessionCache = deduplicateSessions(ss);
+    syncPinnedSessions();
     renderSessions();
-  } catch(_) {}
+  } catch(_) {
+    if (requestSequence === sessionLoadSequence) list.innerHTML = '<div class="guest-banner">Unable to load conversations.</div>';
+  }
 }
 function sessionGroupLabel(value) {
   const date = value ? new Date(value) : new Date();
+  if (Number.isNaN(date.getTime())) return 'Older';
   const now = new Date();
   const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const startYesterday = new Date(startToday);
   startYesterday.setDate(startToday.getDate() - 1);
   if (date >= startToday) return 'Today';
   if (date >= startYesterday) return 'Yesterday';
-  return 'Earlier';
+  return 'Older';
+}
+function hideSessionTitleTooltip() {
+  clearTimeout(sessionTooltipTimer);
+  sessionTooltipTimer = null;
+  const tooltip = document.getElementById('session-title-tooltip');
+  if (!tooltip) return;
+  tooltip.classList.remove('visible');
+  tooltip.setAttribute('aria-hidden', 'true');
+}
+function showSessionTitleTooltip(target) {
+  const tooltip = document.getElementById('session-title-tooltip');
+  if (!tooltip || !target?.isConnected || target.scrollWidth <= target.clientWidth) return;
+  tooltip.textContent = target.dataset.fullTitle || target.textContent || '';
+  tooltip.classList.add('visible');
+  tooltip.setAttribute('aria-hidden', 'false');
+  const rect = target.getBoundingClientRect();
+  const left = Math.min(Math.max(rect.left, 8), window.innerWidth - tooltip.offsetWidth - 8);
+  const below = rect.bottom + 8;
+  const top = below + tooltip.offsetHeight <= window.innerHeight - 8
+    ? below
+    : Math.max(8, rect.top - tooltip.offsetHeight - 8);
+  tooltip.style.left = `${left}px`;
+  tooltip.style.top = `${top}px`;
+}
+function scheduleSessionTitleTooltip(event) {
+  const target = event.currentTarget;
+  hideSessionTitleTooltip();
+  if (!target || target.scrollWidth <= target.clientWidth) return;
+  sessionTooltipTimer = setTimeout(() => showSessionTitleTooltip(target), 300);
 }
 function renderSessions() {
   const list = document.getElementById('session-list');
@@ -3273,25 +3752,44 @@ function renderSessions() {
     list.innerHTML = '<div class="guest-banner">No conversations match your search.</div>';
     return;
   }
-  const groups = {Today: [], Yesterday: [], Earlier: []};
-  sessions.forEach(s => groups[sessionGroupLabel(s.updated_at || s.created_at)].push(s));
+  const pinned = getPinnedSessionIds();
+  const groupOrder = ['Today', 'Yesterday', 'Older'];
+  const groups = Object.fromEntries(groupOrder.map(label => [label, []]));
+  const pinnedRows = [];
+  sessions.forEach(session => {
+    if (pinned.has(String(session.id))) pinnedRows.push(session);
+    else groups[sessionGroupLabel(session.updated_at || session.created_at)].push(session);
+  });
   list.innerHTML = '';
-  Object.entries(groups).forEach(([label, rows]) => {
+  const orderedGroups = [['📌 Pinned', pinnedRows], ...groupOrder.map(label => [label, groups[label]])];
+  orderedGroups.forEach(([label, rows]) => {
     if (!rows.length) return;
-    list.insertAdjacentHTML('beforeend', `<div class="session-group-label">${label}</div>`);
+    rows.sort((a,b) => sessionTimestamp(b) - sessionTimestamp(a));
+    list.insertAdjacentHTML('beforeend', `<div class="session-group-label">${escapeHtml(label)}</div>`);
     rows.forEach(s => {
       const el = document.createElement('div');
-      el.className = 'sess-item' + (s.id === currentSessionId ? ' active' : '');
-      const title = s.title || shortTopicTitle(s.title || 'Legal Consultation');
-      const safeTitle = String(title).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+      el.className = 'sess-item' + (String(s.id) === String(currentSessionId) ? ' active' : '');
+      el.setAttribute('role', 'listitem');
+      const title = String(s.title || 'Legal Consultation').trim();
+      const isPinned = pinned.has(String(s.id));
       el.innerHTML = `
         <span class="sess-icon">&#128172;</span>
-        <span class="sess-text">${escapeHtml(title)}<span class="sess-meta">${escapeHtml(dateLabel(s.updated_at || s.created_at))}</span></span>
+        <span class="sess-text">
+          <span class="sess-title" data-full-title="${escapeHtml(title)}" aria-label="${escapeHtml(title)}">${escapeHtml(title)}</span>
+          <span class="sess-meta">${escapeHtml(dateLabel(s.updated_at || s.created_at))}</span>
+        </span>
         <span class="sess-actions">
-          <button class="sess-mini" title="Rename chat" onclick="renameSession(event,'${s.id}','${safeTitle}')">Edit</button>
-          <button class="sess-mini" title="Delete chat" onclick="confirmDeleteChat(event,'${s.id}','${safeTitle}')">Del</button>
+          <button class="sess-mini sess-pin${isPinned ? ' is-pinned' : ''}" type="button" title="${isPinned ? 'Unpin conversation' : 'Pin conversation'}" aria-label="${isPinned ? 'Unpin conversation' : 'Pin conversation'}" aria-pressed="${isPinned}">📌</button>
+          <button class="sess-mini sess-rename" type="button" title="Rename chat" aria-label="Rename chat">✎</button>
+          <button class="sess-mini sess-delete" type="button" title="Delete chat" aria-label="Delete chat">✕</button>
         </span>`;
-      el.addEventListener('click', function(e) { if (!e.target.closest('.sess-actions')) loadSession(s.id, title); });
+      el.querySelector('.sess-pin')?.addEventListener('click', event => togglePinnedSession(event, s.id));
+      el.querySelector('.sess-rename')?.addEventListener('click', event => renameSession(event, s.id, title));
+      el.querySelector('.sess-delete')?.addEventListener('click', event => confirmDeleteChat(event, s.id, title));
+      const titleElement = el.querySelector('.sess-title');
+      titleElement?.addEventListener('mouseenter', scheduleSessionTitleTooltip);
+      titleElement?.addEventListener('mouseleave', hideSessionTitleTooltip);
+      el.addEventListener('click', function(e) { if (!e.target.closest('button')) loadSession(s.id, title); });
       list.appendChild(el);
     });
   });
@@ -3325,7 +3823,7 @@ async function renameSession(event, id, currentTitle) {
 }
 async function loadSession(id, title) {
   currentSessionId = id;
-  if (!isGuest) localStorage.setItem('ll_active_session', id);
+  if (!isGuest) storeActiveSession(id);
   setChatHeaderTitle();
   document.getElementById('msgs').innerHTML = '';
   lastAssistantIntent = null;
@@ -3350,7 +3848,7 @@ async function restoreActiveSession() {
   } catch(_) {
     currentSessionId = null;
     lastAssistantIntent = null;
-    localStorage.removeItem('ll_active_session');
+    clearStoredActiveSession();
     document.getElementById('msgs').innerHTML = accountWelcomeHtml();
     renderSessions();
   }
@@ -3367,7 +3865,7 @@ function startNewChat() {
   }
   currentSessionId = null;
   lastAssistantIntent = null;
-  localStorage.removeItem('ll_active_session');
+  clearStoredActiveSession();
   setChatHeaderTitle();
   document.getElementById('msgs').innerHTML = accountWelcomeHtml();
   closeSidebar(); loadSessions();
@@ -3385,9 +3883,10 @@ function confirmDeleteChat(e, id, title) {
 async function deleteChat(id) {
   closeModal('del-modal');
   try { await authFetch(`/chat/sessions/${id}`, { method: 'DELETE' }); } catch(_) {}
+  removePinnedSession(id);
   if (currentSessionId === id) {
     currentSessionId = null;
-    localStorage.removeItem('ll_active_session');
+    clearStoredActiveSession();
     startNewChat();
   } else { loadSessions(); }
 }
@@ -3407,8 +3906,9 @@ async function clearAllChats() {
     return;
   }
   try { await authFetch('/chat/sessions/all', { method: 'DELETE' }); } catch(_) {}
+  localStorage.removeItem(pinnedSessionsStorageKey());
   currentSessionId = null;
-  localStorage.removeItem('ll_active_session');
+  clearStoredActiveSession();
   startNewChat(); loadSessions();
 }
 
@@ -3477,6 +3977,7 @@ async function sendMsg() {
     const r = isGuest
       ? await fetch(`${API}/chat/guest-message`, {
           method:'POST',
+          cache:'no-store',
           headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},
           body: JSON.stringify({
             message: text,
@@ -3495,7 +3996,7 @@ async function sendMsg() {
     const normalizedSourceMatch = getSourceMatch(d);
     if (normalizedSourceMatch) d.source_match = normalizedSourceMatch;
     currentSessionId = d.session_id;
-    if (!isGuest && currentSessionId) localStorage.setItem('ll_active_session', currentSessionId);
+    if (!isGuest && currentSessionId) storeActiveSession(currentSessionId);
     if (isGuest) {
       guestSessionId = d.session_id;
       guestCount = Math.max(guestCount, d.message_id || guestCount);
@@ -3896,7 +4397,7 @@ function appendMsg(role, content, createdAt = new Date().toISOString(), sources 
   const isUser = role === 'user';
   const row = document.createElement('div');
   row.className = `msg-row ${isUser ? 'user' : 'bot'}`;
-  const initial = currentUser?.username?.charAt(0)?.toUpperCase() || 'U';
+  const initial = getUserInitial();
   row.innerHTML = `<div class="msg-avatar">${isUser ? initial : '⚖️'}</div><div class="msg-bubble">${fmtText(content)}${isUser ? '' : renderSources(sources)}${isUser ? '' : renderConfidence(meta)}${isUser ? '' : renderFeedback(meta)}<div class="msg-time">${formatTime(createdAt)}</div></div>`;
   box.appendChild(row);
   box.scrollTop = box.scrollHeight;
@@ -3910,7 +4411,7 @@ function appendMsg(role, content, createdAt = new Date().toISOString(), sources 
   const isCalculation = !isUser && meta?.display_mode === 'calculation_card';
   const row = document.createElement('div');
   row.className = `msg-row ${isUser ? 'user' : 'bot'}`;
-  const initial = currentUser?.username?.charAt(0)?.toUpperCase() || 'U';
+  const initial = getUserInitial();
   const hasSources = normalizeSources(sources).length > 0;
   const body = isUser ? fmtText(content) : `<div class="answer-content">${renderConfidence(meta)}${fmtText(content)}</div>`;
   row.innerHTML = `<div class="msg-avatar">${isUser ? initial : '&#9878;'}</div><div class="msg-bubble${isLegalAnswer ? ' legal-answer' : ''}${isCalculation ? ' calculation-card' : ''}">${body}${isUser ? '' : renderGuidedActions(content, meta)}${isUser ? '' : renderSources(sources)}${isUser ? '' : renderFeedback(meta, hasSources)}<div class="msg-time">${formatTime(createdAt)}</div></div>`;
@@ -3956,7 +4457,8 @@ function isNumberedLine(line) { return /^\d+[\.)]\s+/.test(line); }
 function stripBullet(line) { return line.replace(/^[-*\u2022]\s+/, ''); }
 function stripNumber(line) { return line.replace(/^\d+[\.)]\s+/, ''); }
 function isLabelLine(line) {
-  return /^\*{0,2}(definition|kahulugan|direct answer|direktang sagot|direkta nga sabat|simple explanation|simpleng paliwanag|simple nga pagpaathag|requirements?|mga requirement|mga kinahanglanon|conditions?|kondisyon|exceptions?|applicable rates?|computation|legal basis|legal basis and source|legal na batayan|legal na batayan at source|batayang legal|legal nga basehan|legal nga basihan|legal nga basihan kag source|practical next steps|praktikal na susunod na hakbang|praktikal nga sunod nga himuon|reminder|pahinumdom|confidence|source match|reason|rason|source|sources|mga ginamit na source|gin-gamit nga sources|articles?|artikulo|mga artikulo|content|nilalaman|answer|sagot|sabat|explanation|paliwanag|pagpaathag|note|paalala|important|mahalaga|options|mga pagpipilian|kapilian)\*{0,2}\s*:/i.test(line);
+  const parsed = parseLabelLine(line);
+  return Boolean(parsed && parsed.type !== 'general');
 }
 function isDisclaimerLine(line) {
   return /^\*?(this is for (educational|informational) purposes only|ito ay para lamang sa impormasyon|para lamang ini sa impormasyon)/i.test(line);
@@ -3967,6 +4469,7 @@ function shouldSkipDisplayLine(line) {
     || /^[*_`~\-\s]{2,}$/.test(clean)
     || /^\*{0,2}(reminder|paalala|pahinumdom)\*{0,2}\s*:?$/i.test(clean)
     || /^\*{0,2}(sources used|mga ginamit na source|gin-gamit nga sources)\*{0,2}\s*:?/i.test(clean)
+    || /^sources verified for this answer\s*:/i.test(clean)
     || /^\*{0,2}(confidence|reason|rason|source match)\*{0,2}\s*:/i.test(clean)
     || /^(answer found directly|this is a direct translation|the query is vague|the answer was found)/i.test(clean)
     || /^\[[^\]]*(source|labor code|open source|this link)[^\]]*\]\(https?:\/\//i.test(clean);
@@ -4062,10 +4565,10 @@ function renderTextLines(lines) {
 }
 function sectionTypeFromLabel(label='') {
   const key = String(label || '').toLowerCase();
-  if (key.includes('direct')) return 'direct';
+  if (key.includes('direct') || key.includes('direktang') || key.includes('direkta nga')) return 'direct';
   if (key.includes('simple') || key.includes('explanation') || key.includes('paliwanag') || key.includes('pagpaathag')) return 'explanation';
   if (key.includes('require') || key.includes('condition') || key.includes('exception') || key.includes('kinahanglan') || key.includes('kondisyon')) return 'requirements';
-  if (key.includes('computation') || key.includes('applicable rate')) return 'computation';
+  if (key.includes('computation') || key.includes('applicable rate') || (key.includes('rate') && key.includes('formula'))) return 'computation';
   if (key.includes('legal')) return 'legal';
   if (key.includes('next') || key.includes('hakbang') || key.includes('himuon')) return 'next';
   if (key.includes('reminder') || key.includes('paalala') || key.includes('pahinumdom')) return 'reminder';
@@ -4085,19 +4588,20 @@ function displaySectionLabel(section) {
 }
 function sectionIcon(section) {
   const icons = {
-    direct: '&#10003;',
+    direct: '&#128204;',
     explanation: '&#128161;',
-    requirements: '&#128214;',
-    computation: '&#129518;',
-    legal: '&#128218;',
-    next: '&#128203;',
+    requirements: '&#128203;',
+    computation: '&#128208;',
+    legal: '&#9878;&#65039;',
+    next: '&#128099;',
     reminder: '&#128276;',
     general: '&#8226;'
   };
   return icons[section?.type] || icons.general;
 }
 function parseLabelLine(line) {
-  const match = String(line || '').trim().match(/^\*{0,2}([^:*][^:]{1,48}?)\*{0,2}\s*:\s*(.*)$/);
+  const clean = stripLooseMarkdownMarkers(String(line || '').trim());
+  const match = clean.match(/^([^:]{2,64}?)\s*:\s*(.*)$/);
   if (!match) return null;
   return {label: match[1].trim(), rest: match[2].trim(), type: sectionTypeFromLabel(match[1])};
 }
@@ -4318,7 +4822,7 @@ function autoResize(el) {
   el.style.height=Math.min(el.scrollHeight,140)+'px';
 }
 async function authFetch(path, opts={}) {
-  return fetch(`${API}${path}`, {...opts, headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`,'ngrok-skip-browser-warning':'true',...(opts.headers||{})}});
+  return fetch(`${API}${path}`, {...opts, cache:'no-store', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`,'ngrok-skip-browser-warning':'true',...(opts.headers||{})}});
 }
 document.addEventListener('keydown', e => {
   if(e.key==='Escape'){
@@ -4334,7 +4838,7 @@ document.addEventListener('keydown', e => {
 });
 prepareAuthUi();
 prepareChatUi();
-if (!handleGoogleCallback() && token && currentUser) initApp();
+if (!handleGoogleCallback() && !handlePasswordResetLink() && token && currentUser) initApp();
 </script>
 </body>
 </html>
