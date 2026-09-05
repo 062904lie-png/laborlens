@@ -709,6 +709,17 @@
     .bot .msg-bubble .legal-disclaimer{display:none;}
     .clarify-panel{margin-top:12px;padding:12px;border:1px solid #bfdbfe;background:#eff6ff;border-radius:8px;}
     .clarify-title{font-size:12px;font-weight:900;color:#1e3a8a;margin-bottom:8px;}
+    .clarification-card{
+      margin-top:14px;padding:15px 16px;border:1px solid #b8d4f5;border-left:4px solid #0b3b92;
+      background:linear-gradient(135deg,#f5f9ff 0%,#eef6ff 100%);border-radius:10px;
+    }
+    .clarification-card-title{display:flex;align-items:center;gap:8px;color:#0b3b92;font-size:12px;font-weight:900;letter-spacing:.3px;text-transform:uppercase;}
+    .clarification-card-title::before{content:'?';width:21px;height:21px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#0b3b92;color:#fff;font-size:13px;font-weight:900;}
+    .clarification-card-question{margin:9px 0 0;color:#172033;font-size:14px;font-weight:700;line-height:1.55;}
+    .clarification-card-hint{margin-top:8px;color:#5f6b7a;font-size:12px;line-height:1.45;}
+    .clarification-card .guided-actions{margin-top:11px;}
+    .clarification-card .guided-action-btn{background:#fff;border-color:#b8d4f5;}
+    .clarification-card .guided-action-btn:hover{background:#e5f0ff;border-color:#0b3b92;}
     .mode-tabs{display:flex;gap:8px;margin:0 0 18px;flex-wrap:wrap;}
     .mode-tab{border:1px solid #cfd7e3;background:#fff;border-radius:8px;padding:9px 12px;color:#10233f;font-weight:900;cursor:pointer;}
     .mode-tab.active{background:#0b2d7a;color:#fff;border-color:#0b2d7a;}
@@ -1529,7 +1540,18 @@
       z-index:3!important;
     }
     body.app-ready #session-list{padding-bottom:8px!important;}
-    body.app-ready .sess-title{display:block!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;}
+    body.app-ready .sess-title-row{display:flex!important;align-items:center!important;gap:6px!important;min-width:0!important;}
+    body.app-ready .sess-title{display:block!important;flex:1 1 auto!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;}
+    body.app-ready .topic-category-badge{display:inline-flex!important;align-items:center!important;flex:0 0 auto!important;max-width:76px!important;padding:2px 6px!important;border-radius:999px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:9px!important;font-weight:900!important;letter-spacing:.2px!important;color:#fff!important;background:#64748b!important;}
+    body.app-ready .topic-category-badge.topic-osh{background:#0f766e!important;color:#ecfeff!important;}
+    body.app-ready .topic-category-badge.topic-benefits{background:#a16207!important;}
+    body.app-ready .topic-category-badge.topic-leave{background:#15803d!important;}
+    body.app-ready .topic-category-badge.topic-domestic{background:#7c2d12!important;}
+    body.app-ready .topic-category-badge.topic-harassment{background:#c2410c!important;}
+    body.app-ready .topic-category-badge.topic-social{background:#1d4ed8!important;}
+    body.app-ready .topic-category-badge.topic-dole{background:#475569!important;}
+    body.app-ready .topic-category-badge.topic-cases{background:#7e22ce!important;}
+    body.app-ready .topic-category-badge.topic-core{background:#b91c1c!important;}
     body.app-ready .sess-actions{align-items:center!important;gap:3px!important;}
     body.app-ready .sess-mini{
       width:25px!important;height:25px!important;padding:0!important;border:0!important;border-radius:6px!important;
@@ -1777,6 +1799,8 @@
     body.app-ready .source-match-badge::after{content:'';}
     body.app-ready .source-match-badge.partial,
     body.app-ready .source-match-badge.source-match--partial{color:#92400e!important;background:#fffbeb!important;border-color:#f6d58a!important;}
+    body.app-ready .source-match-badge.source-match--source{color:#075985!important;background:#f0f9ff!important;border-color:#bae6fd!important;}
+    body.app-ready .source-match-badge.source-match--high{color:#166534!important;background:#f0fdf4!important;border-color:#bbf7d0!important;}
     body.app-ready .source-match-badge.partial::before,
     body.app-ready .source-match-badge.source-match--partial::before{content:'\24D8';color:#b45309;}
     body.app-ready .source-match-badge.conflicting,
@@ -2424,53 +2448,572 @@
     body.app-ready.theme-light .sp-title{color:#102b5c!important;}
     body.app-ready.theme-light .sp-sub{color:#62728a!important;}
     body.app-ready.theme-light .sp-close{background:#dfeafa!important;color:#18345f!important;}
+
+    /* Reference-inspired consultation workspace. */
+    :root{
+      --workspace-sidebar:clamp(249px,23.4vw,388px);
+      --workspace-topbar:clamp(70px,6.63vw,110px);
+      --workspace-ink:#071b43;
+      --workspace-muted:#566887;
+      --workspace-gold:#f4ae16;
+    }
+    body.app-ready #app.visible{
+      grid-template-columns:var(--workspace-sidebar) minmax(0,1fr)!important;
+      grid-template-rows:var(--workspace-topbar) minmax(0,1fr)!important;
+      background:#f7f9fc!important;
+    }
+    body.app-ready #body{display:contents!important;}
+    body.app-ready #topbar{
+      grid-column:2!important;grid-row:1!important;
+      height:var(--workspace-topbar)!important;min-height:var(--workspace-topbar)!important;
+      padding:0 clamp(34px,2.2vw,46px)!important;gap:22px!important;
+      background:#fff!important;border:0!important;border-bottom:1px solid #e2e7ef!important;
+      box-shadow:none!important;color:var(--workspace-ink)!important;
+    }
+    body.app-ready .tb-brand{display:none!important;}
+    body.app-ready .tb-spacer{display:none!important;}
+    body.app-ready .tb-status{
+      height:48px!important;margin:0!important;padding:0 18px!important;
+      min-width:205px!important;
+      border:1px solid #dce3ed!important;border-radius:11px!important;background:#fff!important;
+      color:var(--workspace-ink)!important;font-size:14px!important;font-weight:800!important;
+      box-shadow:0 4px 15px rgba(15,39,80,.04)!important;
+    }
+    body.app-ready .tb-dot{width:12px!important;height:12px!important;border:2px solid #d7f4e7!important;background:#06a65d!important;box-shadow:0 0 0 2px #bcebd3!important;}
+    body.app-ready .tb-lang{
+      margin-left:auto!important;padding:0 26px 0 0!important;border:0!important;border-right:1px solid #e2e7ef!important;
+      color:var(--workspace-ink)!important;gap:10px!important;font-size:15px!important;
+    }
+    body.app-ready .tb-lang::before{content:'◎'!important;font-size:25px!important;font-weight:400!important;}
+    body.app-ready .tb-lang span{display:none!important;}
+    body.app-ready .tb-lang select,body.app-ready #topbar-lang{
+      width:122px!important;height:44px!important;padding:0 34px 0 12px!important;border:0!important;
+      background:#fff!important;color:var(--workspace-ink)!important;font-size:15px!important;font-weight:700!important;
+    }
+    body.app-ready .tb-icon-btn,body.app-ready .tb-logout{display:none!important;}
+    body.app-ready .tb-user-chip{
+      min-width:178px!important;height:56px!important;margin:0!important;padding:0 6px!important;gap:12px!important;
+      border:0!important;background:transparent!important;color:var(--workspace-ink)!important;justify-content:flex-start!important;
+      font-family:var(--sans)!important;cursor:pointer!important;
+    }
+    body.app-ready .tb-avatar{width:50px!important;height:50px!important;background:linear-gradient(145deg,#ffc842,#f2a516)!important;color:#10234c!important;font-size:17px!important;}
+    body.app-ready .tb-user-copy{display:grid!important;gap:2px!important;text-align:left!important;line-height:1.1!important;}
+    body.app-ready .tb-uname{display:block!important;max-width:110px!important;color:var(--workspace-ink)!important;font-size:clamp(15px,1.02vw,17px)!important;font-weight:800!important;}
+    body.app-ready .tb-user-copy small{color:var(--workspace-muted)!important;font-size:14px!important;font-weight:500!important;}
+    body.app-ready .tb-user-chevron{margin-left:auto!important;font-size:19px!important;color:#17284e!important;}
+
+    body.app-ready #sidebar{
+      grid-column:1!important;grid-row:1 / 3!important;
+      width:var(--workspace-sidebar)!important;min-width:var(--workspace-sidebar)!important;flex-basis:var(--workspace-sidebar)!important;
+      height:100vh!important;padding:24px clamp(22px,1.75vw,29px) 20px!important;
+      background:
+        radial-gradient(circle at 10% 5%,rgba(18,66,126,.45),transparent 34%),
+        linear-gradient(180deg,#03172f 0%,#05254d 55%,#031b38 100%)!important;
+      border:0!important;border-right:1px solid rgba(255,255,255,.08)!important;box-shadow:8px 0 30px rgba(4,22,50,.12)!important;
+    }
+    body.app-ready .sidebar-brand{display:flex!important;align-items:center!important;gap:20px!important;min-height:84px!important;margin-bottom:20px!important;}
+    body.app-ready .sidebar-brand-mark{
+      width:64px!important;height:80px!important;display:grid!important;place-items:center!important;flex:0 0 64px!important;
+      color:#ffc32e!important;font-size:29px!important;border:3px solid #f5b51f!important;border-radius:17px 17px 23px 23px!important;
+      background:linear-gradient(180deg,rgba(16,57,111,.55),rgba(3,22,49,.2))!important;box-shadow:0 8px 24px rgba(0,0,0,.18)!important;
+    }
+    body.app-ready .sidebar-brand-copy{display:grid!important;gap:7px!important;min-width:0!important;}
+    body.app-ready .sidebar-brand-copy strong{font-family:var(--serif)!important;font-size:clamp(30px,2.35vw,39px)!important;line-height:1!important;color:#fff!important;letter-spacing:-.4px!important;}
+    body.app-ready .sidebar-brand-copy strong span{color:#ffc12a!important;}
+    body.app-ready .sidebar-brand-copy small{display:block!important;color:rgba(255,255,255,.68)!important;font-size:10px!important;white-space:nowrap!important;}
+    body.app-ready .sb-top{margin:0 0 14px!important;}
+    body.app-ready .sb-new-btn{
+      height:66px!important;padding:0 20px!important;border-radius:12px!important;justify-content:flex-start!important;font-size:clamp(14px,1.1vw,18px)!important;white-space:nowrap!important;
+      background:linear-gradient(180deg,#ffc63d,#ffb51d)!important;color:#071b43!important;box-shadow:0 9px 22px rgba(245,174,22,.2)!important;
+    }
+    body.app-ready .sb-new-btn span{width:31px!important;height:31px!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:rgba(255,255,255,.2)!important;font-size:22px!important;}
+    body.app-ready .sb-new-btn::after{content:'›'!important;margin-left:auto!important;font-size:28px!important;font-weight:400!important;}
+    body.app-ready .session-search{margin:0 0 27px!important;}
+    body.app-ready .session-search::after{content:'⌕'!important;left:20px!important;right:auto!important;color:#fff!important;font-size:24px!important;top:47%!important;}
+    body.app-ready .session-search::before{content:'☷'!important;position:absolute!important;right:13px!important;top:50%!important;transform:translateY(-50%)!important;color:#d3e0f0!important;font-size:17px!important;z-index:1!important;}
+    body.app-ready .session-search input{height:60px!important;padding:0 39px 0 50px!important;border-radius:12px!important;background:rgba(255,255,255,.055)!important;border-color:rgba(255,255,255,.17)!important;font-size:15px!important;}
+    body.app-ready .sb-section-label{margin-bottom:12px!important;padding-bottom:11px!important;border-bottom:1px solid rgba(255,255,255,.13)!important;font-size:12px!important;}
+    body.app-ready #session-list{padding:0 3px 8px 0!important;}
+    body.app-ready .session-group-label{font-size:11px!important;color:#aebbd0!important;margin:14px 0 8px!important;}
+    body.app-ready .sess-item{min-height:58px!important;padding:9px 6px!important;margin-bottom:5px!important;border-radius:9px!important;}
+    body.app-ready .sess-item.active{background:rgba(255,255,255,.055)!important;border-color:#f5b51f!important;box-shadow:inset 3px 0 0 #f5b51f!important;}
+    body.app-ready .sess-icon{font-size:16px!important;color:#fff!important;opacity:.95!important;}
+    body.app-ready .sess-title{font-size:12px!important;color:#f7fbff!important;}
+    body.app-ready .sess-meta{font-size:10px!important;color:#aebbd0!important;}
+    body.app-ready .topic-category-badge{max-width:66px!important;font-size:8px!important;}
+    body.app-ready .sidebar-bottom-nav{margin-top:14px!important;padding-top:12px!important;}
+    body.app-ready .sidebar-nav-btn{min-height:44px!important;font-size:13px!important;font-weight:600!important;}
+
+    body.app-ready #chat-area{
+      grid-column:2!important;grid-row:2!important;height:auto!important;min-height:0!important;
+      background:#f8fafc!important;border:0!important;
+    }
+    body.app-ready #chat-header{display:none!important;}
+    body.app-ready #msgs{
+      padding:32px 38px 24px!important;background:
+        radial-gradient(circle at 78% 0,rgba(246,180,46,.06),transparent 29%),
+        linear-gradient(180deg,#fbfcfe,#f6f8fb)!important;
+    }
+    body.app-ready .welcome-state{
+      width:min(1160px,100%)!important;max-width:1160px!important;margin:0 auto!important;padding:0!important;
+      border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;text-align:left!important;
+    }
+    .consultation-home{display:grid;gap:28px;width:100%;}
+    .consultation-hero{
+      min-height:clamp(320px,23.4vw,390px);display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,.75fr);overflow:hidden;
+      border:1px solid #dfe5ed;border-radius:17px;background:linear-gradient(115deg,#fff 0 62%,#fff8e9 100%);
+      box-shadow:0 12px 32px rgba(31,52,89,.09);
+    }
+    .consultation-copy{padding:42px 36px 36px 42px;align-self:center;}
+    .consultation-title{margin:0;color:#091e49;font-size:clamp(34px,2.55vw,42px);line-height:1.16;font-weight:900;letter-spacing:-.8px;}
+    .consultation-title span{color:#bd7800;}
+    .consultation-accent{width:48px;height:4px;border-radius:4px;background:#f4ad0b;margin:20px 0 24px;}
+    .consultation-subtitle{max-width:610px;color:#526585;font-size:clamp(15px,1.08vw,18px);line-height:1.68;margin:0 0 26px;}
+    .consultation-actions{display:flex;gap:14px;flex-wrap:wrap;}
+    .mode-tab{
+      min-height:58px!important;padding:0 23px!important;border:1px solid #d9e0e9!important;border-radius:11px!important;
+      background:#fff!important;color:#0a1e47!important;font-size:14px!important;font-weight:800!important;display:inline-flex!important;align-items:center!important;gap:13px!important;
+      box-shadow:none!important;transition:transform .2s,box-shadow .2s,border-color .2s!important;
+    }
+    .mode-tab:hover{transform:translateY(-2px)!important;border-color:#b9c7da!important;box-shadow:0 8px 18px rgba(23,48,89,.08)!important;}
+    .mode-tab.active{min-width:228px!important;background:linear-gradient(145deg,#071b43,#06366d)!important;color:#fff!important;border-color:#071b43!important;}
+    .mode-tab-icon{font-size:20px;line-height:1;}
+    .mode-tab-arrow{margin-left:auto;font-size:22px;font-weight:400;}
+    .consultation-art{position:relative;min-height:clamp(320px,23.4vw,390px);display:flex;align-items:center;justify-content:center;isolation:isolate;}
+    .consultation-art::before{content:'';position:absolute;right:23px;top:55px;width:190px;height:155px;opacity:.18;background:linear-gradient(90deg,transparent 8%,#d9a13a 8% 13%,transparent 13% 27%,#d9a13a 27% 32%,transparent 32% 46%,#d9a13a 46% 51%,transparent 51% 65%,#d9a13a 65% 70%,transparent 70%);border-bottom:12px solid #d9a13a;clip-path:polygon(50% 0,100% 28%,92% 28%,92% 88%,100% 88%,100% 100%,0 100%,0 88%,8% 88%,8% 28%,0 28%);z-index:-1;}
+    .legal-book{position:absolute;right:105px;top:38px;width:126px;height:190px;padding:25px 15px;border:5px solid #0a1730;border-radius:8px;background:linear-gradient(100deg,#061a37,#0a2d59 28%,#071d3c);box-shadow:18px 18px 0 #0c2445,22px 24px 25px rgba(12,28,55,.2);color:#f3b926;text-align:center;font-family:Georgia,serif;transform:rotate(-1deg);}
+    .legal-book small{display:block;font-size:10px;letter-spacing:.5px;}
+    .legal-book b{display:block;margin-top:8px;font-size:15px;line-height:1.45;}
+    .legal-book span{display:block;margin-top:15px;font-size:32px;}
+    .hero-gavel{position:absolute;left:38px;bottom:34px;font-size:105px;line-height:1;filter:drop-shadow(0 15px 12px rgba(97,52,5,.22));transform:rotate(-16deg);}
+    .book-stack{position:absolute;right:53px;bottom:47px;width:215px;height:32px;border:5px solid #081b38;border-radius:5px;background:linear-gradient(180deg,#f6e5ba,#c49641);box-shadow:0 12px 0 #0b274e;transform:rotate(2deg);}
+    .common-topics{display:grid;gap:16px;}
+    .common-topics-title{display:flex;align-items:center;gap:12px;margin:0;color:#0c214a;font-size:16px;font-weight:900;}
+    .common-topics-title span{color:#133b77;font-size:21px;}
+    .topic-card-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;}
+    .quick-btn.topic-card{
+      min-height:clamp(82px,5.8vw,96px)!important;padding:15px 14px!important;border:1px solid #e0e6ee!important;border-radius:13px!important;background:#fff!important;
+      color:#0a1e47!important;display:grid!important;grid-template-columns:45px minmax(0,1fr) 16px!important;align-items:center!important;gap:10px!important;
+      text-align:left!important;font-size:13px!important;font-weight:800!important;box-shadow:0 8px 21px rgba(25,49,84,.055)!important;
+    }
+    .quick-btn.topic-card:hover{transform:translateY(-3px)!important;border-color:#c7d4e5!important;box-shadow:0 12px 26px rgba(25,49,84,.1)!important;}
+    .topic-icon{width:45px;height:45px;border-radius:50%;display:grid;place-items:center;font-size:21px;background:#eff5ff;color:#1c65e7;}
+    .topic-icon.purple{background:#f3efff;color:#6637df}.topic-icon.orange{background:#fff1e3;color:#ed7a00}.topic-icon.green{background:#eaf9ef;color:#18a044}.topic-icon.blue{background:#edf4ff;color:#2563eb}
+    .topic-arrow{font-size:24px;font-weight:400;color:#102651;}
+    #calculator-shortcuts{padding:18px 20px;border:1px solid #e0e6ee;border-radius:14px;background:#fff;}
+    #calculator-shortcuts .quick-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important;}
+    #calculator-shortcuts .quick-btn{border-radius:9px!important;background:#f8fafc!important;}
+
+    body.app-ready #input-zone{
+      flex:0 0 auto!important;
+      margin:0 38px 36px!important;
+      padding:20px 14px 18px!important;
+      background:#fff!important;
+      border:1px solid #e0e6ee!important;
+      border-radius:18px!important;
+      box-shadow:0 10px 28px rgba(22,47,82,.08)!important;
+    }
+    body.app-ready #input-box{
+      width:100%!important;min-height:64px!important;padding:8px 10px 8px 14px!important;border-radius:13px!important;border-color:#dbe3ed!important;
+      box-shadow:none!important;align-items:center!important;
+    }
+    body.app-ready #input-box::before{content:'✦';width:40px;height:40px;border:1px solid #e1e6ed;border-radius:9px;display:grid;place-items:center;flex:0 0 40px;color:#102c5e;font-size:20px;background:#fff;}
+    body.app-ready #msg-input{padding:12px 4px!important;font-size:15px!important;}
+    body.app-ready #send-btn{width:50px!important;height:46px!important;border-radius:9px!important;background:linear-gradient(145deg,#061a3b,#062e64)!important;font-size:21px!important;}
+    body.app-ready .disclaimer{width:100%!important;margin-top:14px!important;padding:0 8px!important;color:#697b97!important;font-size:10.5px!important;}
+    body.app-ready #typing{left:calc(var(--workspace-sidebar) + 38px)!important;right:38px!important;bottom:112px!important;}
+
+    body.app-ready.theme-light #topbar{background:#fff!important;}
+    body.app-ready.theme-light #sidebar{background:linear-gradient(180deg,#f8fbff,#eaf2fb)!important;border-right-color:#cdd9e8!important;}
+    body.app-ready.theme-light .sidebar-brand-copy strong{color:#0a2856!important;}
+    body.app-ready.theme-light .sidebar-brand-copy small{color:#5e718c!important;}
+    body.app-ready.theme-light .sidebar-brand-mark{background:#fff!important;color:#bd7800!important;}
+
+    @media(max-width:1180px){
+      :root{--workspace-sidebar:clamp(249px,23.4vw,388px);}
+      body.app-ready #topbar{padding:0 24px!important;}
+      .consultation-hero{grid-template-columns:minmax(0,1.35fr) 280px;}
+      .consultation-copy{padding:25px 28px;}
+      .consultation-title{font-size:29px;}
+      .consultation-hero,.consultation-art{min-height:224px;}
+      .consultation-subtitle{font-size:12px;line-height:1.55;margin-bottom:16px;}
+      .mode-tab{min-height:47px!important;padding:0 14px!important;font-size:11px!important;gap:9px!important;}
+      .mode-tab.active{min-width:172px!important;}
+      .mode-tab-icon{font-size:16px;}
+      .mode-tab-arrow{font-size:18px;}
+      .legal-book{right:53px;top:24px;width:100px;height:140px;padding:17px 10px;border-width:3px;box-shadow:12px 12px 0 #0c2445,16px 18px 20px rgba(12,28,55,.2);}
+      .legal-book small{font-size:8px;}
+      .legal-book b{margin-top:6px;font-size:12px;}
+      .legal-book span{margin-top:10px;font-size:22px;}
+      .consultation-art::before{right:12px;top:32px;width:140px;height:110px;}
+      .hero-gavel{left:18px;bottom:22px;font-size:64px;}
+      .book-stack{right:24px;bottom:27px;width:155px;height:24px;border-width:3px;box-shadow:0 8px 0 #0b274e;}
+      .topic-card-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;}
+      .quick-btn.topic-card{min-height:60px!important;padding:10px 8px!important;grid-template-columns:30px minmax(0,1fr) 10px!important;gap:6px!important;border-radius:8px!important;font-size:10px!important;}
+      .topic-icon{width:30px;height:30px;font-size:16px;}
+      .topic-arrow{font-size:16px;}
+      body.app-ready #msgs{padding:24px 28px 24px 19px!important;}
+      body.app-ready .sidebar-brand{gap:12px!important;min-height:58px!important;margin-bottom:14px!important;}
+      body.app-ready .sidebar-brand-mark{width:44px!important;height:50px!important;flex-basis:44px!important;border-width:2px!important;border-radius:11px 11px 16px 16px!important;font-size:20px!important;}
+      body.app-ready .sidebar-brand-copy strong{font-size:20px!important;}
+      body.app-ready .sidebar-brand-copy small{display:block!important;font-size:10px!important;color:#d7e3f2!important;white-space:nowrap!important;}
+      body.app-ready .sb-new-btn{height:37px!important;padding:0 12px!important;border-radius:6px!important;font-size:14px!important;}
+      body.app-ready .session-search{margin-bottom:18px!important;}
+      body.app-ready .session-search input{height:37px!important;padding:0 34px 0 36px!important;border-radius:7px!important;font-size:10px!important;}
+      body.app-ready .session-search::after{left:12px!important;font-size:18px!important;}
+      body.app-ready .tb-status{min-width:136px!important;height:38px!important;padding:0 12px!important;font-size:12px!important;}
+      body.app-ready .tb-lang select,body.app-ready #topbar-lang{width:96px!important;height:37px!important;padding:0 24px 0 8px!important;font-size:11px!important;}
+      body.app-ready .tb-user-chip{min-width:124px!important;height:44px!important;padding:0 4px!important;gap:8px!important;}
+      body.app-ready .tb-avatar{width:31px!important;height:31px!important;font-size:13px!important;}
+      body.app-ready .tb-uname{font-size:12px!important;max-width:72px!important;}
+      body.app-ready .tb-user-copy small{font-size:10px!important;}
+      body.app-ready .sb-new-btn span{width:24px!important;height:24px!important;flex-basis:24px!important;font-size:16px!important;}
+      body.app-ready .sb-new-btn::after{font-size:18px!important;}
+      body.app-ready #input-zone{margin:0 28px 24px 19px!important;padding:10px 8px 16px!important;}
+      body.app-ready #input-box{min-height:38px!important;padding:4px 8px!important;border-radius:8px!important;gap:8px!important;}
+      body.app-ready #input-box::before{width:30px!important;height:30px!important;flex-basis:30px!important;font-size:16px!important;border-radius:7px!important;}
+      body.app-ready #msg-input{padding:6px 2px!important;font-size:11px!important;}
+      body.app-ready #send-btn{width:42px!important;height:38px!important;border-radius:7px!important;font-size:17px!important;}
+      body.app-ready .disclaimer{margin-top:10px!important;font-size:8.5px!important;line-height:1.35!important;}
+    }
+    @media(max-width:900px){
+      :root{--workspace-topbar:70px;}
+      body.app-ready #app.visible{grid-template-columns:1fr!important;grid-template-rows:var(--workspace-topbar) minmax(0,1fr)!important;}
+      body.app-ready #topbar{grid-column:1!important;grid-row:1!important;height:var(--workspace-topbar)!important;min-height:var(--workspace-topbar)!important;padding:0 14px!important;gap:10px!important;}
+      body.app-ready .tb-hamburger{display:grid!important;background:#082754!important;}
+      body.app-ready .tb-status{display:none!important;}
+      body.app-ready .tb-lang{margin-left:auto!important;padding-right:10px!important;}
+      body.app-ready .tb-user-chip{min-width:50px!important;width:50px!important;padding:0!important;}
+      body.app-ready .tb-user-copy,body.app-ready .tb-user-chevron{display:none!important;}
+      body.app-ready #sidebar{position:fixed!important;left:0!important;top:0!important;width:min(326px,88vw)!important;min-width:0!important;height:100vh!important;transform:translateX(-104%)!important;z-index:130!important;}
+      body.app-ready #sidebar.open{transform:translateX(0)!important;}
+      body.app-ready #sidebar-overlay.open{display:block!important;position:fixed!important;inset:0!important;z-index:120!important;background:rgba(2,14,33,.55)!important;}
+      body.app-ready #chat-area{grid-column:1!important;grid-row:2!important;}
+      body.app-ready #msgs{padding:22px 18px!important;}
+      .consultation-hero{grid-template-columns:1fr;}
+      .consultation-copy{padding:30px 26px;}
+      .consultation-art{display:none;}
+      .topic-card-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+      body.app-ready #typing{left:18px!important;right:18px!important;}
+      body.app-ready #input-zone{margin:0 18px 20px!important;padding:14px 10px 14px!important;}
+    }
+    @media(max-width:600px){
+      body.app-ready .tb-lang{border-right:0!important;padding-right:0!important;}
+      body.app-ready .tb-lang::before{display:none!important;}
+      body.app-ready .tb-lang select,body.app-ready #topbar-lang{width:104px!important;height:40px!important;font-size:12px!important;}
+      body.app-ready .tb-user-chip{display:none!important;}
+      .consultation-home{gap:20px;}
+      .consultation-hero{min-height:0;border-radius:14px;}
+      .consultation-copy{padding:25px 20px;}
+      .consultation-title{font-size:25px;}
+      .consultation-subtitle{font-size:13px;margin-bottom:20px;}
+      .consultation-actions{display:grid;grid-template-columns:1fr;}
+      .mode-tab,.mode-tab.active{width:100%!important;min-width:0!important;}
+      .topic-card-grid{grid-template-columns:1fr;}
+      .quick-btn.topic-card{min-height:68px!important;}
+      #calculator-shortcuts .quick-grid{grid-template-columns:1fr!important;}
+      body.app-ready #msgs{padding:16px 12px!important;}
+      body.app-ready #input-zone{margin:0 10px 12px!important;padding:10px 8px 12px!important;}
+      body.app-ready #input-box::before{display:none;}
+      body.app-ready .disclaimer{font-size:9px!important;line-height:1.35!important;}
+    }
+    /* Sidebar visibility toggle (desktop collapse + existing mobile drawer). */
+    body.app-ready .tb-hamburger{
+      display:grid!important;
+      place-items:center!important;
+      width:38px!important;
+      height:38px!important;
+      flex:0 0 38px!important;
+      padding:0!important;
+      line-height:1!important;
+    }
+    @media(min-width:901px){
+      body.app-ready.sidebar-collapsed #sidebar{display:none!important;}
+      body.app-ready.sidebar-collapsed #typing{left:38px!important;}
+    }
+
+    /* Voice input uses the browser's built-in Speech Recognition API. */
+    #mic-btn{
+      width:46px;
+      height:46px;
+      flex:0 0 46px;
+      border:1px solid var(--border);
+      border-radius:9px;
+      background:#fff;
+      color:var(--navy);
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:19px;
+      transition:background .2s,color .2s,border-color .2s,transform .15s;
+    }
+    #mic-btn:hover{background:var(--gold-bg);border-color:var(--gold);transform:translateY(-1px);}
+    #mic-btn.listening{background:#dc3545;color:#fff;border-color:#dc3545;animation:voice-pulse 1.2s ease-in-out infinite;}
+    #mic-btn.unsupported{opacity:.55;cursor:not-allowed;}
+    @keyframes voice-pulse{0%,100%{box-shadow:0 0 0 0 rgba(220,53,69,.3);}50%{box-shadow:0 0 0 6px rgba(220,53,69,0);}}
+    @media(max-width:600px){
+      #mic-btn{width:42px;height:42px;flex-basis:42px;font-size:17px;}
+    }
+
+    /* Compact microphone icon and listening state; the existing composer layout is preserved. */
+    .voice-mic-icon{position:relative;display:block;width:13px;height:19px;border:2px solid currentColor;border-radius:8px;}
+    .voice-mic-icon::before{content:'';position:absolute;left:50%;bottom:-8px;width:18px;height:11px;border:2px solid currentColor;border-top:0;border-radius:0 0 10px 10px;transform:translateX(-50%);}
+    .voice-mic-icon::after{content:'';position:absolute;left:50%;bottom:-12px;width:2px;height:5px;background:currentColor;transform:translateX(-50%);}
+    body.app-ready #mic-btn{background:#fff;color:#102c5e;border-color:#d5e0ec;}
+    body.app-ready #mic-btn:hover{background:#edf4ff;border-color:#9bb8e2;}
+    body.app-ready #mic-btn.listening{background:#dc3545;color:#fff;border-color:#dc3545;animation:voice-pulse 1.2s ease-in-out infinite;}
+    body.app-ready #mic-btn.listening .voice-stop-icon{display:block;width:12px;height:12px;border-radius:2px;background:currentColor;}
+    #voice-recording-tools{display:none;align-items:center;gap:8px;flex:0 0 auto;}
+    #voice-cancel{width:30px;height:30px;flex:0 0 30px;border:1px solid #d5e0ec;border-radius:50%;background:#fff;color:#53627a;cursor:pointer;font-size:20px;line-height:1;display:grid;place-items:center;}
+    #voice-cancel:hover{background:#edf4ff;border-color:#9bb8e2;color:#102c5e;}
+    #voice-state{display:inline-flex;align-items:center;gap:5px;color:#dc3545;font-size:11px;font-weight:700;white-space:nowrap;}
+    #voice-state::before{content:'';width:7px;height:7px;border-radius:50%;background:#dc3545;animation:voice-pulse 1.2s ease-in-out infinite;}
+    body.app-ready #input-box.voice-recording #voice-recording-tools{display:flex;}
+    body.app-ready #input-box.voice-recording{border-color:#e7b0b5!important;}
+    @media(max-width:600px){
+      body.app-ready #mic-btn{width:42px!important;height:42px!important;flex-basis:42px!important;}
+      #voice-state{font-size:10px;}
+    }
+    #attach-btn{
+      width:42px;height:42px;flex:0 0 42px;border:1px solid #d5e0ec;border-radius:9px;
+      background:#fff;color:#526b8d;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;
+      transition:background .2s,color .2s,border-color .2s,transform .15s;
+    }
+    #attach-btn:hover{background:#edf4ff;border-color:#9bb8e2;color:#102c5e;transform:translateY(-1px);}
+    body.app-ready #attach-btn{background:#fff;color:#526b8d;border-color:#d5e0ec;}
+    body.app-ready #mic-btn{display:none!important;}
+    body.app-ready .disclaimer{
+      display:flex!important;align-items:center!important;justify-content:center!important;flex-wrap:wrap!important;
+      gap:12px!important;text-align:center!important;
+    }
+    body.app-ready .disclaimer-item{display:inline-flex;align-items:center;gap:6px;min-width:0;}
+    body.app-ready .disclaimer-shield{
+      width:16px;height:16px;display:inline-grid;place-items:center;flex:0 0 16px;
+      border:1px solid #7f94b1;border-radius:5px;color:#526b8d;font-size:10px;font-weight:900;line-height:1;
+    }
+    body.app-ready .disclaimer-divider{width:1px;height:14px;background:#d5deeb;flex:0 0 1px;}
+    @media(max-width:1180px){
+      body.app-ready #attach-btn{width:36px!important;height:32px!important;flex-basis:36px!important;font-size:17px!important;border-radius:7px!important;}
+    }
+    @media(max-width:900px){
+      body.app-ready #mic-btn{display:flex!important;}
+      body.app-ready .disclaimer{gap:7px!important;}
+      body.app-ready .disclaimer-divider{display:none!important;}
+    }
+    /* Final chat layout guardrails: keep the composer out of the scrollable message area. */
+    body.app-ready #body,
+    body.app-ready #chat-area{
+      min-height:0!important;
+    }
+    body.app-ready #msgs{
+      flex:1 1 auto!important;
+      min-height:0!important;
+      overflow-y:auto!important;
+      overflow-x:hidden!important;
+      padding-bottom:24px!important;
+      scroll-padding-bottom:24px!important;
+    }
+    body.app-ready #input-zone{
+      position:relative!important;
+      flex:0 0 auto!important;
+      bottom:auto!important;
+      z-index:50!important;
+      padding:20px 14px 18px!important;
+    }
+    body.app-ready #input-box{
+      position:relative!important;
+      max-width:1160px!important;
+    }
+    body.app-ready .clarification-card{
+      display:block!important;
+      width:100%!important;
+      max-width:100%!important;
+      margin:14px 0 0!important;
+      padding:14px 16px!important;
+      border:1px solid #b8d4f5!important;
+      border-left:4px solid #0b3b92!important;
+      border-radius:10px!important;
+      background:linear-gradient(135deg,#f5f9ff 0%,#eef6ff 100%)!important;
+      overflow:visible!important;
+    }
+    body.app-ready .clarification-card .guided-actions{
+      display:flex!important;
+      flex-wrap:wrap!important;
+      gap:8px!important;
+      margin-top:11px!important;
+    }
+    body.app-ready .clarification-card .guided-action-btn{
+      white-space:normal!important;
+      max-width:100%!important;
+    }
+    @media(max-width:900px){
+      body.app-ready #msgs{padding:18px 16px 24px!important;}
+      body.app-ready #input-zone{padding:14px 10px 14px!important;}
+    }
+    @media(max-width:600px){
+      body.app-ready #msgs{padding:16px 12px 20px!important;}
+      body.app-ready #input-zone{padding:10px 8px 12px!important;}
+    }
+
+    /* Exact reference workspace sizing for the desktop consultation screen. */
+    @media(min-width:901px){
+      body.app-ready #app.visible{
+        grid-template-columns:clamp(280px,24.25vw,405px) minmax(0,1fr)!important;
+        grid-template-rows:clamp(80px,6.71vw,112px) minmax(0,1fr)!important;
+      }
+      body.app-ready.sidebar-collapsed #app.visible{grid-template-columns:0 minmax(0,1fr)!important;}
+      body.app-ready #topbar{
+        height:clamp(80px,6.71vw,112px)!important;
+        min-height:clamp(80px,6.71vw,112px)!important;
+        padding:0 30px!important;
+        gap:22px!important;
+      }
+      body.app-ready .tb-hamburger{
+        width:58px!important;height:58px!important;flex:0 0 58px!important;
+        border:1px solid #e2e7ef!important;border-radius:11px!important;
+        color:#071b43!important;background:#fff!important;font-size:31px!important;
+      }
+      body.app-ready .tb-hamburger svg{width:30px!important;height:30px!important;fill:none!important;stroke:currentColor!important;stroke-linecap:round!important;stroke-width:2.6!important;}
+      body.app-ready .tb-hamburger:hover{background:#f8fafc!important;border-color:#aebed2!important;}
+      body.app-ready .tb-status{min-width:203px!important;height:58px!important;font-size:16px!important;}
+      body.app-ready .tb-lang::before{display:none!important;}
+      body.app-ready .tb-lang span.tb-globe{width:27px!important;height:27px!important;display:grid!important;place-items:center!important;}
+      body.app-ready .tb-lang span.tb-globe svg{width:27px!important;height:27px!important;display:block!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;}
+      body.app-ready #sidebar{
+        width:clamp(280px,24.25vw,405px)!important;
+        min-width:clamp(280px,24.25vw,405px)!important;
+        padding:28px 27px 22px!important;
+      }
+      body.app-ready .sidebar-brand{gap:20px!important;min-height:80px!important;margin-bottom:32px!important;}
+      body.app-ready .sidebar-brand-mark{width:64px!important;height:80px!important;flex-basis:64px!important;font-size:31px!important;}
+      body.app-ready .sidebar-brand-copy strong{font-size:clamp(30px,2.35vw,39px)!important;}
+      body.app-ready .sidebar-brand-copy small{display:block!important;color:rgba(255,255,255,.68)!important;font-size:12px!important;white-space:nowrap!important;}
+      body.app-ready .sb-new-btn{height:59px!important;margin-bottom:23px!important;padding:0 17px!important;font-size:17px!important;}
+      body.app-ready .sb-new-btn span{width:34px!important;height:34px!important;font-size:25px!important;}
+      body.app-ready .session-search{margin-bottom:31px!important;}
+      body.app-ready .session-search input{height:57px!important;padding:0 43px 0 51px!important;border-radius:11px!important;font-size:15px!important;}
+      body.app-ready .session-search::after{left:16px!important;font-size:27px!important;}
+      body.app-ready .session-search::before{right:16px!important;font-size:21px!important;}
+      body.app-ready .sb-section-label{margin-bottom:14px!important;padding-bottom:14px!important;font-size:13px!important;}
+      body.app-ready .session-group-label{margin-top:17px!important;font-size:12px!important;}
+      body.app-ready .sess-item{min-height:62px!important;padding:10px 0!important;gap:13px!important;}
+      body.app-ready .sess-icon{font-size:24px!important;}
+      body.app-ready .sess-title{font-size:14px!important;}
+      body.app-ready .sess-meta{font-size:12px!important;}
+      body.app-ready .topic-category-badge{padding:5px 10px!important;font-size:11px!important;}
+      body.app-ready .sidebar-bottom-nav{padding-top:17px!important;}
+      body.app-ready .sidebar-nav-btn{min-height:44px!important;padding:12px 0!important;font-size:15px!important;}
+      body.app-ready #msgs{width:100%!important;padding:32px 30px 24px!important;}
+      body.app-ready .welcome-state{width:min(1215px,100%)!important;max-width:1215px!important;margin:0 auto!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;}
+      body.app-ready .consultation-home{gap:32px!important;}
+      body.app-ready .consultation-hero{min-height:393px!important;grid-template-columns:minmax(0,1fr) 455px!important;border-radius:17px!important;margin-bottom:0!important;}
+      body.app-ready .consultation-copy{padding:48px 54px!important;}
+      body.app-ready .consultation-title{font-size:clamp(38px,3.2vw,54px)!important;line-height:1.16!important;}
+      body.app-ready .consultation-accent{width:47px!important;margin:20px 0!important;}
+      body.app-ready .consultation-subtitle{max-width:620px!important;font-size:18px!important;line-height:1.65!important;margin-bottom:27px!important;}
+      body.app-ready .consultation-actions{gap:20px!important;}
+      body.app-ready .mode-tab,
+      body.app-ready .mode-tab.active{min-width:282px!important;min-height:79px!important;padding:0 25px!important;font-size:16px!important;border-radius:10px!important;}
+      body.app-ready .mode-tab-icon{font-size:26px!important;}
+      body.app-ready .mode-tab-arrow{font-size:28px!important;}
+      body.app-ready .consultation-art{min-height:393px!important;}
+      body.app-ready .hero-illustration{width:116%!important;height:116%!important;display:block!important;object-fit:contain!important;transform:translate(-8%,-8%)!important;mix-blend-mode:multiply!important;}
+      body.app-ready .legal-book{top:43px!important;right:93px!important;width:145px!important;height:218px!important;padding:28px 16px!important;border-width:5px!important;border-left-width:13px!important;}
+      body.app-ready .legal-book small{font-size:10px!important;}
+      body.app-ready .legal-book b{margin:10px 0 18px!important;font-size:18px!important;}
+      body.app-ready .legal-book span{font-size:36px!important;}
+      body.app-ready .book-stack{right:40px!important;bottom:63px!important;width:240px!important;height:30px!important;}
+      body.app-ready .hero-gavel{left:45px!important;bottom:35px!important;font-size:112px!important;}
+      body.app-ready .consultation-art::before{right:28px!important;top:62px!important;width:240px!important;height:190px!important;}
+      body.app-ready .common-topics{gap:20px!important;}
+      body.app-ready .common-topics-title{font-size:19px!important;}
+      body.app-ready .topic-card-grid{grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:16px!important;}
+      body.app-ready .quick-btn.topic-card{min-height:96px!important;grid-template-columns:45px minmax(0,1fr) 18px!important;gap:12px!important;padding:14px!important;border-radius:13px!important;font-size:14px!important;}
+      body.app-ready .topic-icon{width:45px!important;height:45px!important;font-size:24px!important;}
+      body.app-ready .topic-arrow{font-size:27px!important;}
+      body.app-ready #input-zone{margin:0 30px 30px!important;padding:18px 16px 20px!important;border-radius:16px!important;background:#fff!important;border:1px solid #e0e6ee!important;box-shadow:0 10px 28px rgba(22,47,82,.08)!important;}
+      body.app-ready #input-box{width:100%!important;min-height:70px!important;margin:0!important;padding:8px 10px 8px 17px!important;border-radius:13px!important;box-shadow:none!important;}
+      body.app-ready #input-box::before{width:48px!important;height:48px!important;flex-basis:48px!important;font-size:25px!important;border-radius:9px!important;}
+      body.app-ready #msg-input{min-height:48px!important;padding:12px 5px!important;font-size:18px!important;}
+      body.app-ready #attach-btn{font-size:26px!important;}
+      body.app-ready #mic-btn{display:none!important;}
+      body.app-ready #send-btn{width:64px!important;height:64px!important;border-radius:10px!important;font-size:28px!important;}
+      body.app-ready .disclaimer{margin-top:16px!important;font-size:12px!important;}
+      body.app-ready #sidebar-collapse-handle{position:fixed!important;left:calc(clamp(280px,24.25vw,405px) - 26px)!important;top:196px!important;width:46px!important;height:46px!important;display:grid!important;place-items:center!important;z-index:125!important;border:0!important;border-radius:50%!important;color:#fff!important;background:#0b224a!important;box-shadow:0 5px 12px rgba(5,21,50,.22)!important;font-size:25px!important;line-height:1!important;}
+      body.app-ready #sidebar-collapse-handle:hover{background:#123c78!important;}
+      body.app-ready.sidebar-collapsed #sidebar-collapse-handle{left:8px!important;}
+    }
+    @media(max-width:900px){
+      body.app-ready #sidebar-collapse-handle{display:none!important;}
+    }
+    @media(min-width:901px) and (max-height:780px){
+      body.app-ready #msgs{padding-top:18px!important;padding-bottom:12px!important;}
+      body.app-ready .consultation-home{gap:18px!important;}
+      body.app-ready .consultation-hero{min-height:280px!important;margin-bottom:0!important;}
+      body.app-ready .consultation-copy{padding:24px 34px!important;}
+      body.app-ready .consultation-title{font-size:clamp(30px,3vw,42px)!important;}
+      body.app-ready .consultation-accent{margin:12px 0!important;}
+      body.app-ready .consultation-subtitle{margin-bottom:16px!important;font-size:13px!important;line-height:1.45!important;}
+      body.app-ready .consultation-art{min-height:280px!important;}
+      body.app-ready .hero-illustration{width:116%!important;height:116%!important;transform:translate(-8%,-8%)!important;}
+      body.app-ready .mode-tab,
+      body.app-ready .mode-tab.active{min-width:205px!important;min-height:54px!important;padding:0 17px!important;font-size:12px!important;}
+      body.app-ready .topic-card-grid{gap:9px!important;}
+      body.app-ready .common-topics{gap:10px!important;}
+      body.app-ready .common-topics-title{font-size:14px!important;}
+      body.app-ready .quick-btn.topic-card{min-height:62px!important;grid-template-columns:31px minmax(0,1fr) 12px!important;gap:6px!important;padding:8px!important;font-size:10px!important;}
+      body.app-ready .topic-icon{width:31px!important;height:31px!important;font-size:16px!important;}
+      body.app-ready .topic-arrow{font-size:18px!important;}
+      body.app-ready #input-zone{margin-bottom:12px!important;padding:10px 12px 12px!important;}
+      body.app-ready #input-box{min-height:54px!important;}
+      body.app-ready #input-box::before{width:34px!important;height:34px!important;flex-basis:34px!important;font-size:18px!important;}
+      body.app-ready #msg-input{min-height:36px!important;padding:8px 4px!important;font-size:13px!important;}
+      body.app-ready #send-btn{width:46px!important;height:44px!important;}
+      body.app-ready .disclaimer{margin-top:8px!important;font-size:9px!important;}
+    }
   </style>
+  <link rel="stylesheet" href="static/css/workspace.css?v=20260905-1"/>
+  <link rel="stylesheet" href="static/css/motion.css?v=20260905-1"/>
+  <link rel="stylesheet" href="static/css/voice.css?v=20260905-1"/>
+  <link rel="stylesheet" href="static/css/public.css?v=20260905-3"/>
 </head>
-<body>
+<body class="ll-reference">
 <a class="skip-link" href="#msg-input">Skip to chat input</a>
 
 <!-- ═══ LANDING ═══ -->
 <div class="screen bg-dole" id="landing" role="region" aria-label="LaborLens welcome">
-  <div class="land-inner" style="margin:0 auto;padding:24px;">
-    <div class="land-seal">⚖️</div>
-    <h1 class="land-title">Labor<em>Lens</em></h1>
-    <div class="land-divider"></div>
-    <p class="land-sub">Empowering the Philippine workforce with intelligent, instant access to labor regulations, DOLE issuances, and Supreme Court jurisprudence.</p>
-    <div class="pill-row">
-      <span class="pill">✦ AI-Powered Analysis</span>
-      <span class="pill">📜 DOLE-Aligned</span>
-      <span class="pill">⚡ Instant Insights</span>
-      <span class="pill">🇵🇭 Philippine Labor Code</span>
-    </div>
-    <button class="land-cta" onclick="showAuth()">
-      <span>Access Legal Assistant</span>
-      <span class="land-cta-arrow">→</span>
-    </button>
-    <br>
-    <a class="land-admin-link" href="admin.html">🔒 Secure Admin Portal</a>
-  </div>
+ <div class="public-container">
+  <header class="public-nav"><a class="public-brand" href="#" aria-label="LaborLens home"><span class="public-seal" aria-hidden="true">⚖</span><span>Labor<b>Lens</b><small>KNOW LABOR LAW. EMPOWER PEOPLE.</small></span></a><nav aria-label="Main navigation"><a href="#public-features">Features</a><a href="#public-about">About</a><a href="#public-faq">FAQ</a><button class="public-button" onclick="showAuth()">Open Assistant <span>→</span></button></nav></header>
+  <main class="public-hero"><div class="public-copy"><p class="public-eyebrow">PHILIPPINE LABOR LAW. MADE ACCESSIBLE.</p><h1>Your AI-Powered<br><em>Philippine Labor Law</em><br>Assistant</h1><p class="public-description">Get fast, reliable guidance on Philippine labor laws, DOLE issuances, and standard employment jurisprudence — all in one place.</p><button class="public-button hero-cta" onclick="showAuth()"><span>☏</span> Open Legal Assistant <span>→</span></button><div class="public-pills"><span>✦ &nbsp; AI-Powered Analysis</span><span>▤ &nbsp; DOLE-Aligned</span><span>ϟ &nbsp; Instant Insights</span><span>▥ &nbsp; Philippine Labor Code</span></div></div>
+  <div class="public-art"><img class="public-hero-image" src="assets/landing-assistant.png" width="1448" height="1086" alt="LaborLens assistant on a laptop beside Philippine labor law books, scales of justice, a courthouse, and the Philippine flag" fetchpriority="high"/></div></main>
+  <section class="public-benefits" id="public-features" aria-label="Who LaborLens helps"><article><span>♟</span><div><h2>For Workers</h2><p>Know your rights. Get clear, reliable information in plain language.</p></div></article><article><span>⚖</span><div><h2>For Employers</h2><p>Stay compliant. Make informed decisions with legal guidance.</p></div></article><article><span>◇</span><div><h2>For a Stronger Philippines</h2><p>A more informed workforce builds a fairer, more progressive nation.</p></div></article><div class="public-motto">BUILT FOR A<br>FAIRER TOMORROW<i></i>LAWS INFORM.<br>PEOPLE EMPOWER.<br>PHILIPPINES PROGRESSES.</div></section>
+  <section class="public-details" id="public-about"><div><p class="public-eyebrow">ABOUT LABORLENS</p><h2>Understand your rights.<br>Make informed decisions.</h2><p>Explore Philippine labor law in English, Filipino, or Hiligaynon. LaborLens brings labor regulations, DOLE issuances, and employment jurisprudence together in one accessible assistant.</p></div><div id="public-faq"><h2>Frequently asked questions</h2><details><summary>What can I ask LaborLens?</summary><p>Ask about wages, benefits, leave, termination, workplace safety, and Philippine labor regulations.</p></details><details><summary>Can I try it without an account?</summary><p>Yes. Choose Continue as guest on the sign-in page to try up to 5 messages. Create an account to save your chat history.</p></details><details><summary>Does LaborLens replace legal advice?</summary><p>LaborLens provides information. Consult a licensed attorney or DOLE for advice about your specific situation.</p></details></div></section>
+  <footer class="public-footer">LaborLens · Philippine Labor Law Assistant <span>Know labor law. Empower people.</span></footer>
+ </div>
 </div>
 
 <!-- ═══ AUTH ═══ -->
 <div class="screen hidden bg-dole" id="auth-screen">
+  <button class="public-back" type="button" onclick="returnToLanding()">← Back to home</button>
   <div class="auth-wrap">
     <div class="auth-top">
       <span class="auth-logo">⚖️</span>
       <div class="auth-brand">Labor<em>Lens</em></div>
-      <div class="auth-tagline">AI-Powered Labor &amp; Employment Law Advisor - your 24/7 guide to Philippine labor rights.</div>
+      <div class="auth-tagline">Philippine Labor Law Assistant</div><div class="auth-gold-line"></div><p class="auth-intro">Get fast, reliable guidance on Philippine labor laws, DOLE issuances, and standard employment jurisprudence — all in one place.</p>
       <div class="auth-chip-row" aria-label="LaborLens topics">
         <span class="auth-chip">Wage &amp; Benefits</span>
         <span class="auth-chip">Leave Credits</span>
         <span class="auth-chip">Termination Rights</span>
         <span class="auth-chip">DOLE Issuances</span>
         <span class="auth-chip">13th Month Pay</span>
-        <span class="auth-chip">OSH Regulations</span>
+        <span class="auth-chip">Occupational Health and Safety</span>
       </div>
       <div class="auth-school">Northern Iloilo State University<br>College of Information &amp; Computing Studies</div>
     </div>
     <div class="auth-body">
       <div class="auth-heading">
-        <h2 id="auth-title">Welcome back</h2>
+        <h2 id="auth-title">Welcome <span>back</span></h2>
         <p id="auth-subtitle">Sign in to your LaborLens account</p>
       </div>
       <!-- LOGIN -->
@@ -2548,7 +3091,7 @@
 <div id="app">
   <!-- TOPBAR -->
   <div id="topbar">
-    <button class="tb-hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Open recent sessions" aria-expanded="false">☰</button>
+<button class="tb-hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Show or hide sidebar" aria-controls="sidebar" aria-expanded="false" title="Show or hide sidebar"><svg viewBox="0 0 32 32" aria-hidden="true"><path class="menu-line top" d="M6 16h20"/><path class="menu-line middle" d="M6 16h20"/><path class="menu-line bottom" d="M6 16h20"/></svg></button>
     <div class="tb-brand">
       <div class="tb-seal">⚖️</div>
       <span class="tb-name">Labor<em>Lens</em></span>
@@ -2556,7 +3099,7 @@
     </div>
     <div class="tb-spacer"></div>
     <button class="tb-status" onclick="toggleStatusPopover()" aria-label="Show LaborLens status"><div class="tb-dot"></div><span>LaborLens Ready</span></button>
-    <label class="tb-lang" for="topbar-lang"><span>Language</span>
+    <label class="tb-lang" for="topbar-lang"><span class="tb-globe" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="11.5"/><path d="M4.5 16h23M16 4.5c3.2 3.1 4.8 6.9 4.8 11.5S19.2 24.4 16 27.5c-3.2-3.1-4.8-6.9-4.8-11.5S12.8 7.6 16 4.5Z"/></svg></span><span>Language</span>
       <select id="topbar-lang" onchange="saveLangSetting(this.value)">
         <option value="auto">Auto-detect</option>
         <option value="en">English</option>
@@ -2567,10 +3110,16 @@
     <button class="tb-icon-btn" title="Settings" onclick="toggleSettings()" style="margin-left:8px;" id="settings-btn" aria-label="Open settings" aria-expanded="false">⚙️</button>
     <div class="tb-user-chip" style="margin-left:8px;">
       <div class="tb-avatar" id="tb-avatar">U</div>
-      <span class="tb-uname" id="tb-uname">User</span>
+      <span class="tb-user-copy">
+        <span class="tb-uname" id="tb-uname">User</span>
+        <small>Your Profile</small>
+      </span>
+      <span class="tb-user-chevron" aria-hidden="true">⌄</span>
     </div>
     <button class="tb-logout" onclick="doLogout()" style="margin-left:8px;">Sign Out</button>
   </div>
+
+  <button id="sidebar-collapse-handle" type="button" onclick="toggleSidebar()" aria-label="Collapse sidebar" aria-expanded="true" title="Collapse sidebar">«</button>
 
   <div class="status-popover" id="status-popover" role="dialog" aria-label="LaborLens system status">
     <h3>LaborLens Status</h3>
@@ -2630,6 +3179,13 @@
   <div id="body">
     <!-- SIDEBAR -->
     <aside id="sidebar">
+      <div class="sidebar-brand" aria-label="LaborLens home">
+        <div class="sidebar-brand-mark" aria-hidden="true">⚖️</div>
+        <div class="sidebar-brand-copy">
+          <strong>Labor<span>Lens</span></strong>
+          <small>Philippine Labor Law Assistant</small>
+        </div>
+      </div>
       <div class="sb-top">
         <button class="sb-new-btn" onclick="startNewChat()">
           <span style="font-size:18px;font-weight:300;">＋</span> New Consultation
@@ -2676,10 +3232,19 @@
       </div>
       <div id="input-zone">
         <div id="input-box">
-          <textarea id="msg-input" rows="1" aria-label="Type your labor law question" placeholder="Type your legal query here…" onkeydown="handleKey(event)" oninput="autoResize(this); updateSendState()"></textarea>
+          <textarea id="msg-input" rows="1" aria-label="Type your labor law question" placeholder="Type your legal query here..." onkeydown="handleKey(event)" oninput="autoResize(this); updateSendState()"></textarea>
+          <button id="mic-btn" type="button" aria-label="Start voice input" title="Speak your legal question"><span class="voice-mic-icon" aria-hidden="true"></span></button>
           <button id="send-btn" onclick="sendMsg()" aria-label="Send message">➤</button>
         </div>
-        <p class="disclaimer">⚠️ For informational purposes only. Not a substitute for formal legal counsel. Consult a licensed attorney or DOLE for official rulings.</p>
+        <div id="voice-recording-tools" hidden>
+          <button id="voice-cancel" type="button" aria-label="Cancel voice input" title="Discard this recording" hidden>×</button>
+          <span id="voice-state" role="status" aria-live="polite"></span>
+        </div>
+        <p class="disclaimer">
+          <span class="disclaimer-item"><span class="disclaimer-shield" aria-hidden="true">✓</span>For informational purposes only. Not a substitute for formal legal counsel.</span>
+          <span class="disclaimer-divider" aria-hidden="true"></span>
+          <span class="disclaimer-item">Consult a licensed attorney or DOLE for official rulings.</span>
+        </p>
       </div>
     </main>
   </div>
@@ -2711,6 +3276,9 @@
   </div>
 </div>
 
+<script src="static/js/workspace.js?v=20260905-1"></script>
+<script src="static/js/motion.js?v=20260905-1"></script>
+<script src="static/js/voice.js?v=20260905-1"></script>
 <script>
 const API = 'https://plaster-multiply-tint.ngrok-free.dev/api';
 let token = localStorage.getItem('ll_token');
@@ -3005,10 +3573,14 @@ function prepareChatUi() {
   }
   const sendBtn = document.getElementById('send-btn');
   if (sendBtn) sendBtn.innerHTML = '&#10148;';
+  prepareVoiceInput();
   updateSendState();
   prepareSettingsUi();
   prepareSidebarUi();
 }
+
+function prepareVoiceInput() { window.LaborLensVoice.mount(); }
+function cancelVoiceInput() { window.LaborLensVoice.cancel(); }
 
 function prepareSettingsUi() {
   const header = document.querySelector('#settings-panel .sp-header');
@@ -3046,12 +3618,12 @@ function prepareSidebarUi() {
   if (top && !document.getElementById('session-search')) {
     top.insertAdjacentHTML('afterend', `
       <div class="session-search">
-        <input id="session-search" type="search" placeholder="Search conversations" oninput="renderSessions()" aria-label="Search conversations">
+        <input id="session-search" type="search" placeholder="Search conversations..." oninput="renderSessions()" aria-label="Search conversations">
       </div>
     `);
   }
   const search = document.getElementById('session-search');
-  if (search) search.placeholder = 'Search conversations';
+  if (search) search.placeholder = 'Search conversations...';
   const list = document.getElementById('session-list');
   if (list && !list.dataset.tooltipScrollListener) {
     list.addEventListener('scroll', hideSessionTitleTooltip, {passive:true});
@@ -3131,6 +3703,10 @@ function openSettingsFromSidebar(event) {
   document.getElementById('settings-btn')?.setAttribute('aria-expanded', 'true');
   closeSidebar();
 }
+function returnToLanding() {
+  document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('landing').classList.remove('hidden');
+}
 function showAuth() {
   document.getElementById('landing').classList.add('hidden');
   document.getElementById('auth-screen').classList.remove('hidden');
@@ -3147,11 +3723,12 @@ function switchAuthTab(tab, btn) {
   document.getElementById('reg-form').style.display   = tab === 'reg'   ? 'block' : 'none';
   const title = document.getElementById('auth-title');
   const subtitle = document.getElementById('auth-subtitle');
-  if (title) title.textContent = tab === 'login' ? 'Welcome back' : 'Create your account';
+  if (title) title.innerHTML = tab === 'login' ? 'Welcome <span>back</span>' : 'Create your <span>account</span>';
   if (subtitle) subtitle.textContent = tab === 'login' ? 'Sign in to your LaborLens account' : 'Start using LaborLens as a user';
   document.getElementById('login-err').textContent = '';
   document.getElementById('reg-err').textContent = '';
   closeForgotPassword();
+  document.getElementById('auth-screen').scrollTop = 0;
 }
 
 async function doLogin() {
@@ -3177,7 +3754,7 @@ async function doRegister() {
     if (!username) throw new Error('Please enter your full name.');
     if (!email) throw new Error('Please enter your email address.');
     if (password.length < 8) throw new Error('Password must be at least 8 characters.');
-    if (confirm && password !== confirm) throw new Error('Passwords do not match.');
+    if (password !== confirm) throw new Error('Passwords do not match.');
     const r = await fetch(`${API}/auth/register`, { method:'POST', headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'}, body: JSON.stringify({username, email, password, language_preference: lang}) });
     const d = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(d.detail || 'Registration failed');
@@ -3346,6 +3923,7 @@ function saveAuth(data) {
   initApp();
 }
 function doLogout() {
+  window.LaborLensVoice.finish();
   const prefs = localStorage.getItem('ll_prefs');
   const lang = localStorage.getItem('ll_lang');
   localStorage.removeItem('ll_token');
@@ -3369,12 +3947,13 @@ function initApp() {
   document.getElementById('landing').classList.add('hidden');
   document.getElementById('auth-screen').classList.add('hidden');
   document.getElementById('app').classList.add('visible');
+  syncSidebarLayout();
   document.body.classList.toggle('guest-mode', isGuest);
   updateUserIdentityUi();
-  const savedLang = localStorage.getItem('ll_lang') || 'auto';
+  const savedLang = localStorage.getItem('ll_lang') || 'en';
   document.getElementById('setting-lang').value = savedLang;
   const topbarLang = document.getElementById('topbar-lang');
-  if (topbarLang) topbarLang.value = savedLang;
+  if (topbarLang) topbarLang.value = savedLang === 'auto' ? 'en' : savedLang;
   document.querySelector('.tb-logout').textContent = isGuest ? 'Sign In' : 'Sign Out';
   applyPreferences();
   void syncAuthenticatedUser();
@@ -3525,20 +4104,59 @@ document.addEventListener('click', function(e) {
 });
 
 /* Sidebar */
+function updateSidebarToggleState(isOpen) {
+  const sidebar = document.getElementById('sidebar');
+  if (sidebar) sidebar.inert = !isOpen;
+  const btn = document.getElementById('hamburger');
+  const handle = document.getElementById('sidebar-collapse-handle');
+  [btn, handle].forEach(control => {
+    if (!control) return;
+    control.setAttribute('aria-expanded', String(Boolean(isOpen)));
+    control.setAttribute('aria-label', isOpen ? 'Collapse sidebar' : 'Expand sidebar');
+    control.title = isOpen ? 'Collapse sidebar' : 'Expand sidebar';
+  });
+  if (handle) handle.textContent = isOpen ? '«' : '»';
+}
+function setSidebarCollapsed(collapsed) {
+  const next = Boolean(collapsed);
+  document.body.classList.toggle('sidebar-collapsed', next);
+  localStorage.setItem('ll_sidebar_collapsed', next ? '1' : '0');
+  updateSidebarToggleState(!next);
+}
+function syncSidebarLayout() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  sidebar?.classList.remove('open');
+  overlay?.classList.remove('open');
+  if (window.matchMedia('(max-width: 900px)').matches) {
+    updateSidebarToggleState(false);
+  } else {
+    setSidebarCollapsed(localStorage.getItem('ll_sidebar_collapsed') === '1');
+  }
+}
+window.matchMedia('(max-width: 900px)').addEventListener('change', syncSidebarLayout);
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebar-overlay');
-  const btn = document.getElementById('hamburger');
-  const open = sidebar.classList.toggle('open');
-  overlay.classList.toggle('open', open);
-  if (btn) btn.setAttribute('aria-expanded', String(open));
+  if (!sidebar || !overlay) return;
+  // Keep the existing drawer/overlay interaction on phones. On larger screens,
+  // collapse the flex child so the chat area expands to the full width.
+  if (window.matchMedia('(max-width: 900px)').matches) {
+    const open = sidebar.classList.toggle('open');
+    overlay.classList.toggle('open', open);
+    updateSidebarToggleState(open);
+    return;
+  }
+  setSidebarCollapsed(!document.body.classList.contains('sidebar-collapsed'));
 }
 function closeSidebar() {
   hideSessionTitleTooltip();
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sidebar-overlay').classList.remove('open');
-  const btn = document.getElementById('hamburger');
-  if (btn) btn.setAttribute('aria-expanded', 'false');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  if (sidebar) sidebar.classList.remove('open');
+  if (overlay) overlay.classList.remove('open');
+  // Do not clear the desktop collapsed preference when a chat is selected.
+  if (window.matchMedia('(max-width: 900px)').matches) updateSidebarToggleState(false);
 }
 
 /* Modals */
@@ -3563,6 +4181,50 @@ function guestWelcomeHtml() {
 }
 
 function welcomeHtml(guest=false) {
+  const guestNotice = guest ? `<div class="guest-banner"><strong>Guest preview:</strong> ${Math.max(GUEST_MESSAGE_LIMIT - guestCount, 0)} of ${GUEST_MESSAGE_LIMIT} messages remaining. Sign in to save chat history and continue without this limit.</div>` : '';
+  return `
+    <div class="welcome-state" id="welcome" data-polished="1">
+      ${guestNotice}
+      <div class="consultation-home">
+        <section class="consultation-hero" aria-labelledby="consultation-title">
+          <div class="consultation-copy">
+            <h2 class="consultation-title" id="consultation-title">${guest ? 'Ask a ' : 'Start a '}<span>labor law</span> ${guest ? 'question' : 'consultation'}</h2>
+            <div class="consultation-accent" aria-hidden="true"></div>
+            <p class="consultation-subtitle">${guest ? 'Try LaborLens with a limited guest consultation, or sign in to keep your conversation history.' : 'Ask a question about wages, leave, termination, benefits, recruitment, DOLE issuances, or a specific Labor Code Article.'}</p>
+            <div class="consultation-actions" aria-label="Consultation mode">
+              <button class="mode-tab active" type="button" onclick="document.getElementById('msg-input')?.focus()"><span class="mode-tab-icon" aria-hidden="true">◯</span><span>Ask a Legal Question</span><span class="mode-tab-arrow" aria-hidden="true">›</span></button>
+              <button class="mode-tab" type="button" onclick="showCalculatorShortcuts()"><span class="mode-tab-icon" aria-hidden="true">▦</span><span>Calculate Benefits</span><span class="mode-tab-arrow" aria-hidden="true">›</span></button>
+            </div>
+          </div>
+          <div class="consultation-art">
+            <img class="hero-illustration" src="assets/laborlens-hero.png" alt="A gold gavel resting beside the Philippine Labor Code and a courthouse">
+          </div>
+        </section>
+        <section class="common-topics" aria-labelledby="common-topics-title">
+          <h3 class="common-topics-title" id="common-topics-title"><span aria-hidden="true">✣</span> Explore common topics</h3>
+          <div class="topic-card-grid">
+            <button class="quick-btn topic-card" onclick="qs('How is 13th month pay computed?')"><span class="topic-icon" aria-hidden="true">🎁</span><span>13th Month Pay</span><span class="topic-arrow" aria-hidden="true">›</span></button>
+            <button class="quick-btn topic-card" onclick="qs('What are the overtime pay rules?')"><span class="topic-icon purple" aria-hidden="true">◷</span><span>Overtime Pay</span><span class="topic-arrow" aria-hidden="true">›</span></button>
+            <button class="quick-btn topic-card" onclick="qs('How does holiday pay work?')"><span class="topic-icon orange" aria-hidden="true">▣</span><span>Holiday Pay</span><span class="topic-arrow" aria-hidden="true">›</span></button>
+            <button class="quick-btn topic-card" onclick="qs('How is separation pay calculated?')"><span class="topic-icon green" aria-hidden="true">♧</span><span>Separation Pay</span><span class="topic-arrow" aria-hidden="true">›</span></button>
+            <button class="quick-btn topic-card" onclick="qs('What is service incentive leave?')"><span class="topic-icon blue" aria-hidden="true">▤</span><span>Service Incentive Leave</span><span class="topic-arrow" aria-hidden="true">›</span></button>
+          </div>
+        </section>
+        <div id="calculator-shortcuts" hidden>
+          <h3 class="common-topics-title"><span aria-hidden="true">▦</span> Benefit calculators</h3>
+          <div class="quick-grid">
+            <button class="quick-btn" onclick="qs('Calculate my 13th-month pay. My basic salary is ___ and I worked from ___ to ___.')">13th-month pay</button>
+            <button class="quick-btn" onclick="qs('Calculate my overtime pay. My hourly rate is ___, overtime hours are ___, and the workday type is ___.')">Overtime pay</button>
+            <button class="quick-btn" onclick="qs('Calculate my holiday pay. My daily rate is ___ and I worked on a ___.')">Holiday pay</button>
+            <button class="quick-btn" onclick="qs('Estimate my separation pay. My monthly salary is ___ and years of service are ___.')">Separation pay</button>
+            <button class="quick-btn" onclick="qs('Calculate night-shift differential. My hourly rate is ___ and covered hours are ___.')">Night-shift differential</button>
+            <button class="quick-btn" onclick="qs('Calculate service incentive leave conversion. My daily rate is ___ and unused SIL days are ___.')">SIL conversion</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+function restoredWelcomeHtml(guest=false) {
   const guestNotice = guest ? `<div class="guest-banner"><strong>Guest preview:</strong> ${Math.max(GUEST_MESSAGE_LIMIT - guestCount, 0)} of ${GUEST_MESSAGE_LIMIT} messages remaining. Sign in to save chat history and continue without this limit.</div>` : '';
   return `
     <div class="welcome-state" id="welcome" data-polished="1">
@@ -3620,6 +4282,56 @@ function renderGuestHistory() {
 }
 function normalizeSessionTitle(value='') {
   return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+const SESSION_CATEGORY_RULES = [
+  {category:'Domestic Workers', short:'Domestic', className:'topic-domestic', pattern:/\b(kasambahay|domestic worker|househelper|house helper|yaya|household|maid)\b/i},
+  {category:'Anti-Harassment / Discrimination', short:'Harassment', className:'topic-harassment', pattern:/\b(sexual harassment|harassment|discrimination|bullying|ra\s*7877|safe spaces act)\b/i},
+  {category:'Leave Benefits', short:'Leave', className:'topic-leave', pattern:/\b(sick leave|vacation leave|maternity|paternity|solo parent|leave|absence)\b/i},
+  {category:'Social Benefits', short:'Social', className:'topic-social', pattern:/\b(sss|philhealth|pag[-\s]?ibig|hdmf|social security|health insurance|benefit|contribution)\b/i},
+  {category:'Occupational Safety & Health', short:'OSH', className:'topic-osh', pattern:/\b(workplace safety|osh|oshs|occupational health|hazards?|safety committee|safety officer|ra\s*11058|do\s*198[-\s]?18|safety)\b/i},
+  {category:'Jurisprudence', short:'Cases', className:'topic-cases', pattern:/\b(case|ruling|supreme court|decision|jurisprudence|g\.?r\.?\s*no|court)\b/i},
+  {category:'DOLE Resources', short:'DOLE', className:'topic-dole', pattern:/\b(dole|department of labor|labor complaint|filing|nlrc|inspection)\b/i},
+  {category:'Employment Benefits', short:'Benefits', className:'topic-benefits', pattern:/\b(13th month|overtime|holiday pay|night differential|salary|wage|minimum wage|pay)\b/i},
+  {category:'Core Labor Laws', short:'Core Law', className:'topic-core', pattern:/\b(labor code|labor law|employment law|worker rights|republic act|ra\s*\d+)\b/i}
+];
+// The backend's get_sidebar_category() is authoritative. This deliberately
+// small fallback only covers broad topic values for offline/legacy responses.
+const SESSION_TOPIC_CATEGORIES = {
+  overtime_pay:'Employment Benefits', night_shift_differential:'Employment Benefits', holiday_pay:'Employment Benefits',
+  thirteenth_month_pay:'Employment Benefits', minimum_wage:'Employment Benefits', separation_pay:'Employment Benefits',
+  probationary_employment:'Core Labor Laws', termination:'Core Labor Laws', illegal_dismissal:'Core Labor Laws',
+  maternity_leave:'Leave Benefits', paternity_leave:'Leave Benefits', solo_parent_leave:'Leave Benefits', service_incentive_leave:'Leave Benefits',
+  domestic_workers:'Domestic Workers', kasambahay:'Domestic Workers', sexual_harassment:'Anti-Harassment / Discrimination',
+  safe_spaces:'Anti-Harassment / Discrimination', age_discrimination:'Anti-Harassment / Discrimination', sss:'Social Benefits',
+  philhealth:'Social Benefits', pagibig:'Social Benefits', workplace_safety:'Occupational Safety & Health', osh:'Occupational Safety & Health',
+  union_rights:'Labor Relations', collective_bargaining:'Labor Relations', strike_lockout:'Labor Relations', grievance_machinery:'Labor Relations',
+  jurisprudence_request:'Jurisprudence', regional_wage_order:'DOLE Resources', dole_complaint:'DOLE Resources', labor_advisory:'Labor Advisories'
+};
+const SESSION_CATEGORY_LABELS = {
+  'Core Labor Laws': {short:'Core Law', className:'topic-core'}, 'Employment Benefits': {short:'Benefits', className:'topic-benefits'},
+  'Leave Benefits': {short:'Leave', className:'topic-leave'}, 'Domestic Workers': {short:'Domestic', className:'topic-domestic'},
+  'Anti-Harassment / Discrimination': {short:'Harassment', className:'topic-harassment'}, 'Social Benefits': {short:'Social', className:'topic-social'},
+  'Occupational Safety & Health': {short:'OSH', className:'topic-osh'}, 'DOLE Resources': {short:'DOLE', className:'topic-dole'},
+  'Labor Relations': {short:'Labor Relations', className:'topic-core'}, 'Jurisprudence': {short:'Cases', className:'topic-cases'},
+  'Labor Advisories': {short:'Advisory', className:'topic-dole'}, Others: {short:'Other', className:'topic-other'}
+};
+function sessionTopicCategory(sessionOrTitle='') {
+  const session = sessionOrTitle && typeof sessionOrTitle === 'object' ? sessionOrTitle : null;
+  const explicitCategory = String(session?.category || '').trim();
+  const topic = String(session?.sub_intent || session?.topic || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+  const mappedCategory = SESSION_TOPIC_CATEGORIES[topic];
+  const category = explicitCategory || mappedCategory;
+  if (category) {
+    const normalized = SESSION_CATEGORY_LABELS[category] || SESSION_CATEGORY_LABELS[Object.keys(SESSION_CATEGORY_LABELS).find(k => k.toLowerCase() === category.toLowerCase())];
+    if (normalized) return {category: Object.keys(SESSION_CATEGORY_LABELS).find(k => k.toLowerCase() === category.toLowerCase()) || category, ...normalized};
+  }
+  // Session objects without metadata are genuinely unknown. Keep the
+  // string-only fallback solely for legacy unit-test/helper callers; rendered
+  // sidebar rows never classify from the title alone.
+  if (session) return {category:'Others', short:'Other', className:'topic-other'};
+  const title = session ? session.title : sessionOrTitle;
+  const match = SESSION_CATEGORY_RULES.find(rule => rule.pattern.test(String(title || '')));
+  return match || {category:'Others', short:'Other', className:'topic-other'};
 }
 function sessionTimestamp(session) {
   const date = new Date(session?.updated_at || session?.created_at || 0);
@@ -3772,10 +4484,14 @@ function renderSessions() {
       el.setAttribute('role', 'listitem');
       const title = String(s.title || 'Legal Consultation').trim();
       const isPinned = pinned.has(String(s.id));
+      const topicCategory = sessionTopicCategory(s);
       el.innerHTML = `
         <span class="sess-icon">&#128172;</span>
         <span class="sess-text">
-          <span class="sess-title" data-full-title="${escapeHtml(title)}" aria-label="${escapeHtml(title)}">${escapeHtml(title)}</span>
+          <span class="sess-title-row">
+            <span class="sess-title" data-full-title="${escapeHtml(title)}" aria-label="${escapeHtml(title)}">${escapeHtml(title)}</span>
+            <span class="topic-category-badge ${topicCategory.className}" data-category="${escapeHtml(topicCategory.category)}" title="${escapeHtml(topicCategory.category)}">${escapeHtml(topicCategory.short)}</span>
+          </span>
           <span class="sess-meta">${escapeHtml(dateLabel(s.updated_at || s.created_at))}</span>
         </span>
         <span class="sess-actions">
@@ -3854,6 +4570,7 @@ async function restoreActiveSession() {
   }
 }
 function startNewChat() {
+  window.LaborLensVoice.finish();
   if (isGuest) {
     guestHistory = [];
     lastAssistantIntent = null;
@@ -3938,7 +4655,9 @@ function startTypingSteps() {
   const steps = ['Searching legal sources...', 'Reviewing relevant provisions...', 'Preparing a clear answer...'];
   let index = 0;
   if (!typing || !label) return;
-  if (box && typing.parentElement !== box) box.appendChild(typing);
+  // appendChild also moves an existing node. Do this for every request so a
+  // previously hidden loader is placed after the newest user message.
+  if (box) box.appendChild(typing);
   label.textContent = steps[index];
   typing.style.display = 'flex';
   if (box) box.scrollTop = box.scrollHeight;
@@ -3957,10 +4676,46 @@ function stopTypingSteps() {
   const box = document.getElementById('msgs');
   if (box) box.scrollTop = box.scrollHeight;
 }
+async function readValidatedChatStream(response, row) {
+  if (!response.ok) throw new Error((await response.text()) || 'Unable to send message');
+  if (!response.body) throw new Error('Streaming is not supported by this browser.');
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let answer = '';
+  let completed = null;
+  while (true) {
+    const {value, done} = await reader.read();
+    buffer += decoder.decode(value || new Uint8Array(), {stream: !done});
+    const events = buffer.split('\n\n');
+    buffer = events.pop() || '';
+    for (const rawEvent of events) {
+      const dataLine = rawEvent.split('\n').find(line => line.startsWith('data:'));
+      if (!dataLine) continue;
+      const event = JSON.parse(dataLine.slice(5).trim());
+      if (event.type === 'start') {
+        window.LaborLensMotion.setReplyState(row, 'thinking', event.message || 'Checking legal sources…');
+      } else if (event.type === 'delta') {
+        answer += event.text || '';
+        updateMsg(row, answer, [], {});
+        window.LaborLensMotion.setReplyState(row, 'streaming');
+      } else if (event.type === 'done') {
+        completed = event;
+      } else if (event.type === 'error') {
+        throw new Error(event.message || 'Unable to send message');
+      }
+    }
+    if (done) break;
+  }
+  if (!completed) throw new Error('The response stream ended before completion.');
+  completed.answer = completed.answer || answer;
+  return completed;
+}
 async function sendMsg() {
   const inp = document.getElementById('msg-input');
   const text = inp.value.trim();
   if (!text || sendingMessage) return;
+  window.LaborLensVoice.finish();
   if (isGuest && guestCount >= GUEST_MESSAGE_LIMIT) {
     appendMsg('assistant', `You have reached the ${GUEST_MESSAGE_LIMIT}-message guest limit. Please sign in or create an account to continue.`);
     return;
@@ -3971,7 +4726,9 @@ async function sendMsg() {
   const w = document.getElementById('welcome');
   if (w) w.remove();
   appendMsg('user', text);
-  startTypingSteps();
+  const streamingRow = appendMsg('assistant', '');
+  window.LaborLensMotion.setReplyState(streamingRow, 'thinking');
+  window.LaborLensMotion.setResponding(true);
   try {
     const lang = requestLanguageValue();
     const r = isGuest
@@ -3987,16 +4744,39 @@ async function sendMsg() {
             history: guestHistory.slice(-16)
           })
         })
-      : await authFetch('/chat/message', {
+      : await authFetch('/chat/message/stream', {
           method:'POST',
+          headers:{'Accept':'text/event-stream'},
           body: JSON.stringify({message: text, session_id: currentSessionId, language: lang, previous_intent: lastAssistantIntent})
         });
-    const d = await r.json();
-    if (!r.ok) throw new Error(d.detail || 'Unable to send message');
+    const d = isGuest ? await r.json() : await readValidatedChatStream(r, streamingRow);
+    if (isGuest && !r.ok) throw new Error(d.detail || 'Unable to send message');
     const normalizedSourceMatch = getSourceMatch(d);
     if (normalizedSourceMatch) d.source_match = normalizedSourceMatch;
     currentSessionId = d.session_id;
     if (!isGuest && currentSessionId) storeActiveSession(currentSessionId);
+    if (!isGuest && currentSessionId) {
+      // Promote the active session immediately; the subsequent refresh keeps
+      // the backend's persisted timestamp/category as the source of truth.
+      const now = new Date().toISOString();
+      const existing = sessionCache.find(s => String(s.id) === String(currentSessionId));
+      const detectedCategory = d.category || SESSION_TOPIC_CATEGORIES[String(d.topic || '').toLowerCase()];
+      if (existing) {
+        existing.updated_at = now;
+        existing.last_message_at = now;
+        if (detectedCategory && detectedCategory !== 'Others') existing.category = detectedCategory;
+      } else {
+        sessionCache.push({
+          id: currentSessionId,
+          title: text.slice(0, 120),
+          category: detectedCategory || null,
+          updated_at: now,
+          created_at: now
+        });
+      }
+      sessionCache = deduplicateSessions(sessionCache);
+      renderSessions();
+    }
     if (isGuest) {
       guestSessionId = d.session_id;
       guestCount = Math.max(guestCount, d.message_id || guestCount);
@@ -4012,19 +4792,31 @@ async function sendMsg() {
         source_match:d.source_match,
         topic:d.topic,
         confidence_level:d.confidence_level,
-        confidence_reason:d.confidence_reason
+        confidence_reason:d.confidence_reason,
+        confidence_score:d.confidence_score ?? null,
+        confidence_label:d.confidence_label ?? null,
+        follow_up_questions:d.follow_up_questions || [],
+        clarification_question:d.clarification_question || null,
+        clarification_needed:!!d.clarification_needed
       });
       saveGuestState();
     }
-    appendMsg('assistant', d.answer, new Date().toISOString(), d.sources || [], d);
+    if (streamingRow) updateMsg(streamingRow, d.answer, d.sources || [], d);
+    else appendMsg('assistant', d.answer, new Date().toISOString(), d.sources || [], d);
+    window.LaborLensMotion.setReplyState(streamingRow, 'complete');
     playNotificationSound();
     loadSessions();
   } catch(_) {
-    appendMsg('assistant', "LaborLens cannot connect to the legal-information service right now. Please try again later.", new Date().toISOString(), [], {intent:'system_error', retryText:text});
+    const errorMeta = {intent:'system_error', retryText:text};
+    if (streamingRow) updateMsg(streamingRow, "LaborLens cannot connect to the legal-information service right now. Please try again later.", [], errorMeta);
+    else appendMsg('assistant', "LaborLens cannot connect to the legal-information service right now. Please try again later.", new Date().toISOString(), [], errorMeta);
+    window.LaborLensMotion.setReplyState(streamingRow, 'error');
+  } finally {
+    window.LaborLensMotion.setResponding(false);
+    stopTypingSteps();
+    sendingMessage = false;
+    updateSendState();
   }
-  stopTypingSteps();
-  sendingMessage = false;
-  updateSendState();
 }
 function formatTime(value) {
   const date = value ? new Date(value) : new Date();
@@ -4177,7 +4969,7 @@ function renderSources(sources) {
   const viewLabel = `View All Sources (${sourceCount})`;
   const view = `<button class="source-card-btn" type="button" data-view-label="${escapeHtml(viewLabel)}" onclick="viewFirstSource(this)"><span aria-hidden="true">&#128279;</span> ${escapeHtml(viewLabel)}</button>`;
   const copy = `<button class="source-card-btn" type="button" data-citation="${escapeHtml(citations)}" onclick="copyCitation(this)"><span aria-hidden="true">&#128203;</span> Copy Citation</button>`;
-  return `<div class="source-links" aria-label="Sources"><span class="source-links-title">Sources verified for this answer</span><div class="source-link-list source-hidden-passages">${items}</div><div class="source-card-actions">${view}${copy}</div></div>`;
+  return `<div class="source-links" aria-label="Sources"><span class="source-links-title">Retrieved sources</span><div class="source-link-list source-hidden-passages">${items}</div><div class="source-card-actions">${view}${copy}</div></div>`;
 }
 function normalizeSourceMatchValue(value) {
   const normalized = String(value || '').trim().toLowerCase().replace(/[\s-]+/g, '_');
@@ -4222,19 +5014,64 @@ function getSourceMatch(meta = {}) {
   }
   return normalizeSourceMatchValue(meta.confidence_level);
 }
+function getBestSourceSimilarity(meta = {}) {
+  if (Object.prototype.hasOwnProperty.call(meta || {}, 'confidence_score')) {
+    if (meta.confidence_score === null || meta.confidence_score === '') return null;
+    const savedScore = Number(meta.confidence_score);
+    return Number.isFinite(savedScore) ? savedScore : null;
+  }
+  const sources = normalizeSources(meta?.sources);
+  const scores = sources
+    .map(source => Number(source?.similarity_score ?? source?.similarity ?? source?.score))
+    .filter(score => Number.isFinite(score));
+  return scores.length ? Math.max(...scores) : null;
+}
+function getSavedConfidenceTier(meta = {}) {
+  const label = String(meta?.confidence_label || '').trim().toLowerCase();
+  const labels = {
+    'insufficient legal source': 'insufficient',
+    'partial source match': 'partial',
+    'source match': 'source',
+    'high confidence match': 'high'
+  };
+  return labels[label] || '';
+}
+function getConfidenceMatchTier(meta = {}) {
+  const validatedStatus = String(meta?.source_match || meta?.source_status || '').toLowerCase();
+  if (['insufficient', 'conflicting', 'provider_unavailable', 'not_required', 'partial'].includes(validatedStatus)) return validatedStatus;
+  const savedTier = getSavedConfidenceTier(meta);
+  if (savedTier) return savedTier;
+  const completeness = String(meta?.source_match ?? meta?.source_status ?? meta?.confidence_level ?? '').trim().toLowerCase().replace(/\s+/g, '_');
+  if (completeness === 'provider_unavailable') return 'provider_unavailable';
+  if (completeness === 'partial' || completeness === 'conflicting') return 'partial';
+  const score = getBestSourceSimilarity(meta);
+  if (score === null || score < 0.65) return 'insufficient';
+  if (completeness === 'insufficient') return 'insufficient';
+  if (score >= 0.90) return ['direct', 'high', 'source'].includes(completeness) ? 'high' : 'partial';
+  if (score >= 0.70) return 'source';
+  return 'partial';
+}
 function renderConfidence(meta = {}) {
+  if (meta.clarification_needed || meta.intent === 'needs_clarification' || meta.display_mode === 'clarification') return '';
   const level = getSourceMatch(meta);
   if (!level || level === 'not_required') return '';
   const SOURCE_MATCH_UI = {
-    direct: { label: 'Direct source match', className: 'source-match--direct', icon: 'check-circle' },
+    high: { label: 'High confidence match', className: 'source-match--high', icon: 'check-circle' },
+    source: { label: 'Source match', className: 'source-match--source', icon: 'check-circle' },
+    direct: { label: 'Source match', className: 'source-match--source', icon: 'check-circle' },
     partial: { label: 'Partial source match', className: 'source-match--partial', icon: 'info-circle' },
     conflicting: { label: 'Conflicting sources', className: 'source-match--conflicting', icon: 'alert-triangle' },
+    provider_unavailable: { label: 'Temporary response issue', className: 'source-match--unavailable', icon: 'clock' },
     insufficient: { label: 'Insufficient legal source', className: 'source-match--insufficient', icon: 'alert-circle' },
     not_required: { label: null, className: null, icon: null }
   };
-  const ui = SOURCE_MATCH_UI[level] || { label: 'More information needed', className: 'more', icon: 'info-circle' };
+  const confidenceTier = ['direct', 'partial', 'insufficient', 'conflicting', 'provider_unavailable'].includes(level) ? getConfidenceMatchTier(meta) : getSavedConfidenceTier(meta);
+  const displayLevel = confidenceTier || level;
+  const ui = SOURCE_MATCH_UI[displayLevel] || { label: 'More information needed', className: 'more', icon: 'info-circle' };
   if (!ui.label) return '';
-  return `<span class="source-match-badge ${ui.className}" data-source-match="${level}" data-icon="${ui.icon}" title="${escapeHtml(meta.confidence_reason || '')}">${ui.label}</span>`;
+  const score = getBestSourceSimilarity(meta);
+  const scoreDetail = score === null ? '' : ` Similarity: ${score.toFixed(2)}.`;
+  return `<span class="source-match-badge ${ui.className}" data-source-match="${displayLevel}" data-icon="${ui.icon}" title="${escapeHtml((meta.confidence_reason || '') + scoreDetail)}">${ui.label}</span>`;
 }
 function renderFeedback(meta = {}, hasSources = false) {
   const messageId = meta?.message_id || meta?.id;
@@ -4373,26 +5210,65 @@ function renderGuidedActions(content='', meta={}) {
           ];
     return `<div class="guided-actions capability-actions">${topics.map(([label, prompt]) => `<button class="guided-action-btn" onclick="qs('${escapeHtml(prompt).replace(/'/g, "\\'")}')">${escapeHtml(label)}</button>`).join('')}</div>`;
   }
-  if (meta?.display_mode !== 'clarification' && meta?.intent !== 'needs_clarification') return '';
-  const text = String(content || '').toLowerCase();
-  let buttons = ['Employee', 'Employer', 'Applicant', 'Resigned worker', 'Not sure'];
-  if (/wage|minimum|sweldo|sueldo|sahod|suhol/.test(text)) {
-    buttons = ['NCR', 'Region VI / Iloilo', 'Province', 'City', 'Not sure'];
-  } else if (/holiday/.test(text)) {
-    buttons = ['Regular holiday', 'Special non-working day', 'Rest day', 'Not sure'];
-  } else if (/status|probationary|regular|project|part-time|employment/.test(text)) {
-    buttons = ['Regular', 'Probationary', 'Project-based', 'Part-time', 'Not sure'];
-  } else if (/termination|dismiss|resign|tanggal|gintanggal/.test(text)) {
-    buttons = ['Fired', 'Suspended', 'Forced to resign', 'Resigned voluntarily', 'Not sure'];
+  const isClarification = meta?.display_mode === 'clarification' || meta?.intent === 'needs_clarification' || meta?.clarification_needed;
+  if (!isClarification) return '';
+  const clarificationQuestion = String(
+    meta?.clarification_question || (Array.isArray(meta?.follow_up_questions) ? meta.follow_up_questions[0] : '') || ''
+  ).trim();
+  if (clarificationQuestion) {
+    const lang = meta?.language || requestLanguageValue() || 'en';
+    const labels = lang === 'fil'
+      ? {title:'Follow-up question',hint:'Ilagay ang sagot sa message box sa ibaba. Puwede kang pumili ng pinakamalapit na sagot:'}
+      : lang === 'hil'
+        ? {title:'Follow-up question',hint:'Ibutang ang sabat sa message box sa idalom. Puwede ka makapili sang pinakamalapit nga sabat:'}
+        : {title:'Follow-up question',hint:'Answer in the message box below. Choose the closest option if one applies:'};
+    const lowerQuestion = clarificationQuestion.toLowerCase();
+    const clarificationTopic = meta?.topic;
+    let choices = [];
+    if (/type of pay|uri ng bayad|klase sang bayad/.test(lowerQuestion)) {
+      choices = ['Basic salary', 'Overtime pay', 'Holiday pay', '13th-month pay', 'Separation pay', 'Final pay'];
+    } else if (clarificationTopic === 'minimum_wage') {
+      choices = ['NCR', 'Region VI / Iloilo', 'Other region', 'Not sure'];
+    } else if (/type of day|which holiday|ordinary.*rest day|uri ng araw|klase sang adlaw/.test(lowerQuestion)) {
+      choices = ['Ordinary workday', 'Rest day', 'Special non-working day', 'Regular holiday'];
+    } else if (/reason for separation|reason.*employer|dahilan.*separation|rason.*separation/.test(lowerQuestion)) {
+      choices = ['Just cause / misconduct', 'Redundancy / retrenchment', 'Resigned', 'Not sure'];
+    } else if (/leave/.test(lowerQuestion)) {
+      choices = ['Service incentive leave', 'Sick leave', 'Maternity / paternity', 'Other leave'];
+    }
+    const choiceMarkup = choices.length
+      ? `<div class="guided-actions">${choices.map(label => `<button class="guided-action-btn" onclick="appendChoice('${escapeHtml(label).replace(/'/g, "\\'")}')">${escapeHtml(label)}</button>`).join('')}</div>`
+      : '';
+    return `<div class="clarification-card" role="group" aria-label="${escapeHtml(labels.title)}"><div class="clarification-card-title">${escapeHtml(labels.title)}</div><p class="clarification-card-question">${escapeHtml(clarificationQuestion)}</p><p class="clarification-card-hint">${escapeHtml(labels.hint)}</p>${choiceMarkup}</div>`;
   }
-  return `<div class="clarify-panel"><div class="clarify-title">Tap one if it matches your situation</div><div class="guided-actions">${buttons.map(label => `<button class="guided-action-btn" onclick="appendChoice('${escapeHtml(label).replace(/'/g, "\\'")}')">${escapeHtml(label)}</button>`).join('')}</div></div>`;
+  const lang = meta?.language || requestLanguageValue() || 'en';
+  const fallback = lang === 'fil'
+    ? {
+        title: 'Kailangan ng dagdag na detalye',
+        question: 'Pakidagdag ang mga detalye tungkol sa iyong sitwasyon, petsa, lugar, employment status, sahod, o mga dokumento.',
+        hint: 'Ilagay ang sagot sa message box sa ibaba.'
+      }
+    : lang === 'hil'
+      ? {
+          title: 'Kinahanglan pa sang dugang nga detalye',
+          question: 'Palihog dugangi ang detalye parte sa imo sitwasyon, petsa, lugar, employment status, sweldo, ukon mga dokumento.',
+          hint: 'Ibutang ang sabat sa message box sa idalom.'
+        }
+      : {
+          title: 'A little more detail is needed',
+          question: 'Please add the details about your situation, dates, location, employment status, pay, or documents that apply.',
+          hint: 'Answer in the message box below so I can give a more specific response.'
+        };
+  return `<div class="clarification-card" role="group" aria-label="${escapeHtml(fallback.title)}"><div class="clarification-card-title">${escapeHtml(fallback.title)}</div><p class="clarification-card-question">${escapeHtml(fallback.question)}</p><p class="clarification-card-hint">${escapeHtml(fallback.hint)}</p></div>`;
 }
 function appendChoice(label) {
   const input = document.getElementById('msg-input');
   input.value = label;
   input.focus();
+  autoResize(input);
+  updateSendState();
 }
-function appendMsg(role, content, createdAt = new Date().toISOString(), sources = [], meta = {}) {
+function appendMsgLegacy(role, content, createdAt = new Date().toISOString(), sources = [], meta = {}) {
   const box = document.getElementById('msgs');
   const isUser = role === 'user';
   const row = document.createElement('div');
@@ -4403,20 +5279,32 @@ function appendMsg(role, content, createdAt = new Date().toISOString(), sources 
   box.scrollTop = box.scrollHeight;
 }
 function appendMsg(role, content, createdAt = new Date().toISOString(), sources = [], meta = {}) {
+  const row = document.createElement('div');
+  row.dataset.role = role;
+  row.dataset.createdAt = createdAt;
+  updateMsg(row, content, sources, meta);
   const box = document.getElementById('msgs');
+  box.appendChild(row);
+  box.scrollTop = box.scrollHeight;
+  return row;
+}
+function updateMsg(row, content, sources = [], meta = {}) {
+  if (!row) return;
+  const role = row.dataset.role || 'assistant';
   const isUser = role === 'user';
   if (!isUser && meta?.intent) lastAssistantIntent = meta.intent;
   const sourceMatch = getSourceMatch(meta);
   const isLegalAnswer = !isUser && sourceMatch && sourceMatch !== 'not_required';
   const isCalculation = !isUser && meta?.display_mode === 'calculation_card';
-  const row = document.createElement('div');
-  row.className = `msg-row ${isUser ? 'user' : 'bot'}`;
   const initial = getUserInitial();
   const hasSources = normalizeSources(sources).length > 0;
-  const body = isUser ? fmtText(content) : `<div class="answer-content">${renderConfidence(meta)}${fmtText(content)}</div>`;
-  row.innerHTML = `<div class="msg-avatar">${isUser ? initial : '&#9878;'}</div><div class="msg-bubble${isLegalAnswer ? ' legal-answer' : ''}${isCalculation ? ' calculation-card' : ''}">${body}${isUser ? '' : renderGuidedActions(content, meta)}${isUser ? '' : renderSources(sources)}${isUser ? '' : renderFeedback(meta, hasSources)}<div class="msg-time">${formatTime(createdAt)}</div></div>`;
-  box.appendChild(row);
-  box.scrollTop = box.scrollHeight;
+  const isClarification = meta.clarification_needed || meta.intent === 'needs_clarification' || meta.display_mode === 'clarification';
+  const body = isUser ? fmtText(content) : isClarification ? '' : `<div class="answer-content">${renderConfidence(meta)}${fmtText(content)}</div>`;
+  const displaySources = !isClarification && !['insufficient', 'not_required', 'provider_unavailable'].includes(sourceMatch) ? sources : [];
+  row.className = `msg-row ${isUser ? 'user' : 'bot'}`;
+  row.innerHTML = `<div class="msg-avatar">${isUser ? initial : '&#9878;'}</div><div class="msg-bubble${isLegalAnswer ? ' legal-answer' : ''}${isCalculation ? ' calculation-card' : ''}">${body}${isUser ? '' : renderGuidedActions(content, meta)}${isUser ? '' : renderSources(displaySources)}${isUser || isClarification ? '' : renderFeedback(meta, hasSources)}<div class="msg-time">${formatTime(row.dataset.createdAt)}</div></div>`;
+  const box = document.getElementById('msgs');
+  if (box) box.scrollTop = box.scrollHeight;
 }
 
 function escapeHtml(value) {
@@ -4840,5 +5728,6 @@ prepareAuthUi();
 prepareChatUi();
 if (!handleGoogleCallback() && !handlePasswordResetLink() && token && currentUser) initApp();
 </script>
+<script src="static/js/public.js?v=20260905-2"></script>
 </body>
 </html>
