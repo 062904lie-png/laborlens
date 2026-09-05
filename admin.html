@@ -143,6 +143,11 @@
     .uz-sub{font-size:13px;color:var(--muted);}
     .kb-category-field{margin-bottom:14px;}
     .kb-category-badge{max-width:220px;white-space:normal;line-height:1.3;text-align:left;}
+    .kb-secondary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--cream);}
+    .kb-secondary-option{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:var(--text);line-height:1.25;}
+    .kb-secondary-option input{width:auto;margin-top:1px;}
+    .kb-secondary-option.disabled{opacity:.45;}
+    .kb-secondary-list{display:block;margin-top:5px;font-size:11px;color:var(--muted);font-weight:500;}
     .info-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(201,150,42,.08);border:1px solid rgba(201,150,42,.2);border-radius:10px;font-size:13px;color:var(--amber);font-weight:500;margin-bottom:20px;}
     .alert-bar{display:flex;align-items:center;gap:12px;padding:14px 20px;border-radius:10px;margin-bottom:20px;font-size:13px;font-weight:500;}
     .alert-bar.amber{background:var(--amber-bg);border:1px solid rgba(217,119,6,.25);color:#92400E;border-left:4px solid var(--amber);}
@@ -413,48 +418,31 @@
       .full-doc-text{font-size:13px;padding:14px;max-height:58vh;}
     }
   </style>
+  <link rel="stylesheet" href="static/css/admin-login.css?v=20260905-1"/>
+  <link rel="stylesheet" href="static/css/admin-panel.css?v=20260905-1"/>
 </head>
 <body>
 
 <!-- ═══ LOGIN ═══ -->
-<div id="login-screen">
-  <div class="login-card">
-    <div class="lc-header">
-      <div class="lc-seal">🛡️</div>
-      <div class="lc-title">Labor<em>Lens</em></div>
-      <div class="lc-sub">Philippine Labor Law Advisor</div>
-      <span class="admin-badge">Administration Portal</span>
-    </div>
+<div id="login-screen" aria-label="Administrator sign in">
+  <a class="admin-public-brand" href="index.html" aria-label="LaborLens home"><span class="admin-gold-seal"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 9v43M19 54h26M25 50h14M14 18h36M32 10l-5 8h10Z M14 18 5 39h18L14 18ZM50 18l-9 21h18L50 18Z"/><path d="M5 39c2 9 16 9 18 0M41 39c2 9 16 9 18 0M11 18l6-3M47 15l6 3"/></svg></span><span><strong>Labor<b>Lens</b></strong><small>Philippine Labor Law Advisor</small></span></a>
+  <p class="admin-side-message" aria-hidden="true">Workers<br>Employers<br>Stronger<br>Philippines<span></span></p>
+  <main class="login-card" aria-labelledby="admin-login-title">
+    <div class="lc-header"><span class="admin-gold-seal"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 9v43M19 54h26M25 50h14M14 18h36M32 10l-5 8h10Z M14 18 5 39h18L14 18ZM50 18l-9 21h18L50 18Z"/><path d="M5 39c2 9 16 9 18 0M41 39c2 9 16 9 18 0M11 18l6-3M47 15l6 3"/></svg></span><div><div class="lc-title">Labor<em>Lens</em></div><p class="lc-sub">ADMIN PORTAL</p></div></div>
     <div class="lc-body">
-
-      <!--
-        ════════════════════════════════════════════════════════
-        NGROK URL IS HARDCODED BELOW.
-        To update it, change the "value" attribute on this input.
-        You do NOT need to type it every time you log in.
-        ════════════════════════════════════════════════════════
-      -->
+      <h1 id="admin-login-title">Login</h1>
+      <p class="admin-login-description">Enter your credentials to access the admin portal.</p>
       <input type="hidden" id="api-url" value="https://plaster-multiply-tint.ngrok-free.dev/api"/>
-
-      <!-- Shows the active backend URL as a green pill -->
-      <div class="url-indicator">
-        <div class="url-dot"></div>
-        <span>Backend: <strong>plaster-multiply-tint.ngrok-free.dev</strong></span>
-      </div>
-
-      <div class="field">
-        <label for="l-email">Administrator Email</label>
-        <input type="email" id="l-email" value="admin@laborlens.local" autocomplete="email"/>
-      </div>
-      <div class="field">
-        <label for="l-pass">Master Password</label>
-        <input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password" autofocus/>
-      </div>
-      <button class="login-btn" onclick="doLogin()">Authenticate Session</button>
-      <button class="return-link" onclick="window.location.href='index.html'">← Return to User App</button>
-      <p class="login-err" id="login-err"></p>
+      <div class="field"><label for="l-email">Email</label><div class="admin-input"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 6 8 7 8-7"/></svg><input type="email" id="l-email" placeholder="Enter your email" autocomplete="username"/></div></div>
+      <div class="field"><label for="l-pass">Password</label><div class="admin-input"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></svg><input type="password" id="l-pass" placeholder="Enter your password" autocomplete="current-password"/><button class="admin-password-toggle" type="button" aria-label="Show password" aria-controls="l-pass" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="admin-eye-slash" d="m3 3 18 18"/></svg></button></div></div>
+      <button class="login-btn" type="button" onclick="doLogin()">Login</button>
+      <p class="login-err" id="login-err" role="alert"></p>
+      <div class="admin-login-divider"><span>or</span></div>
+      <a class="return-link" href="index.html"><span aria-hidden="true">←</span> Back to Home</a>
     </div>
-  </div>
+  </main>
+  <p class="admin-bottom-message">LAWS INFORM.<br>PEOPLE EMPOWER.<br>PHILIPPINES PROGRESSES.</p>
+  <p class="admin-bottom-message admin-bottom-right">PHILIPPINE LABOR LAW.<br>MADE ACCESSIBLE.<i></i></p>
 </div>
 
 <!-- ═══ DASHBOARD ═══ -->
@@ -465,27 +453,27 @@
     <span class="tb-name">Labor<em>Lens</em></span>
     <span class="tb-label">Administration</span>
     <div class="tb-spacer"></div>
-    <div class="tb-status"><div class="tb-dot"></div><span>System Online</span></div>
+    <div class="tb-status" title="You are signed in to the admin panel"><div class="tb-dot"></div><span>Admin Panel</span></div>
     <div class="tb-user-chip">
       <div class="tb-avatar" id="tb-avatar">A</div>
       <span id="tb-user">Admin</span>
     </div>
-    <button class="end-btn" onclick="doLogout()">End Session</button>
+    <button class="end-btn" onclick="doLogout()">Sign Out</button>
   </div>
 
   <div id="body">
     <nav id="left-nav" aria-label="Admin sections">
       <div class="nav-section-lbl">Dashboard</div>
-      <div class="nav-item active" data-tab="overview" onclick="switchTab(this,'overview')"><span class="nav-icon">📊</span> Metrics Overview</div>
+      <div class="nav-item active" data-tab="overview" onclick="switchTab(this,'overview')"><span class="nav-icon">📊</span> Overview</div>
       <div class="nav-section-lbl">Management</div>
-      <div class="nav-item" data-tab="users" onclick="switchTab(this,'users')"><span class="nav-icon">👥</span> User Management</div>
-      <div class="nav-item" data-tab="faqs" onclick="switchTab(this,'faqs')"><span class="nav-icon">❓</span> Frequently Asked</div>
-      <div class="nav-item" data-tab="knowledge" onclick="switchTab(this,'knowledge')"><span class="nav-icon">📚</span> Knowledge Base Editor</div>
+      <div class="nav-item" data-tab="users" onclick="switchTab(this,'users')"><span class="nav-icon">👥</span> Users</div>
+      <div class="nav-item" data-tab="faqs" onclick="switchTab(this,'faqs')"><span class="nav-icon">❓</span> Common Questions</div>
+      <div class="nav-item" data-tab="knowledge" onclick="switchTab(this,'knowledge')"><span class="nav-icon">📚</span> Documents</div>
       <div class="nav-section-lbl">Monitoring</div>
-      <div class="nav-item" data-tab="analytics" onclick="switchTab(this,'analytics')"><span class="nav-icon">📈</span> Analytics &amp; Reports</div>
-      <div class="nav-item" data-tab="performance" onclick="switchTab(this,'performance')"><span class="nav-icon">⚡</span> System Performance</div>
+      <div class="nav-item" data-tab="analytics" onclick="switchTab(this,'analytics')"><span class="nav-icon">📈</span> Reports</div>
+      <div class="nav-item" data-tab="performance" onclick="switchTab(this,'performance')"><span class="nav-icon">⚡</span> System Status</div>
       <div class="nav-item" data-tab="queries" onclick="switchTab(this,'queries')">
-        <span class="nav-icon">🔍</span> Unresolved Query Logs
+        <span class="nav-icon">🔍</span> Questions to Review
         <span class="nav-badge" id="unresolved-nav-badge">0</span>
       </div>
     </nav>
@@ -497,17 +485,17 @@
         <!-- 1. OVERVIEW -->
         <div id="tab-overview" class="tab-active">
           <div class="page-hdr">
-            <div class="page-hdr-left"><h1>Metrics Overview</h1><p>System-wide analytics and consultation summary.</p></div>
-            <button class="btn btn-primary" onclick="refreshAll()">↻ Refresh All</button>
+            <div class="page-hdr-left"><h1>Dashboard</h1><p>See how LaborLens is used and what needs your attention.</p></div>
+            <button class="btn btn-primary" onclick="refreshAll()">↻ Refresh</button>
           </div>
-          <div class="stat-grid" id="stat-grid"><div class="loading" style="grid-column:1/-1;">Loading metrics…</div></div>
+          <div class="stat-grid" id="stat-grid"><div class="loading" style="grid-column:1/-1;">Loading summary…</div></div>
           <div class="two-col">
             <div class="panel">
-              <div class="panel-hdr"><div class="panel-title">🎯 Legal Intent Distribution</div><span style="font-size:12px;color:var(--muted);">Last 30 days</span></div>
+              <div class="panel-hdr"><div class="panel-title">🎯 Questions by Topic</div><span style="font-size:12px;color:var(--muted);">Last 30 days</span></div>
               <div class="panel-body" id="intent-chart"><div class="loading">Loading…</div></div>
             </div>
             <div class="panel">
-              <div class="panel-hdr"><div class="panel-title">📅 Daily Consultation Volume</div><span style="font-size:12px;color:var(--muted);">Last 7 days</span></div>
+              <div class="panel-hdr"><div class="panel-title">📅 Daily Questions</div><span style="font-size:12px;color:var(--muted);">Last 7 days</span></div>
               <div class="panel-body" id="vol-table"><div class="loading">Loading…</div></div>
             </div>
           </div>
@@ -515,20 +503,20 @@
 
         <!-- 2. USER MANAGEMENT -->
         <div id="tab-users">
-          <div class="page-hdr"><div class="page-hdr-left"><h1>User Management</h1><p>Manage registered accounts, roles, and access levels.</p></div></div>
+          <div class="page-hdr"><div class="page-hdr-left"><h1>Users</h1><p>Manage user access. Names and contact details stay hidden for privacy.</p></div></div>
           <div class="three-col" style="margin-bottom:24px;">
-            <div class="mini-metric"><div class="mini-metric-lbl">Total Registered</div><div class="mini-metric-val" id="um-total">—</div></div>
+            <div class="mini-metric"><div class="mini-metric-lbl">Total Users</div><div class="mini-metric-val" id="um-total">—</div></div>
             <div class="mini-metric"><div class="mini-metric-lbl">Active Accounts</div><div class="mini-metric-val" id="um-active">—</div></div>
             <div class="mini-metric"><div class="mini-metric-lbl">Administrators</div><div class="mini-metric-val" id="um-admins">—</div></div>
           </div>
           <div class="panel">
             <div class="panel-hdr">
-              <div class="panel-title">👥 Registered Accounts</div>
-              <input type="text" id="user-search" placeholder="🔍 Search name, email, role…" oninput="filterUsers()" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--sans);background:var(--cream);outline:none;width:220px;"/>
+              <div class="panel-title">👥 User Accounts</div>
+              <input aria-label="Search users" type="search" id="user-search" placeholder="Search user ID, role, or language…" oninput="filterUsers()" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--sans);background:var(--cream);outline:none;width:220px;"/>
             </div>
             <div class="tbl-wrap">
               <table>
-                <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Role</th><th>Language</th><th>Joined</th><th>Status</th><th>Actions</th></tr></thead>
+                <thead><tr><th>#</th><th>Anonymous User</th><th>Contact</th><th>Role</th><th>Language</th><th>Joined</th><th>Status</th><th>Actions</th></tr></thead>
                 <tbody id="users-tbody"><tr><td colspan="8" class="loading">Loading users…</td></tr></tbody>
               </table>
             </div>
@@ -537,27 +525,27 @@
 
         <!-- 3. FREQUENTLY ASKED -->
         <div id="tab-faqs">
-          <div class="page-hdr"><div class="page-hdr-left"><h1>Frequently Asked Questions</h1><p>Publish curated answers to the most common labor law queries.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-primary" onclick="exportFAQs()">Export FAQs</button><button class="btn btn-primary" onclick="document.getElementById('faq-import-file').click()">Import FAQs</button></div></div>
+          <div class="page-hdr"><div class="page-hdr-left"><h1>Common Questions</h1><p>Add and update clear answers to common labor law questions.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-primary" onclick="exportFAQs()">Download Answers</button><button class="btn btn-primary" onclick="document.getElementById('faq-import-file').click()">Import Answers</button></div></div>
           <input type="file" id="faq-import-file" accept=".csv,.json" style="display:none" onchange="importFAQs(this)"/>
           <div class="panel">
-            <div class="panel-hdr"><div class="panel-title">➕ Add FAQ Answer</div></div>
+            <div class="panel-hdr"><div class="panel-title">➕ Add an Answer</div></div>
             <div class="panel-body">
               <div class="form-grid">
                 <div class="form-group"><label>Question</label><input type="text" id="faq-q" placeholder="e.g. How is separation pay calculated?"/></div>
-                <div class="form-group"><label>Answer</label><textarea id="faq-a" placeholder="Enter a structured, legally-accurate answer…"></textarea></div>
+                <div class="form-group"><label>Answer</label><textarea id="faq-a" placeholder="Write a clear answer and include the legal source…"></textarea></div>
                 <div class="form-row">
                   <div class="form-group"><label>Category</label><input type="text" id="faq-cat" placeholder="e.g. Wages, Leave, Termination"/></div>
                   <div class="form-group"><label>Language</label><select id="faq-lang"><option value="en">English</option><option value="fil">Filipino</option><option value="hil">Hiligaynon</option></select></div>
                 </div>
-                <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-primary" onclick="addFAQ()">➕ Publish FAQ</button><button class="btn btn-gold" onclick="resetFAQForm()">Reset Form</button></div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-primary" onclick="addFAQ()">Save Answer</button><button class="btn btn-gold" onclick="resetFAQForm()">Clear Form</button></div>
               </div>
             </div>
           </div>
           <div class="panel">
-            <div class="panel-hdr"><div class="panel-title">📋 FAQ List — Ranked by Frequency</div></div>
+            <div class="panel-hdr"><div class="panel-title">📋 Saved Answers — Most Asked First</div></div>
             <div class="tbl-wrap">
               <table>
-                <thead><tr><th>#</th><th>Question</th><th>Answer Snippet</th><th>Category</th><th>Language</th><th>Times Asked</th><th>Updated</th><th>Actions</th></tr></thead>
+                <thead><tr><th>#</th><th>Question</th><th>Answer Preview</th><th>Category</th><th>Language</th><th>Times Asked</th><th>Updated</th><th>Actions</th></tr></thead>
                 <tbody id="faqs-tbody"><tr><td colspan="8" class="loading">Loading…</td></tr></tbody>
               </table>
             </div>
@@ -566,19 +554,45 @@
 
         <!-- 4. KNOWLEDGE BASE -->
         <div id="tab-knowledge">
-          <div class="page-hdr"><div class="page-hdr-left"><h1>Knowledge Base Editor</h1><p>Upload, review, and manage legal reference documents used by the chatbot.</p></div></div>
-          <div class="alert-bar blue"><span style="font-size:18px;">ℹ️</span><div><div style="font-weight:600;">Supported: PDF, DOCX, and scanned images</div><div style="font-size:12px;margin-top:2px;">Text-based files are indexed directly. Scanned PDFs or images are converted to text with OCR first, then chunked and vector-indexed for chatbot search.</div></div></div>
+          <div class="page-hdr"><div class="page-hdr-left"><h1>Documents</h1><p>Upload, review, and manage legal reference documents used by the chatbot.</p></div></div>
+          <div class="alert-bar blue"><span style="font-size:18px;">ℹ️</span><div><div style="font-weight:600;">Supported: PDF, DOCX, and scanned images</div><div style="font-size:12px;margin-top:2px;">Upload a document to help the assistant answer questions. Text is read automatically, including text in scanned pages and images.</div></div></div>
           <div class="two-col" style="margin-bottom:24px;">
             <div class="panel" style="margin-bottom:0;">
               <div class="panel-hdr"><div class="panel-title">📤 Upload Legal Document</div></div>
               <div class="panel-body">
                 <div class="form-group kb-category-field">
-                  <label for="kb-category">RAG Category</label>
-                  <select id="kb-category" aria-label="Knowledge base category">
+                  <label for="kb-category">Main Category</label>
+                  <select id="kb-category" aria-label="Main document category" onchange="syncSecondaryCategoryOptions('kb-secondary-categories',this.value)">
                     <option value="Core Labor Laws">Core Labor Laws</option>
+                    <option value="Employment Benefits">Employment Benefits</option>
+                    <option value="Leave Benefits">Leave Benefits</option>
+                    <option value="Domestic Workers">Domestic Workers</option>
+                    <option value="Anti-Harassment / Discrimination">Anti-Harassment / Discrimination</option>
+                    <option value="Social Benefits">Social Benefits</option>
+                    <option value="Occupational Safety &amp; Health">Occupational Safety &amp; Health</option>
+                    <option value="DOLE Resources">DOLE Resources</option>
+                    <option value="Labor Relations">Labor Relations</option>
+                    <option value="Jurisprudence">Jurisprudence</option>
+                    <option value="Labor Advisories">Labor Advisories</option>
+                    <option value="Others">Others</option>
                   </select>
                 </div>
+                <div class="form-group kb-category-field">
+                  <label>Extra Categories</label>
+                  <div class="kb-secondary-grid" id="kb-secondary-categories"></div>
+                  <span class="status-note">Choose extra categories to help find this document. Do not repeat the main category.</span>
+                </div>
+                <div style="margin:-4px 0 14px;"><button type="button" class="btn btn-sm btn-gold" onclick="suggestUploadCategories()">Suggest Categories</button><span class="status-note" id="kb-category-suggestion"></span></div>
                 <div class="form-group"><label for="kb-title">Document Title</label><input type="text" id="kb-title" placeholder="e.g. Labor Code of the Philippines"/></div>
+                <div class="form-row">
+                  <div class="form-group"><label for="kb-document-type">Document Type</label><input type="text" id="kb-document-type" placeholder="e.g. Department Order, Labor Advisory"/></div>
+                  <div class="form-group"><label for="kb-legal-role">Purpose of this document</label><input type="text" id="kb-legal-role" placeholder="e.g. Revised IRR, Guidelines"/></div>
+                </div>
+                <div class="form-group"><label for="kb-implements">Related laws</label><input type="text" id="kb-implements" placeholder="Comma-separated, e.g. RA 11058"/></div>
+                <div class="form-row">
+                  <div class="form-group"><label for="kb-topics">Topics</label><input type="text" id="kb-topics" placeholder="osh, ppe, employer_duties"/></div>
+                  <div class="form-group"><label for="kb-sub-intents">Specific topic tags</label><input type="text" id="kb-sub-intents" placeholder="ppe_requirement, safety_officer_requirement"/></div>
+                </div>
                 <div class="form-row">
                   <div class="form-group"><label for="kb-source">Official Source</label><input type="text" id="kb-source" placeholder="e.g. DOLE, Official Gazette"/></div>
                   <div class="form-group"><label for="kb-version">Law Year / Version</label><input type="text" id="kb-version" placeholder="e.g. 2022 renumbered"/></div>
@@ -595,8 +609,8 @@
                   <div class="form-group"><label for="kb-effective-date">Effective Date</label><input type="text" id="kb-effective-date" placeholder="e.g. March 11, 2019"/></div>
                   <div class="form-group"><label for="kb-date-downloaded">Date Downloaded</label><input type="text" id="kb-date-downloaded" placeholder="e.g. June 19, 2026"/></div>
                 </div>
-                <div class="form-group"><label for="kb-superseding-document">Superseding / Amending Document</label><input type="text" id="kb-superseding-document" placeholder="Leave blank if this is the current controlling source"/></div>
-                <div class="form-group"><label for="kb-version-status">Version Status</label><select id="kb-version-status"><option value="active">Active</option><option value="amended">Amended</option><option value="repealed">Repealed</option><option value="archived">Archived</option><option value="inactive">Inactive</option><option value="replaced">Replaced</option><option value="outdated">Outdated</option></select><span class="status-note">Only active documents should remain available for chatbot retrieval.</span></div>
+                <div class="form-group"><label for="kb-superseding-document">Newer or Amending Document</label><input type="text" id="kb-superseding-document" placeholder="Leave blank if this is the current controlling source"/></div>
+                <div class="form-group"><label for="kb-version-status">Legal / Version Status</label><select id="kb-version-status"><option value="current">Current</option><option value="active">Active</option><option value="superseded">Superseded</option><option value="historical">Historical</option><option value="amended">Amended</option><option value="repealed">Repealed</option><option value="archived">Archived</option><option value="inactive">Inactive</option><option value="replaced">Replaced</option><option value="outdated">Outdated</option></select><span class="status-note">The assistant searches current and active documents. Older documents are kept for reference.</span></div>
                 <div class="form-group"><label for="kb-source-url">Original Link / Source URL</label><input type="url" id="kb-source-url" placeholder="https://lawphil.net/... or official source link"/><span class="status-note">Paste the exact source link you want shown in chatbot citations.</span></div>
                 <div class="upload-zone" onclick="document.getElementById('file-input').click()">
                   <span class="uz-icon">📄</span>
@@ -608,29 +622,37 @@
               </div>
             </div>
             <div class="panel" style="margin-bottom:0;">
-              <div class="panel-hdr"><div class="panel-title">📊 Vector Database Status</div></div>
+              <div class="panel-hdr"><div class="panel-title">📊 Document Search Status</div></div>
               <div class="panel-body">
-                <div class="info-bar" id="kb-stats">Querying vector database…</div>
-                <div class="mini-metric" style="margin-bottom:10px;"><div class="mini-metric-lbl">Searchable Chunks</div><div class="mini-metric-val" id="kb-chunks">—</div></div>
+                <div class="info-bar" id="kb-stats">Checking document search…</div>
+                <div class="mini-metric" style="margin-bottom:10px;"><div class="mini-metric-lbl">Searchable Sections</div><div class="mini-metric-val" id="kb-chunks">—</div></div>
                 <div class="mini-metric"><div class="mini-metric-lbl">Documents Ready</div><div class="mini-metric-val" id="kb-docs-count">—</div></div>
               </div>
             </div>
           </div>
           <div class="panel">
-            <div class="panel-hdr"><div class="panel-title">📚 Knowledge Base Documents</div><button class="btn btn-sm btn-primary" onclick="loadDocuments()">↻ Refresh</button></div>
+            <div class="panel-hdr"><div class="panel-title">📚 Reference Documents</div><button class="btn btn-sm btn-primary" onclick="loadDocuments()">↻ Refresh</button></div>
             <div class="kb-filter-panel">
               <div class="kb-filter-toolbar">
                 <div>
                   <div class="mini-metric-lbl">Filter by Category</div>
-                  <div class="kb-filter-summary" id="kb-filter-summary">Showing all knowledge base documents</div>
+                  <div class="kb-filter-summary" id="kb-filter-summary">Showing all reference documents</div>
                 </div>
-                <input class="kb-doc-search" id="kb-doc-search" type="search" placeholder="Search documents, source, status..." oninput="setKbDocumentSearch(this.value)" aria-label="Search knowledge base documents"/>
+                <input class="kb-doc-search" id="kb-doc-search" type="search" placeholder="Search documents, source, status..." oninput="setKbDocumentSearch(this.value)" aria-label="Search reference documents"/>
+              </div>
+              <div class="form-row" style="grid-template-columns:repeat(5,minmax(0,1fr));margin:10px 0;">
+                <div class="form-group"><label>Main Category</label><select id="kb-primary-filter" onchange="setKbAdvancedFilter('primary',this.value)"></select></div>
+                <div class="form-group"><label>Extra Category</label><select id="kb-secondary-filter" onchange="setKbAdvancedFilter('secondary',this.value)"></select></div>
+                <div class="form-group"><label>Issuer</label><select id="kb-issuer-filter" onchange="setKbAdvancedFilter('issuer',this.value)"></select></div>
+                <div class="form-group"><label>Document Type</label><select id="kb-type-filter" onchange="setKbAdvancedFilter('type',this.value)"></select></div>
+                <div class="form-group"><label>Legal Status</label><select id="kb-status-filter" onchange="setKbAdvancedFilter('status',this.value)"></select></div>
               </div>
               <div class="kb-category-tabs" id="kb-category-tabs"></div>
+              <div class="flex-row" style="margin-top:10px;"><button class="btn btn-sm btn-gold" id="kb-bulk-edit-btn" onclick="openBulkDocumentEdit()" disabled>Edit Selected Documents</button><span class="status-note" id="kb-bulk-selection">0 documents selected</span></div>
             </div>
             <div class="tbl-wrap">
               <table>
-                <thead><tr><th>#</th><th>Document</th><th>Category</th><th>Type</th><th>Size</th><th>Chunks</th><th>Status</th><th>Indexed</th><th>Actions</th></tr></thead>
+                <thead><tr><th><input type="checkbox" aria-label="Select visible documents" onchange="toggleAllVisibleDocuments(this.checked)"/></th><th>Document</th><th>Categories</th><th>Type</th><th>Size</th><th>Sections</th><th>Status</th><th>Added to Search</th><th>Actions</th></tr></thead>
                 <tbody id="docs-tbody"><tr><td colspan="9" class="loading">Loading…</td></tr></tbody>
               </table>
             </div>
@@ -639,15 +661,15 @@
 
         <!-- 5. ANALYTICS -->
         <div id="tab-analytics">
-          <div class="page-hdr"><div class="page-hdr-left"><h1>Analytics &amp; Reports</h1><p>Usage trends, query patterns, and user engagement data.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-primary" onclick="downloadSystemBackup()">System Backup</button><button class="btn btn-primary" onclick="exportAnalyticsReport()">Export Analytics Report</button><button class="btn btn-primary" onclick="exportChatLogs()">Export Chat Logs</button><button class="btn btn-primary" onclick="loadAnalytics()">↻ Refresh</button></div></div>
+          <div class="page-hdr"><div class="page-hdr-left"><h1>Reports</h1><p>See common topics, daily questions, and feedback from users.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-primary" onclick="downloadSystemBackup()">System Backup</button><button class="btn btn-primary" onclick="exportAnalyticsReport()">Download Report</button><button class="btn btn-primary" onclick="exportChatLogs()">Download Chat History</button><button class="btn btn-primary" onclick="loadAnalytics()">↻ Refresh</button></div></div>
           <div class="stat-grid" id="analytics-stats" style="margin-bottom:28px;"><div class="loading" style="grid-column:1/-1;">Loading analytics…</div></div>
           <div class="two-col">
             <div class="panel">
-              <div class="panel-hdr"><div class="panel-title">🎯 Query Intent Breakdown</div></div>
+              <div class="panel-hdr"><div class="panel-title">🎯 Questions by Topic</div></div>
               <div class="panel-body" id="analytics-intent"><div class="loading">Loading…</div></div>
             </div>
             <div class="panel">
-              <div class="panel-hdr"><div class="panel-title">📅 Consultation Trend</div><span style="font-size:12px;color:var(--muted);">Last 7 days</span></div>
+              <div class="panel-hdr"><div class="panel-title">📅 Daily Questions</div><span style="font-size:12px;color:var(--muted);">Last 7 days</span></div>
               <div class="panel-body" id="analytics-volume"><div class="loading">Loading…</div></div>
             </div>
           </div>
@@ -665,22 +687,22 @@
             <div class="panel-hdr"><div class="panel-title">🔥 Most Asked Questions</div></div>
             <div class="tbl-wrap">
               <table>
-                <thead><tr><th>Rank</th><th>Question / Intent</th><th>Times Asked</th><th>Trend</th></tr></thead>
+                <thead><tr><th>Rank</th><th>Question / Topic</th><th>Times Asked</th><th>Trend</th></tr></thead>
                 <tbody id="top-questions-tbody"><tr><td colspan="4" class="loading">Loading…</td></tr></tbody>
               </table>
             </div>
           </div>
           <div class="panel">
-            <div class="panel-hdr"><div class="panel-title">User Feedback Review</div><button class="btn btn-sm btn-primary" onclick="loadFeedbackAnalytics()">Refresh Feedback</button></div>
+            <div class="panel-hdr"><div class="panel-title">User Feedback</div><button class="btn btn-sm btn-primary" onclick="loadFeedbackAnalytics()">Refresh Feedback</button></div>
             <div class="tbl-wrap">
               <table>
-                <thead><tr><th>#</th><th>User</th><th>Rating</th><th>Intent</th><th>Source Match</th><th>Answer Snippet</th><th>Date</th></tr></thead>
+                <thead><tr><th>#</th><th>User</th><th>Rating</th><th>Topic</th><th>Source Match</th><th>Answer Preview</th><th>Date</th></tr></thead>
                 <tbody id="feedback-tbody"><tr><td colspan="7" class="loading">Loading feedback…</td></tr></tbody>
               </table>
             </div>
           </div>
           <div class="panel">
-            <div class="panel-hdr"><div class="panel-title">Answer Review Queue</div><button class="btn btn-sm btn-primary" onclick="loadReviewQueue()">Refresh Queue</button></div>
+            <div class="panel-hdr"><div class="panel-title">Answers to Review</div><button class="btn btn-sm btn-primary" onclick="loadReviewQueue()">Refresh</button></div>
             <div class="tbl-wrap">
               <table>
                 <thead><tr><th>#</th><th>User Question</th><th>Rating</th><th>Source Match</th><th>Review Status</th><th>Actions</th></tr></thead>
@@ -689,11 +711,11 @@
             </div>
           </div>
           <div class="panel">
-            <div class="panel-hdr"><div class="panel-title">Recent Admin Audit Log</div><button class="btn btn-sm btn-primary" onclick="loadAuditLogs()">Refresh Audit Log</button></div>
+            <div class="panel-hdr"><div class="panel-title">Recent Admin Actions</div><button class="btn btn-sm btn-primary" onclick="loadAuditLogs()">Refresh</button></div>
             <div class="tbl-wrap">
               <table>
                 <thead><tr><th>#</th><th>Action</th><th>Target</th><th>Details</th><th>Admin</th><th>Date</th></tr></thead>
-                <tbody id="audit-tbody"><tr><td colspan="6" class="loading">Loading audit log...</td></tr></tbody>
+                <tbody id="audit-tbody"><tr><td colspan="6" class="loading">Loading admin actions…</td></tr></tbody>
               </table>
             </div>
           </div>
@@ -701,17 +723,17 @@
 
         <!-- 6. SYSTEM PERFORMANCE -->
         <div id="tab-performance">
-          <div class="page-hdr"><div class="page-hdr-left"><h1>System Performance</h1><p>Response times, uptime, and infrastructure health metrics.</p></div><button class="btn btn-primary" onclick="loadPerformance()">↻ Refresh</button></div>
+          <div class="page-hdr"><div class="page-hdr-left"><h1>System Status</h1><p>Check how quickly the assistant responds and whether services are working.</p></div><button class="btn btn-primary" onclick="loadPerformance()">↻ Refresh</button></div>
           <div class="stat-grid" id="perf-stats"><div class="loading" style="grid-column:1/-1;">Loading…</div></div>
           <div class="two-col">
-            <div class="panel"><div class="panel-hdr"><div class="panel-title">⏱️ Response Time Distribution</div></div><div class="panel-body" id="rt-buckets"><div class="loading">Loading…</div></div></div>
-            <div class="panel"><div class="panel-hdr"><div class="panel-title">💚 Service Health</div><span style="font-size:12px;color:var(--muted);">Live status</span></div><div class="panel-body" id="health-items"><div class="loading">Checking…</div></div></div>
+            <div class="panel"><div class="panel-hdr"><div class="panel-title">⏱️ Answer Speed</div></div><div class="panel-body" id="rt-buckets"><div class="loading">Loading…</div></div></div>
+            <div class="panel"><div class="panel-hdr"><div class="panel-title">💚 Service Status</div><span style="font-size:12px;color:var(--muted);">Live status</span></div><div class="panel-body" id="health-items"><div class="loading">Checking…</div></div></div>
           </div>
           <div class="panel">
-            <div class="panel-hdr"><div class="panel-title">📋 Recent Query Performance Log</div></div>
+            <div class="panel-hdr"><div class="panel-title">📋 Recent Answer Times</div></div>
             <div class="tbl-wrap">
               <table>
-                <thead><tr><th>#</th><th>Query Snippet</th><th>Response Time</th><th>Result</th><th>Date</th></tr></thead>
+                <thead><tr><th>#</th><th>Question Preview</th><th>Response Time</th><th>Result</th><th>Date</th></tr></thead>
                 <tbody id="perf-log-tbody"><tr><td colspan="5" class="loading">Loading…</td></tr></tbody>
               </table>
             </div>
@@ -722,27 +744,27 @@
         <div id="tab-queries">
           <div class="page-hdr">
             <div class="page-hdr-left">
-              <h1>Unresolved Query Logs</h1>
-              <p>Questions where the AI found <strong>no matching answer</strong> in the knowledge base (relevance score &lt; 45%). These need your attention.</p>
+              <h1>Questions to Review</h1>
+              <p>Questions where the assistant found <strong>no close match</strong> in the reference documents (source match below 45%). Review these questions to improve future answers.</p>
             </div>
             <button class="btn btn-primary" onclick="loadUnresolved()">↻ Refresh</button>
           </div>
           <div class="alert-bar amber">
             <span style="font-size:20px;">⚠️</span>
             <div>
-              <div style="font-weight:600;color:var(--amber);">These queries returned no relevant results from the knowledge base.</div>
-              <div style="font-size:12px;margin-top:2px;">Upload documents covering these topics, or add FAQ answers to resolve coverage gaps.</div>
+              <div style="font-weight:600;color:var(--amber);">The assistant could not find a matching source for these questions.</div>
+              <div style="font-size:12px;margin-top:2px;">Add a reference document or a saved answer to help with these topics.</div>
             </div>
           </div>
           <div class="panel">
             <div class="panel-hdr">
-              <div class="panel-title">🔍 Queries Not Found in Knowledge Base</div>
+              <div class="panel-title">🔍 Questions Without a Matching Source</div>
               <span style="font-size:12px;color:var(--muted);" id="unresolved-label">Loading…</span>
             </div>
             <div class="tbl-wrap">
               <table>
-                <thead><tr><th>#</th><th>User</th><th>Question (Not Found in KB)</th><th>Detected Intent</th><th>Suggested Fix</th><th>Response Time</th><th>Date</th><th>Actions</th></tr></thead>
-                <tbody id="queries-tbody"><tr><td colspan="8" class="loading">Scanning logs…</td></tr></tbody>
+                <thead><tr><th>#</th><th>User</th><th>Question</th><th>Topic</th><th>Suggested Fix</th><th>Response Time</th><th>Date</th><th>Actions</th></tr></thead>
+                <tbody id="queries-tbody"><tr><td colspan="8" class="loading">Loading questions…</td></tr></tbody>
               </table>
             </div>
           </div>
@@ -757,7 +779,7 @@
     <div class="modal-hdr">
       <div>
         <div class="modal-title" id="doc-modal-title">Document Content</div>
-        <div class="modal-sub" id="doc-modal-sub">Indexed chunks from the knowledge base</div>
+        <div class="modal-sub" id="doc-modal-sub">Searchable sections from this document</div>
       </div>
       <button class="btn btn-sm btn-danger" onclick="closeDocModal()">Close</button>
     </div>
@@ -768,6 +790,7 @@
 
 <div id="toast"></div>
 
+<script src="static/js/admin-panel.js?v=20260905-1"></script>
 <script>
 // ════════════════════════════════════════════════════════════════
 // CONFIGURATION — Update NGROK_URL here when your ngrok URL changes
@@ -783,9 +806,11 @@ let kbDocumentsCache = [];
 let kbSearchableChunks = null;
 let kbSelectedCategory = 'All';
 let kbDocumentSearch = '';
+let kbAdvancedFilters = {primary:'All',secondary:'All',issuer:'All',type:'All',status:'All'};
+let kbSelectedDocumentIds = new Set();
 let editingFaqId = null;
 const ADMIN_SESSION_KEY = 'laborlens_admin_session';
-const DOC_VERSION_STATUSES = ['active', 'amended', 'repealed', 'archived', 'inactive', 'replaced', 'outdated'];
+const DOC_VERSION_STATUSES = ['current', 'active', 'superseded', 'historical', 'amended', 'repealed', 'archived', 'inactive', 'replaced', 'outdated'];
 const KB_CATEGORIES = [
   'Core Labor Laws',
   'Employment Benefits',
@@ -793,8 +818,11 @@ const KB_CATEGORIES = [
   'Domestic Workers',
   'Anti-Harassment / Discrimination',
   'Social Benefits',
+  'Occupational Safety & Health',
   'DOLE Resources',
+  'Labor Relations',
   'Jurisprudence',
+  'Labor Advisories',
   'Others'
 ];
 
@@ -860,8 +888,9 @@ function unresolvedSuggestionText(intent='general') {
   if(key.includes('leave')) return 'Add a FAQ for leave rules or upload a source under Leave Benefits.';
   if(key.includes('termination') || key.includes('dismiss')) return 'Upload a termination-related source under Core Labor Laws or add a reviewed FAQ.';
   if(key.includes('wage') || key.includes('pay') || key.includes('overtime')) return 'Upload a wage-related source under Employment Benefits or DOLE Resources.';
-  if(key.includes('harass') || key.includes('safe')) return 'Upload a source under Anti-Harassment / Discrimination or add a focused FAQ answer.';
-  return 'Review the question, then add a FAQ or upload a source document under the best matching knowledge base category.';
+  if(key.includes('occupational') || key.includes('workplace safety') || key.includes('osh') || key.includes('hazard')) return 'Upload an OSH source under Occupational Safety & Health or add a focused FAQ answer.';
+  if(key.includes('harass') || key.includes('safe spaces')) return 'Upload a source under Anti-Harassment / Discrimination or add a focused FAQ answer.';
+  return 'Review the question, then add a FAQ or upload a source document under the best matching reference documents category.';
 }
 
 function revokeDocObjectUrl() {
@@ -899,6 +928,48 @@ function renderKbCategoryOptions(categories=KB_CATEGORIES, selected=KB_CATEGORIE
   select.innerHTML = safeCategories
     .map(c => `<option value="${esc(c)}" ${c===selected?'selected':''}>${esc(c)}</option>`)
     .join('');
+  renderSecondaryCategoryOptions('kb-secondary-categories', select.value, getSelectedSecondaryCategories('kb-secondary-categories'));
+}
+
+function parseMetadataList(value) {
+  if (Array.isArray(value)) return [...new Set(value.map(v=>String(v||'').trim()).filter(Boolean))];
+  const raw=String(value||'').trim(); if(!raw) return [];
+  if(raw.startsWith('[')){try{const parsed=JSON.parse(raw);if(Array.isArray(parsed))return parseMetadataList(parsed);}catch(_e){}}
+  return [...new Set(raw.split(/[,;|]/).map(v=>v.trim()).filter(Boolean))];
+}
+
+function getSelectedSecondaryCategories(containerId) {
+  return [...document.querySelectorAll(`#${containerId} input[type="checkbox"]:checked`)].map(input=>input.value);
+}
+
+function renderSecondaryCategoryOptions(containerId, primaryCategory, selected=[]) {
+  const wrap=document.getElementById(containerId); if(!wrap) return;
+  const chosen=new Set(parseMetadataList(selected));
+  wrap.innerHTML=KB_CATEGORIES.map(category=>{
+    const disabled=category===primaryCategory;
+    return `<label class="kb-secondary-option${disabled?' disabled':''}"><input type="checkbox" value="${esc(category)}" ${chosen.has(category)&&!disabled?'checked':''} ${disabled?'disabled':''}/><span>${esc(category)}</span></label>`;
+  }).join('');
+}
+
+function syncSecondaryCategoryOptions(containerId, primaryCategory) {
+  renderSecondaryCategoryOptions(containerId, primaryCategory, getSelectedSecondaryCategories(containerId));
+}
+
+async function suggestUploadCategories() {
+  try{
+    const payload={
+      title:document.getElementById('kb-title')?.value||'',
+      law_number:document.getElementById('kb-law-number')?.value||'',
+      document_type:document.getElementById('kb-document-type')?.value||'',
+      issuing_agency:document.getElementById('kb-issuing-agency')?.value||''
+    };
+    const r=await apiFetch('/kb/categories/suggest',{method:'POST',body:JSON.stringify(payload)});
+    const suggestion=await r.json(); if(!r.ok)throw new Error(suggestion.detail||'Unable to suggest categories.');
+    const primary=document.getElementById('kb-category'); if(primary)primary.value=suggestion.primary_category;
+    renderSecondaryCategoryOptions('kb-secondary-categories',suggestion.primary_category,suggestion.secondary_categories||[]);
+    const note=document.getElementById('kb-category-suggestion');
+    if(note)note.textContent=`Suggested for review (${Math.round(Number(suggestion.confidence||0)*100)}%): ${(suggestion.reasons||[]).join('; ')}`;
+  }catch(e){toast(e.message,true);}
 }
 
 function countByStatus(rows=[], status='indexed') {
@@ -932,8 +1003,8 @@ function kbCategoryCounts(docs=kbDocumentsCache) {
   const counts = Object.fromEntries(['All', ...KB_CATEGORIES].map(category => [category, 0]));
   (Array.isArray(docs) ? docs : []).forEach(doc => {
     counts.All += 1;
-    const category = normalizedKbCategory(doc.category);
-    counts[category] = (counts[category] || 0) + 1;
+    const categories=new Set([normalizedKbCategory(doc.primary_category||doc.category),...parseMetadataList(doc.secondary_categories)]);
+    categories.forEach(category=>{if(KB_CATEGORIES.includes(category))counts[category]=(counts[category]||0)+1;});
   });
   return counts;
 }
@@ -957,6 +1028,12 @@ function documentMatchesSearch(doc={}, query='') {
     doc.original_filename,
     doc.filename,
     doc.category,
+    doc.primary_category,
+    parseMetadataList(doc.secondary_categories).join(' '),
+    doc.document_type,
+    doc.legal_role,
+    parseMetadataList(doc.topics).join(' '),
+    parseMetadataList(doc.sub_intents).join(' '),
     doc.source_name,
     doc.source_url,
     doc.law_number,
@@ -975,9 +1052,79 @@ function documentMatchesSearch(doc={}, query='') {
 
 function filteredKbDocuments() {
   return kbDocumentsCache.filter(doc => {
-    const inCategory = kbSelectedCategory === 'All' || normalizedKbCategory(doc.category) === kbSelectedCategory;
-    return inCategory && documentMatchesSearch(doc, kbDocumentSearch);
+    const primary=normalizedKbCategory(doc.primary_category||doc.category);
+    const secondary=parseMetadataList(doc.secondary_categories);
+    const allCategories=new Set([primary,...secondary]);
+    const inCategory = kbSelectedCategory === 'All' || allCategories.has(kbSelectedCategory);
+    const matchesPrimary=kbAdvancedFilters.primary==='All'||primary===kbAdvancedFilters.primary;
+    const matchesSecondary=kbAdvancedFilters.secondary==='All'||secondary.includes(kbAdvancedFilters.secondary);
+    const matchesIssuer=kbAdvancedFilters.issuer==='All'||String(doc.issuing_agency||'')===kbAdvancedFilters.issuer;
+    const matchesType=kbAdvancedFilters.type==='All'||String(doc.document_type||'')===kbAdvancedFilters.type;
+    const matchesStatus=kbAdvancedFilters.status==='All'||String(doc.version_status||'active')===kbAdvancedFilters.status;
+    return inCategory&&matchesPrimary&&matchesSecondary&&matchesIssuer&&matchesType&&matchesStatus&&documentMatchesSearch(doc,kbDocumentSearch);
   });
+}
+
+function renderKbAdvancedFilters(){
+  const optionHtml=(values,selected,label)=>[`<option value="All">${label}</option>`,...values.map(v=>`<option value="${esc(v)}" ${v===selected?'selected':''}>${esc(v)}</option>`)].join('');
+  const unique=field=>[...new Set(kbDocumentsCache.map(doc=>String(doc[field]||'').trim()).filter(Boolean))].sort();
+  const primary=document.getElementById('kb-primary-filter');if(primary)primary.innerHTML=optionHtml(KB_CATEGORIES,kbAdvancedFilters.primary,'All main categories');
+  const secondary=document.getElementById('kb-secondary-filter');if(secondary)secondary.innerHTML=optionHtml(KB_CATEGORIES,kbAdvancedFilters.secondary,'All extra categories');
+  const issuer=document.getElementById('kb-issuer-filter');if(issuer)issuer.innerHTML=optionHtml(unique('issuing_agency'),kbAdvancedFilters.issuer,'All issuers');
+  const type=document.getElementById('kb-type-filter');if(type)type.innerHTML=optionHtml(unique('document_type'),kbAdvancedFilters.type,'All document types');
+  const status=document.getElementById('kb-status-filter');if(status)status.innerHTML=optionHtml([...new Set([...DOC_VERSION_STATUSES,...unique('version_status')])],kbAdvancedFilters.status,'All legal statuses');
+}
+
+function setKbAdvancedFilter(kind,value='All'){
+  if(Object.prototype.hasOwnProperty.call(kbAdvancedFilters,kind))kbAdvancedFilters[kind]=value||'All';
+  renderDocumentsTable();
+}
+
+function updateKbBulkSelection(){
+  const count=kbSelectedDocumentIds.size;
+  const label=document.getElementById('kb-bulk-selection');if(label)label.textContent=`${count} document${count===1?'':'s'} selected`;
+  const button=document.getElementById('kb-bulk-edit-btn');if(button)button.disabled=count===0;
+}
+
+function toggleKbDocumentSelection(id,checked){
+  if(checked)kbSelectedDocumentIds.add(Number(id));else kbSelectedDocumentIds.delete(Number(id));
+  updateKbBulkSelection();
+}
+
+function toggleAllVisibleDocuments(checked){
+  filteredKbDocuments().forEach(doc=>{if(checked)kbSelectedDocumentIds.add(Number(doc.id));else kbSelectedDocumentIds.delete(Number(doc.id));});
+  renderDocumentsTable();
+}
+
+function openBulkDocumentEdit(){
+  if(!kbSelectedDocumentIds.size)return;
+  document.getElementById('doc-modal').classList.add('show');
+  document.getElementById('doc-modal-title').textContent='Bulk Edit Documents';
+  document.getElementById('doc-modal-sub').textContent=`Update metadata for ${kbSelectedDocumentIds.size} selected documents. Blank fields remain unchanged.`;
+  const categoryOptions=['<option value="">Keep existing primary categories</option>',...KB_CATEGORIES.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`)].join('');
+  const statusOptions=['<option value="">Keep existing legal statuses</option>',...DOC_VERSION_STATUSES.map(s=>`<option value="${s}">${esc(s)}</option>`)].join('');
+  document.getElementById('doc-modal-body').innerHTML=`<div class="form-grid">
+    <div class="form-row"><div class="form-group"><label>Main Category</label><select id="bulk-primary-category" onchange="syncSecondaryCategoryOptions('bulk-secondary-categories',this.value)">${categoryOptions}</select></div><div class="form-group"><label>Legal Status</label><select id="bulk-version-status">${statusOptions}</select></div></div>
+    <div class="form-group"><label>Extra Categories</label><div class="kb-secondary-grid" id="bulk-secondary-categories"></div><span class="status-note"><input type="checkbox" id="bulk-set-secondary"/> Replace secondary categories with this selection</span></div>
+    <div class="form-group"><label>Document Type</label><input id="bulk-document-type" placeholder="Leave blank to keep existing"/></div>
+  </div>`;
+  renderSecondaryCategoryOptions('bulk-secondary-categories','',[]);
+  document.getElementById('doc-modal-foot').innerHTML='<button class="btn btn-sm btn-primary" onclick="saveBulkDocumentEdit()">Apply Bulk Edit</button>';
+}
+
+async function saveBulkDocumentEdit(){
+  try{
+    const primary=document.getElementById('bulk-primary-category')?.value||null;
+    const setSecondary=!!document.getElementById('bulk-set-secondary')?.checked;
+    const versionStatus=document.getElementById('bulk-version-status')?.value||null;
+    const documentType=document.getElementById('bulk-document-type')?.value?.trim()||null;
+    const payload={document_ids:[...kbSelectedDocumentIds],primary_category:primary,version_status:versionStatus,document_type:documentType};
+    if(setSecondary)payload.secondary_categories=getSelectedSecondaryCategories('bulk-secondary-categories');
+    const r=await apiFetch('/kb/bulk/metadata',{method:'PUT',body:JSON.stringify(payload)});
+    const result=await r.json();if(!r.ok)throw new Error(result.detail||'Bulk edit failed.');
+    toast(`Updated ${result.updated_count||0} documents.`);
+    kbSelectedDocumentIds.clear();closeDocModal();await loadDocuments();updateKbBulkSelection();
+  }catch(e){toast(e.message,true);}
 }
 
 function setKbCategoryFilter(category='All') {
@@ -1002,10 +1149,12 @@ function renderDocumentsTable() {
   const tb = document.getElementById('docs-tbody');
   if (!tb) return;
   renderKbCategoryFilters();
+  renderKbAdvancedFilters();
   const docs = filteredKbDocuments();
+  updateKbBulkSelection();
   updateKbFilterSummary(kbDocumentsCache.length, docs.length);
   if (!kbDocumentsCache.length) {
-    tb.innerHTML = '<tr><td colspan="9" class="empty">Knowledge base is empty.</td></tr>';
+    tb.innerHTML = '<tr><td colspan="9" class="empty">No reference documents yet.</td></tr>';
     return;
   }
   if (!docs.length) {
@@ -1016,20 +1165,23 @@ function renderDocumentsTable() {
     const processingStage=String(d.processing_stage||'');
     const isReplacing=processingStage.startsWith('replacing');
     const isProcessing=d.status==='processing'||d.status==='pending'||isReplacing;
+    const canRetry=d.status==='error';
     const vectorMissing=kbSearchableChunks===0 && d.status==='indexed' && (d.chunk_count??0)>0;
     const shownChunks=vectorMissing ? 0 : (d.chunk_count??0);
     const canView=!!d.filename;
     const displayTitle=esc(d.document_title||d.original_filename);
     const name=esc(d.original_filename);
     const nameArg=jsArg(d.original_filename);
-    const category=esc(d.category||KB_CATEGORIES[0]);
-    const docMeta=[d.source_name,d.law_number,d.article_section,d.issuing_agency,d.date_issued,d.effective_date,d.date_downloaded,d.superseding_document,d.law_version,d.processing_stage].filter(Boolean).map(esc).join(' | ');
+    const category=esc(d.primary_category||d.category||KB_CATEGORIES[0]);
+    const secondaryCategories=parseMetadataList(d.secondary_categories);
+    const secondaryLabel=secondaryCategories.length?`<span class="kb-secondary-list">Secondary: ${secondaryCategories.map(esc).join(', ')}</span>`:'';
+    const docMeta=[d.source_name,d.document_type,d.legal_role,d.law_number,d.article_section,d.issuing_agency,d.date_issued,d.effective_date,d.date_downloaded,d.superseding_document,d.law_version,d.processing_stage].filter(Boolean).map(esc).join(' | ');
     const sourceUrl=safeUrl(d.source_url);
     const originalLink=sourceUrl?`<span class="status-note"><a href="${esc(sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(d.source_url)}</a></span>`:'';
     return `<tr>
-      <td class="td-mono">${i+1}</td>
+      <td class="td-mono"><input type="checkbox" aria-label="Select ${displayTitle}" ${kbSelectedDocumentIds.has(Number(d.id))?'checked':''} onchange="toggleKbDocumentSelection(${d.id},this.checked)"/><span class="status-note">${i+1}</span></td>
       <td class="td-strong doc-name">${displayTitle}<span class="status-note">${name}${docMeta?` | ${docMeta}`:''}</span><span class="status-note">${versionStatusBadge(d.version_status,d.is_active)}</span>${originalLink}${d.error_message?`<span class="status-note" style="color:var(--red);">${esc(d.error_message)}</span>`:''}</td>
-      <td><span class="badge badge-blue kb-category-badge">${category}</span></td>
+      <td><span class="badge badge-blue kb-category-badge">Primary: ${category}</span>${secondaryLabel}</td>
       <td><span class="badge badge-gray">${docTypeLabel(d)}</span></td>
       <td>${d.file_size?(d.file_size/1048576).toFixed(2)+' MB':'-'}</td>
       <td><strong>${shownChunks}</strong></td>
@@ -1039,6 +1191,7 @@ function renderDocumentsTable() {
         <button class="btn btn-sm btn-primary" ${canView?'':'disabled'} onclick="viewDoc(${d.id},'${nameArg}')">View Original</button>
         <button class="btn btn-sm btn-primary" ${isProcessing?'disabled title="Wait until indexing or replacement finishes"':''} onclick="replaceDoc(${d.id},'${nameArg}')">Replace</button>
         <button class="btn btn-sm btn-gold" onclick="viewDocHealth(${d.id},'${nameArg}')">Health</button>
+        ${canRetry?`<button class="btn btn-sm btn-gold" onclick="retryDocumentIndex(${d.id},'${nameArg}')">Retry Index</button>`:''}
         <button class="btn btn-sm btn-gold" onclick="editDocumentMeta(${d.id})">Edit</button>
         <button class="btn btn-sm btn-danger" ${isProcessing?'disabled title="Wait until indexing finishes"':''} onclick="deleteDoc(${d.id},'${nameArg}','${d.status}')">Delete</button>
       </div></td>
@@ -1126,6 +1279,10 @@ async function doLogin() {
   const email = document.getElementById('l-email').value.trim();
   const pass  = document.getElementById('l-pass').value;
   const errEl = document.getElementById('login-err');
+  if (!email || !pass) {
+    errEl.textContent = 'Please enter your email and password.';
+    return;
+  }
   errEl.textContent = 'Authenticating…';
   try {
     const r = await fetch(`${API}/auth/login`, {
@@ -1170,6 +1327,8 @@ function switchTab(el, name) {
   document.querySelectorAll('#tab-overview,#tab-users,#tab-knowledge,#tab-faqs,#tab-queries,#tab-analytics,#tab-performance').forEach(t => t.classList.remove('tab-active'));
   document.getElementById(`tab-${name}`).classList.add('tab-active');
   closeAdminNav();
+  document.getElementById('main').scrollTop = 0;
+  window.LaborLensAdminUI?.syncNavigation(name);
 }
 
 function toggleAdminNav() {
@@ -1204,17 +1363,18 @@ async function loadOverview() {
     badge.style.display = unresolved > 0 ? 'inline-flex' : 'none';
     document.getElementById('stat-grid').innerHTML = `
       <div class="stat-card"><span class="stat-icon">Users</span><div class="stat-lbl">Total Users</div><div class="stat-val">${t.users??0}</div><div class="stat-sub">Registered accounts</div></div>
-      <div class="stat-card green"><span class="stat-icon">Chats</span><div class="stat-lbl">Consultations</div><div class="stat-val">${t.messages??0}</div><div class="stat-sub">Legal queries processed</div></div>
-      <div class="stat-card gold"><span class="stat-icon">KB</span><div class="stat-lbl">Knowledge Docs</div><div class="stat-val">${t.docs??t.indexed_documents??0}</div><div class="stat-sub">Indexed reference files</div></div>
-      <div class="stat-card red"><span class="stat-icon">Review</span><div class="stat-lbl">Not Found in KB</div><div class="stat-val">${unresolved}</div><div class="stat-sub">Queries without KB answers</div></div>`;
+      <div class="stat-card purple"><span class="stat-icon">Chats</span><div class="stat-lbl">Questions Asked</div><div class="stat-val">${t.messages??0}</div><div class="stat-sub">Questions sent to the assistant</div></div>
+      <div class="stat-card gold"><span class="stat-icon">Documents</span><div class="stat-lbl">Reference Documents</div><div class="stat-val">${t.docs??t.indexed_documents??0}</div><div class="stat-sub">Documents ready to search</div></div>
+      <div class="stat-card red"><span class="stat-icon">Review</span><div class="stat-lbl">Needs Review</div><div class="stat-val">${unresolved}</div><div class="stat-sub">Questions without a matching source</div></div>`;
     const ii = d.intent_distribution || [];
     document.getElementById('intent-chart').innerHTML = ii.length
-      ? `<div class="tbl-wrap"><table><thead><tr><th>Intent</th><th>Count</th></tr></thead><tbody>${ii.map(i=>`<tr><td class="td-strong">${esc((i.intent||'').replace(/_/g,' ').toUpperCase())}</td><td><span class="badge badge-navy">${i.count}</span></td></tr>`).join('')}</tbody></table></div>`
-      : '<div class="empty">No query data yet.</div>';
+      ? `<div class="tbl-wrap"><table><thead><tr><th>Topic</th><th>Count</th></tr></thead><tbody>${ii.map(i=>`<tr><td class="td-strong">${esc((i.intent||'').replace(/_/g,' ').toUpperCase())}</td><td><span class="badge badge-navy">${i.count}</span></td></tr>`).join('')}</tbody></table></div>`
+      : '<div class="empty">No questions yet.</div>';
     const vv = d.daily_volume || [];
     document.getElementById('vol-table').innerHTML = vv.length
-      ? `<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Queries</th></tr></thead><tbody>${vv.map(v=>`<tr><td class="td-mono">${esc(v.date||v.DATE)}</td><td><strong>${v.count}</strong></td></tr>`).join('')}</tbody></table></div>`
-      : '<div class="empty">No volume data yet.</div>';
+      ? `<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Questions</th></tr></thead><tbody>${vv.map(v=>`<tr><td class="td-mono">${esc(v.date||v.DATE)}</td><td><strong>${v.count}</strong></td></tr>`).join('')}</tbody></table></div>`
+      : '<div class="empty">No daily question data yet.</div>';
+    window.LaborLensAdminUI?.renderOverview(d);
   } catch(e) {
     ['stat-grid','intent-chart','vol-table'].forEach(id=>{const el=document.getElementById(id); if(el) el.innerHTML=`<div class="err-msg">${esc(e.message)}</div>`;});
   }
@@ -1239,22 +1399,23 @@ async function loadUsers() {
 
 function renderUsers(users) {
   const tb = document.getElementById('users-tbody');
+  const page = window.LaborLensAdminUI?.userPage(users) || {rows:users,offset:0};
   if (!users.length) { tb.innerHTML='<tr><td colspan="8" class="empty">No users found.</td></tr>'; return; }
-  tb.innerHTML = users.map((u,i)=>`<tr>
-    <td class="td-mono">${i+1}</td>
-    <td class="td-strong">${esc(u.username)}</td>
-    <td>${esc(u.email)}</td>
+  tb.innerHTML = page.rows.map((u,i)=>`<tr>
+    <td class="td-mono">${page.offset+i+1}</td>
+    <td class="td-strong">${esc(u.anonymous_user || 'Anonymous User')}</td>
+    <td class="status-note">Hidden for privacy</td>
     <td><span class="badge ${u.role==='admin'?'badge-navy':'badge-gray'}">${esc(String(u.role).toUpperCase())}</span></td>
-    <td>${esc(String(u.language_preference||'en').toUpperCase())}</td>
+    <td>${esc(languageLabel(u.language_preference))}</td>
     <td class="td-mono">${new Date(u.created_at).toLocaleDateString()}</td>
     <td><span class="badge ${u.is_active?'badge-green':'badge-red'}">${u.is_active?'ACTIVE':'SUSPENDED'}</span></td>
-    <td><button class="btn btn-sm ${u.role==='admin'?'btn-danger':'btn-success'}" onclick="toggleRole(${u.id},'${jsArg(u.role)}')">${u.role==='admin'?'Revoke Admin':'Grant Admin'}</button></td>
+    <td><button class="btn btn-sm ${u.role==='admin'?'btn-danger':'btn-success'}" onclick="toggleRole(${u.id},'${jsArg(u.role)}')">${u.role==='admin'?'Remove Admin Access':'Make Admin'}</button></td>
   </tr>`).join('');
 }
 
 function filterUsers() {
   const q = document.getElementById('user-search').value.toLowerCase();
-  renderUsers(allUsers.filter(u => String(u.username).toLowerCase().includes(q) || String(u.email).toLowerCase().includes(q) || String(u.role).toLowerCase().includes(q)));
+  renderUsers(allUsers.filter(u => String(u.anonymous_user).toLowerCase().includes(q) || String(u.role).toLowerCase().includes(q) || (String(u.language_preference||'')+' '+languageLabel(u.language_preference)).toLowerCase().includes(q)));
 }
 
 async function toggleRole(id, cur) {
@@ -1399,14 +1560,14 @@ async function importFAQs(input) {
   input.value='';
 }
 
-/* -- Knowledge Base -- */
+/* -- Reference Documents -- */
 function statusBadge(d, vectorMissing=false) {
   const s=(d.status||'pending').toLowerCase();
   const stage=String(d.processing_stage||'').toLowerCase();
-  if(vectorMissing) return '<span class="badge badge-amber">NEEDS RE-INDEX</span><span class="status-note">Upload again to rebuild searchable chunks.</span>';
+  if(vectorMissing) return '<span class="badge badge-amber">NEEDS RE-INDEX</span><span class="status-note">Upload again to rebuild searchable sections.</span>';
   if(stage.startsWith('replacing')) return '<span class="badge badge-amber">REPLACING</span><span class="status-note">Validating and indexing replacement...</span>';
   if(s==='indexed') return '<span class="badge badge-green">INDEXED</span>';
-  if(s==='error' && String(d.error_message||'').toLowerCase().includes('chunks were cleared')) return '<span class="badge badge-amber">NEEDS RE-INDEX</span><span class="status-note">Upload again to rebuild searchable chunks.</span>';
+  if(s==='error' && String(d.error_message||'').toLowerCase().includes('chunks were cleared')) return '<span class="badge badge-amber">NEEDS RE-INDEX</span><span class="status-note">Upload again to rebuild searchable sections.</span>';
   if(s==='error') return '<span class="badge badge-red">ERROR</span>';
   if(s==='processing') return '<span class="badge badge-amber">PROCESSING</span><span class="status-note">Chunking and indexing...</span>';
   return `<span class="badge badge-gray">${esc(s.toUpperCase())}</span>`;
@@ -1423,11 +1584,11 @@ async function loadDocuments() {
       const stats=await sr.json();
       const summary=kbSummary(stats);
       searchableChunks=summary.chunks;
-      const modelNote=stats.chroma?.embedding_model ? `<span class="status-note">Embedding model: ${esc(stats.chroma.embedding_model)}</span>` : '';
-      const resetNote=stats.chroma?.last_reset_reason ? `<span class="status-note" style="color:var(--amber);">Vector DB was reset because the embedding model changed. Re-upload documents to rebuild chunks.</span>` : '';
+      const modelNote=stats.chroma?.embedding_model ? `<span class="status-note">Search model: ${esc(stats.chroma.embedding_model)}</span>` : '';
+      const resetNote=stats.chroma?.last_reset_reason ? `<span class="status-note" style="color:var(--amber);">Document search was reset after an update. Upload the documents again to make them searchable.</span>` : '';
       document.getElementById('kb-stats').innerHTML=summary.chunks>0
-        ? `<strong>${summary.chunks.toLocaleString()} searchable chunks</strong> available across ${summary.activeCategories||1} RAG ${(summary.activeCategories||1)===1?'category':'categories'}.${modelNote}`
-        : `<strong>No searchable chunks yet.</strong> Upload a legal document and wait for indexing to finish.${modelNote}${resetNote}`;
+        ? `<strong>${summary.chunks.toLocaleString()} searchable sections</strong> available across ${summary.activeCategories||1} document ${(summary.activeCategories||1)===1?'category':'categories'}.${modelNote}`
+        : `<strong>No searchable sections yet.</strong> Upload a legal document and wait until it is ready to search.${modelNote}${resetNote}`;
       document.getElementById('kb-chunks').textContent=summary.chunks.toLocaleString();
     }
     const dr=await apiFetch('/kb/documents');
@@ -1438,7 +1599,7 @@ async function loadDocuments() {
       ? Number(document.getElementById('kb-chunks').textContent.replace(/,/g,''))>0
       : searchableChunks>0;
       const readyCount=hasSearchableChunks
-        ? docs.filter(d=>d.status==='indexed' && (d.chunk_count??0)>0 && d.is_active && String(d.version_status||'active').toLowerCase()==='active').length
+        ? docs.filter(d=>d.status==='indexed' && (d.chunk_count??0)>0 && d.is_active && ['active','current'].includes(String(d.version_status||'active').toLowerCase())).length
         : 0;
     document.getElementById('kb-docs-count').textContent=readyCount;
     kbSearchableChunks = searchableChunks;
@@ -1456,7 +1617,14 @@ async function uploadFile(input) {
     const form=new FormData();
     form.append('file',file);
     form.append('category',category);
+    form.append('primary_category',category);
+    form.append('secondary_categories',JSON.stringify(getSelectedSecondaryCategories('kb-secondary-categories')));
     form.append('document_title',document.getElementById('kb-title')?.value||'');
+    form.append('document_type',document.getElementById('kb-document-type')?.value||'');
+    form.append('legal_role',document.getElementById('kb-legal-role')?.value||'');
+    form.append('implements',JSON.stringify(parseMetadataList(document.getElementById('kb-implements')?.value||'')));
+    form.append('topics',JSON.stringify(parseMetadataList(document.getElementById('kb-topics')?.value||'')));
+    form.append('sub_intents',JSON.stringify(parseMetadataList(document.getElementById('kb-sub-intents')?.value||'')));
     form.append('source_name',document.getElementById('kb-source')?.value||'');
     form.append('source_url',document.getElementById('kb-source-url')?.value||'');
     form.append('law_number',document.getElementById('kb-law-number')?.value||'');
@@ -1475,8 +1643,9 @@ async function uploadFile(input) {
     const done=await waitForDocumentIndexed(d.doc_id,file.name,msg);
     msg.innerHTML=`<div style="margin-top:14px;padding:14px;background:var(--green-bg);color:var(--green);border-radius:10px;font-size:13px;font-weight:600;"><strong>${esc(done.original_filename||file.name)}</strong> indexed in ${esc(done.category||category)} with ${done.chunk_count??0} chunks.</div>`;
     toast('Document indexed');
-    ['kb-title','kb-source','kb-source-url','kb-law-number','kb-article-section','kb-issuing-agency','kb-date-issued','kb-effective-date','kb-date-downloaded','kb-superseding-document','kb-version'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});
-    const statusField=document.getElementById('kb-version-status'); if(statusField) statusField.value='active';
+    ['kb-title','kb-document-type','kb-legal-role','kb-implements','kb-topics','kb-sub-intents','kb-source','kb-source-url','kb-law-number','kb-article-section','kb-issuing-agency','kb-date-issued','kb-effective-date','kb-date-downloaded','kb-superseding-document','kb-version'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});
+    renderSecondaryCategoryOptions('kb-secondary-categories',category,[]);
+    const statusField=document.getElementById('kb-version-status'); if(statusField) statusField.value='current';
     loadDocuments(); loadOverview(); loadAnalytics(); loadPerformance();
   } catch(e){
     msg.innerHTML=`<div style="margin-top:14px;padding:14px;background:var(--red-bg);color:var(--red);border-radius:10px;font-size:13px;">${esc(e.message)}</div>`;
@@ -1492,10 +1661,22 @@ async function waitForDocumentIndexed(docId,fileName,msg) {
     if(!r.ok) throw new Error(d.detail||'Unable to check indexing status.');
     if(d.status==='indexed') return d;
     if(d.status==='error') throw new Error(d.error_message||'Document indexing failed.');
-    msg.innerHTML=`<div style="margin-top:14px;padding:14px;background:var(--amber-bg);color:var(--amber);border-radius:10px;font-size:13px;font-weight:600;">Indexing <strong>${esc(fileName)}</strong> in ${esc(d.category||KB_CATEGORIES[0])}... ${d.chunk_count??0} chunks ready so far.</div>`;
+    msg.innerHTML=`<div style="margin-top:14px;padding:14px;background:var(--amber-bg);color:var(--amber);border-radius:10px;font-size:13px;font-weight:600;">Indexing <strong>${esc(fileName)}</strong> in ${esc(d.category||KB_CATEGORIES[0])}... ${d.chunk_count??0} sections ready so far.</div>`;
     await sleep(1500);
   }
   throw new Error('Indexing is still running. Refresh the document list to check status.');
+}
+
+async function retryDocumentIndex(docId,fileName='Document') {
+  try {
+    const r=await apiFetch(`/kb/documents/${docId}/retry-index`,{method:'POST'});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(d.detail||'Unable to retry document indexing.');
+    toast(`Re-indexing ${fileName} in the background.`);
+    loadDocuments();
+  } catch(e) {
+    toast(e.message,true);
+  }
 }
 
 function replacementStatusHtml(job={}, fileName='') {
@@ -1668,6 +1849,15 @@ async function editDocumentMeta(id) {
       <div class="form-grid">
         <div class="form-group"><label>Document Title</label><input type="text" id="doc-edit-title" value="${esc(doc.document_title||'')}"/></div>
         <div class="form-row">
+          <div class="form-group"><label>Document Type</label><input type="text" id="doc-edit-document-type" value="${esc(doc.document_type||'')}"/></div>
+          <div class="form-group"><label>Legal Role</label><input type="text" id="doc-edit-legal-role" value="${esc(doc.legal_role||'')}"/></div>
+        </div>
+        <div class="form-group"><label>Implements</label><input type="text" id="doc-edit-implements" value="${esc(parseMetadataList(doc.implements).join(', '))}"/></div>
+        <div class="form-row">
+          <div class="form-group"><label>Topics</label><input type="text" id="doc-edit-topics" value="${esc(parseMetadataList(doc.topics).join(', '))}"/></div>
+          <div class="form-group"><label>Sub-intents</label><input type="text" id="doc-edit-sub-intents" value="${esc(parseMetadataList(doc.sub_intents).join(', '))}"/></div>
+        </div>
+        <div class="form-row">
           <div class="form-group"><label>Official Source</label><input type="text" id="doc-edit-source" value="${esc(doc.source_name||'')}"/></div>
           <div class="form-group"><label>Law Year / Version</label><input type="text" id="doc-edit-version" value="${esc(doc.law_version||'')}"/></div>
         </div>
@@ -1683,14 +1873,16 @@ async function editDocumentMeta(id) {
           <div class="form-group"><label>Effective Date</label><input type="text" id="doc-edit-effective-date" value="${esc(doc.effective_date||'')}"/></div>
           <div class="form-group"><label>Date Downloaded</label><input type="text" id="doc-edit-date-downloaded" value="${esc(doc.date_downloaded||'')}"/></div>
         </div>
-        <div class="form-group"><label>Superseding / Amending Document</label><input type="text" id="doc-edit-superseding-document" value="${esc(doc.superseding_document||'')}"/></div>
+        <div class="form-group"><label>Newer or Amending Document</label><input type="text" id="doc-edit-superseding-document" value="${esc(doc.superseding_document||'')}"/></div>
         <div class="form-group"><label>Original Link / Source URL</label><input type="url" id="doc-edit-source-url" value="${esc(doc.source_url||'')}"/></div>
         <div class="form-row">
-          <div class="form-group"><label>Category</label><select id="doc-edit-category">${categoryOptions}</select></div>
+          <div class="form-group"><label>Main Category</label><select id="doc-edit-category" onchange="syncSecondaryCategoryOptions('doc-edit-secondary-categories',this.value)">${categoryOptions}</select></div>
           <div class="form-group"><label>Version Status</label><select id="doc-edit-version-status">${versionOptions}</select></div>
         </div>
+        <div class="form-group"><label>Extra Categories</label><div class="kb-secondary-grid" id="doc-edit-secondary-categories"></div></div>
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);"><input type="checkbox" id="doc-edit-active" ${doc.is_active?'checked':''}/> Active for chatbot retrieval</label>
       </div>`;
+    renderSecondaryCategoryOptions('doc-edit-secondary-categories',doc.primary_category||doc.category||KB_CATEGORIES[0],doc.secondary_categories||[]);
     document.getElementById('doc-modal-foot').innerHTML=`<button class="btn btn-sm btn-primary" onclick="saveDocumentMeta(${id})">Save Changes</button><button class="btn btn-sm btn-gold" onclick="viewDocHealth(${id},'${jsArg(doc.original_filename||'Document Health')}')">View Health</button>`;
   }catch(e){
     document.getElementById('doc-modal-body').innerHTML=`<div class="err-msg">${esc(e.message)}</div>`;
@@ -1701,6 +1893,11 @@ async function saveDocumentMeta(id) {
   try{
     const payload={
       document_title: document.getElementById('doc-edit-title')?.value?.trim()||'',
+      document_type: document.getElementById('doc-edit-document-type')?.value?.trim()||'',
+      legal_role: document.getElementById('doc-edit-legal-role')?.value?.trim()||'',
+      implements: parseMetadataList(document.getElementById('doc-edit-implements')?.value||''),
+      topics: parseMetadataList(document.getElementById('doc-edit-topics')?.value||''),
+      sub_intents: parseMetadataList(document.getElementById('doc-edit-sub-intents')?.value||''),
       source_name: document.getElementById('doc-edit-source')?.value?.trim()||'',
       source_url: document.getElementById('doc-edit-source-url')?.value?.trim()||'',
       law_number: document.getElementById('doc-edit-law-number')?.value?.trim()||'',
@@ -1712,6 +1909,8 @@ async function saveDocumentMeta(id) {
       superseding_document: document.getElementById('doc-edit-superseding-document')?.value?.trim()||'',
       law_version: document.getElementById('doc-edit-version')?.value?.trim()||'',
       category: document.getElementById('doc-edit-category')?.value||KB_CATEGORIES[0],
+      primary_category: document.getElementById('doc-edit-category')?.value||KB_CATEGORIES[0],
+      secondary_categories: getSelectedSecondaryCategories('doc-edit-secondary-categories'),
       is_active: !!document.getElementById('doc-edit-active')?.checked,
       version_status: document.getElementById('doc-edit-version-status')?.value||'active'
     };
@@ -1779,7 +1978,7 @@ async function loadDocOriginal() {
     body.innerHTML=`
       <div class="original-view-note">
         <span class="view-mode-pill">Original File</span>
-        <div><strong>Viewing the exact uploaded ${fileKind}, not extracted text and not vector chunks.</strong><br/>This is the unedited file saved in the knowledge base.</div>
+        <div><strong>Viewing the exact uploaded ${fileKind}, not extracted text and not vector chunks.</strong><br/>This is the unedited file saved in the reference documents.</div>
       </div>
       <div class="doc-meta-grid">
         <div class="mini-metric"><div class="mini-metric-lbl">Status</div><div class="mini-metric-val" style="font-size:18px;">${esc((doc.status||'').toUpperCase())}</div></div>
@@ -1919,20 +2118,20 @@ async function loadUnresolved() {
     if(!qs.length){
       label.textContent='0 pending';
       badge.style.display='none';
-      tb.innerHTML='<tr><td colspan="8" class="empty" style="color:var(--green);font-weight:600;">All queries matched results in the knowledge base.</td></tr>';
+      tb.innerHTML='<tr><td colspan="8" class="empty" style="color:var(--green);font-weight:600;">All questions matched results in the reference documents.</td></tr>';
       return;
     }
     label.textContent=`${qs.length} pending review`;
     badge.textContent=qs.length; badge.style.display='inline-flex';
     tb.innerHTML=qs.map((q,i)=>`<tr class="unresolved-row">
       <td class="td-mono">${i+1}</td>
-      <td class="td-strong">${esc(q.username||'-')}</td>
-      <td style="max-width:280px;"><div class="no-kb-tag">NOT FOUND IN KB</div><div style="font-size:13px;margin-top:4px;">${esc(q.query_text)}</div></td>
+      <td class="td-strong">${esc(q.anonymous_user||'Guest')}</td>
+      <td style="max-width:280px;"><div class="no-kb-tag">NO SOURCE MATCH</div><div style="font-size:13px;margin-top:4px;">${esc(q.query_text)}</div></td>
       <td><span class="badge badge-amber">${esc((q.intent||'').replace(/_/g,' ').toUpperCase())}</span></td>
       <td style="max-width:250px;font-size:12px;color:var(--muted);">${esc(unresolvedSuggestionText(q.intent))}</td>
       <td class="td-mono">${q.response_time_ms??0}ms</td>
       <td class="td-mono">${dateLabel(q.created_at)}</td>
-      <td><div style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn btn-sm btn-success" onclick="resolveQ(${q.id})">Resolve</button><button class="btn btn-sm btn-gold" onclick="addToFAQ('${jsArg(q.query_text)}')">Add FAQ</button></div></td>
+      <td><div style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn btn-sm btn-success" onclick="resolveQ(${q.id})">Mark Reviewed</button><button class="btn btn-sm btn-gold" onclick="addToFAQ('${jsArg(q.query_text)}')">Add FAQ</button></div></td>
     </tr>`).join('');
   } catch(e){tb.innerHTML=`<tr><td colspan="8"><div class="err-msg">${esc(e.message)}</div></td></tr>`;}
 }
@@ -1968,7 +2167,7 @@ async function exportChatLogs() {
     const r=await apiFetch('/admin/chat-logs');
     const rows=await r.json();
     if(!r.ok) throw new Error(rows.detail||'Failed to export logs.');
-    const headers=['id','session_id','username','email','role','content','language','intent','confidence_level','confidence_reason','feedback_rating','feedback_comment','created_at'];
+    const headers=['id','session_id','anonymous_user','role','content','language','intent','confidence_level','confidence_reason','feedback_rating','feedback_comment','created_at'];
     const csv=[headers.join(',')].concat((rows||[]).map(row=>headers.map(h=>csvCell(row[h])).join(','))).join('\n');
     const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
     const url=URL.createObjectURL(blob);
@@ -2047,7 +2246,7 @@ async function exportAnalyticsReport() {
     (performance || []).slice(0, 100).forEach(row => {
       lines.push([
         row.query_text,
-        row.username || 'Guest',
+        row.anonymous_user || 'Guest',
         row.intent,
         `${row.response_time_ms || 0} ms`,
         row.result_status,
@@ -2057,10 +2256,10 @@ async function exportAnalyticsReport() {
 
     lines.push('');
     lines.push('Feedback Review');
-    lines.push('User,Rating,Intent,Source Match,Answer Snippet,Date');
+    lines.push('User,Rating,Intent,Source Match,Answer Preview,Date');
     (feedback || []).forEach(row => {
       lines.push([
-        row.username || row.email || '-',
+        row.anonymous_user || 'Guest',
         row.rating,
         row.intent,
         row.confidence_level,
@@ -2098,8 +2297,8 @@ async function loadAnalytics() {
     const satTotal=num(feedback.total);
     const satPct=pct(feedback.helpful, satTotal);
     document.getElementById('analytics-stats').innerHTML=`
-      <div class="stat-card blue"><span class="stat-icon">Queries</span><div class="stat-lbl">Total Queries</div><div class="stat-val">${totalQueries.toLocaleString()}</div><div class="stat-sub">All time</div></div>
-      <div class="stat-card green"><span class="stat-icon">KB</span><div class="stat-lbl">KB Resolution Rate</div><div class="stat-val">${resolvedPct}%</div><div class="stat-sub">Queries answered by KB</div></div>
+      <div class="stat-card blue"><span class="stat-icon">Queries</span><div class="stat-lbl">Total Questions</div><div class="stat-val">${totalQueries.toLocaleString()}</div><div class="stat-sub">All time</div></div>
+      <div class="stat-card green"><span class="stat-icon">Documents</span><div class="stat-lbl">Source Match Rate</div><div class="stat-val">${resolvedPct}%</div><div class="stat-sub">Questions with matching sources</div></div>
       <div class="stat-card gold"><span class="stat-icon">Sessions</span><div class="stat-lbl">Sessions</div><div class="stat-val">${num(t.sessions).toLocaleString()}</div><div class="stat-sub">Conversations</div></div>
       <div class="stat-card purple"><span class="stat-icon">Users</span><div class="stat-lbl">Total Users</div><div class="stat-val">${num(t.users).toLocaleString()}</div><div class="stat-sub">Registered</div></div>
       <div class="stat-card green"><span class="stat-icon">Feedback</span><div class="stat-lbl">User Satisfaction</div><div class="stat-val">${satTotal?satPct+'%':'—'}</div><div class="stat-sub">${satTotal} ratings</div></div>`;
@@ -2108,12 +2307,12 @@ async function loadAnalytics() {
     const ii=d.intent_distribution||[];
     const maxC=ii.length?Math.max(...ii.map(i=>num(i.count)),1):1;
     document.getElementById('analytics-intent').innerHTML=ii.length
-      ?ii.map(i=>`<div style="margin-bottom:14px;"><div class="flex-between" style="margin-bottom:5px;"><span style="font-size:13px;font-weight:600;">${esc((i.intent||'general').replace(/_/g,' '))}</span><span style="font-size:12px;color:var(--muted);">${num(i.count).toLocaleString()} queries</span></div><div class="progress-bar"><div class="progress-fill" style="width:${pct(i.count,maxC)}%"></div></div></div>`).join('')
-      :'<div class="empty">No intent data yet.</div>';
+      ?ii.map(i=>`<div style="margin-bottom:14px;"><div class="flex-between" style="margin-bottom:5px;"><span style="font-size:13px;font-weight:600;">${esc((i.intent||'general').replace(/_/g,' '))}</span><span style="font-size:12px;color:var(--muted);">${num(i.count).toLocaleString()} questions</span></div><div class="progress-bar"><div class="progress-fill" style="width:${pct(i.count,maxC)}%"></div></div></div>`).join('')
+      :'<div class="empty">No topic data yet.</div>';
     const vv=d.daily_volume||[];
     const maxV=vv.length?Math.max(...vv.map(v=>num(v.count)),1):1;
     document.getElementById('analytics-volume').innerHTML=vv.length
-      ?`<div class="sparkline">${vv.map(v=>`<div class="spark-bar gold" style="height:${Math.max(6,pct(v.count,maxV))}%" title="${esc(dateLabel(v.date||v.DATE))}: ${num(v.count)}"></div>`).join('')}</div><div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Queries</th></tr></thead><tbody>${vv.map(v=>`<tr><td class="td-mono">${esc(dateLabel(v.date||v.DATE))}</td><td><strong>${num(v.count).toLocaleString()}</strong></td></tr>`).join('')}</tbody></table></div>`
+      ?`<div class="sparkline">${vv.map(v=>`<div class="spark-bar gold" style="height:${Math.max(6,pct(v.count,maxV))}%" title="${esc(dateLabel(v.date||v.DATE))}: ${num(v.count)}"></div>`).join('')}</div><div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Questions</th></tr></thead><tbody>${vv.map(v=>`<tr><td class="td-mono">${esc(dateLabel(v.date||v.DATE))}</td><td><strong>${num(v.count).toLocaleString()}</strong></td></tr>`).join('')}</tbody></table></div>`
       :'<div class="empty">No data yet.</div>';
     const lc={en:0,fil:0,hil:0};
     (d.language_distribution||[]).forEach(row=>{
@@ -2164,7 +2363,7 @@ async function loadFeedbackAnalytics() {
       const answer=String(row.assistant_answer||'').replace(/\s+/g,' ').slice(0,150);
       return `<tr>
         <td class="td-mono">${i+1}</td>
-        <td class="td-strong">${esc(row.username||row.email||'-')}</td>
+        <td class="td-strong">${esc(row.anonymous_user||'Guest')}</td>
         <td>${isYes?'<span class="badge badge-green">HELPFUL</span>':'<span class="badge badge-red">NOT HELPFUL</span>'}</td>
         <td><span class="badge badge-gray">${esc((row.intent||'-').replace(/_/g,' ').toUpperCase())}</span></td>
         <td>${row.confidence_level?`<span class="badge badge-blue">${esc(row.confidence_level)}</span><span class="status-note">${esc(row.confidence_reason||'')}</span>`:'-'}</td>
@@ -2268,9 +2467,9 @@ function asBool(value) {
 
 function performanceResultBadge(row) {
   const status = String(row.result_status || '').toLowerCase();
-  if (status === 'kb_found') return '<span class="badge badge-green">KB FOUND</span>';
-  if (status === 'clarified') return '<span class="badge badge-amber">CLARIFIED</span>';
-  if (status === 'handled') return '<span class="badge badge-blue">HANDLED</span>';
+  if (status === 'kb_found') return '<span class="badge badge-green">SOURCE FOUND</span>';
+  if (status === 'clarified') return '<span class="badge badge-amber">ASKED FOR DETAILS</span>';
+  if (status === 'handled') return '<span class="badge badge-blue">ANSWERED</span>';
   if (status === 'not_found' || !asBool(row.resolved)) return '<span class="badge badge-red">NOT FOUND</span>';
   return '<span class="badge badge-green">RESOLVED</span>';
 }
@@ -2292,28 +2491,28 @@ async function loadPerformance() {
     const total=all.length||1;
     const avgMs=all.length?Math.round(all.reduce((s,q)=>s+num(q.response_time_ms),0)/all.length):0;
     document.getElementById('perf-stats').innerHTML=`
-      <div class="stat-card green"><span class="stat-icon">Speed</span><div class="stat-lbl">Avg Response</div><div class="stat-val">${avgMs}<span style="font-size:16px;color:var(--muted);"> ms</span></div><div class="stat-sub">Across recent logs</div></div>
-      <div class="stat-card blue"><span class="stat-icon">Total</span><div class="stat-lbl">Total Processed</div><div class="stat-val">${t.messages??all.length}</div><div class="stat-sub">All queries</div></div>
-      <div class="stat-card ${kb.chunks>0?'gold':'red'}"><span class="stat-icon">KB</span><div class="stat-lbl">Searchable Chunks</div><div class="stat-val">${kb.chunks.toLocaleString()}</div><div class="stat-sub">${kb.indexedDocs} documents ready</div></div>
-      <div class="stat-card ${buckets.slow>5?'red':'green'}"><span class="stat-icon">Slow</span><div class="stat-lbl">Slow (&gt;2s)</div><div class="stat-val">${buckets.slow}</div><div class="stat-sub">Queries</div></div>`;
+      <div class="stat-card green"><span class="stat-icon">Speed</span><div class="stat-lbl">Average Answer Time</div><div class="stat-val">${avgMs}<span style="font-size:16px;color:var(--muted);"> ms</span></div><div class="stat-sub">Based on recent questions</div></div>
+      <div class="stat-card blue"><span class="stat-icon">Total</span><div class="stat-lbl">Total Processed</div><div class="stat-val">${t.messages??all.length}</div><div class="stat-sub">All questions</div></div>
+      <div class="stat-card ${kb.chunks>0?'gold':'red'}"><span class="stat-icon">Documents</span><div class="stat-lbl">Searchable Sections</div><div class="stat-val">${kb.chunks.toLocaleString()}</div><div class="stat-sub">${kb.indexedDocs} documents ready</div></div>
+      <div class="stat-card ${buckets.slow>5?'red':'green'}"><span class="stat-icon">Slow</span><div class="stat-lbl">Slow (&gt;2s)</div><div class="stat-val">${buckets.slow}</div><div class="stat-sub">Questions</div></div>`;
     document.getElementById('rt-buckets').innerHTML=`
       <div style="margin-bottom:16px;"><div class="flex-between" style="margin-bottom:6px;"><span style="font-size:13px;font-weight:600;">Fast (&lt;500ms)</span><span style="font-size:13px;color:var(--green);font-weight:700;">${buckets.fast}</span></div><div class="progress-bar"><div class="progress-fill green" style="width:${Math.round((buckets.fast/total)*100)}%"></div></div></div>
       <div style="margin-bottom:16px;"><div class="flex-between" style="margin-bottom:6px;"><span style="font-size:13px;font-weight:600;">Medium (500ms-2s)</span><span style="font-size:13px;color:var(--amber);font-weight:700;">${buckets.medium}</span></div><div class="progress-bar"><div class="progress-fill gold" style="width:${Math.round((buckets.medium/total)*100)}%"></div></div></div>
       <div><div class="flex-between" style="margin-bottom:6px;"><span style="font-size:13px;font-weight:600;">Slow (&gt;2s)</span><span style="font-size:13px;color:var(--red);font-weight:700;">${buckets.slow}</span></div><div class="progress-bar"><div class="progress-fill red" style="width:${Math.round((buckets.slow/total)*100)}%"></div></div></div>`;
     const vectorRow = kb.chunks > 0
-      ? renderHealthRow('Vector Database', 'SEARCHABLE', 'green', `${kb.chunks.toLocaleString()} chunks ready`)
-      : renderHealthRow('Vector Database', 'EMPTY', 'amber', 'Upload a document to rebuild searchable chunks');
+      ? renderHealthRow('Document Search', 'SEARCHABLE', 'green', `${kb.chunks.toLocaleString()} sections ready`)
+      : renderHealthRow('Document Search', 'EMPTY', 'amber', 'Upload a document to rebuild searchable sections');
     const endpointIsTunnel = API.includes('ngrok');
     document.getElementById('health-items').innerHTML=`
       <div style="display:flex;flex-direction:column;gap:10px;">
-        ${renderHealthRow('FastAPI Backend', 'ONLINE', 'green')}
+        ${renderHealthRow('Application Server', 'ONLINE', 'green')}
         ${vectorRow}
-        ${renderHealthRow('Admin Session', 'ACTIVE', 'green', 'Refresh keeps this session while the token is valid')}
-        ${renderHealthRow(endpointIsTunnel?'ngrok Tunnel':'API Endpoint', endpointIsTunnel?'CONNECTED':'LOCAL', 'blue')}
+        ${renderHealthRow('Admin Session', 'ACTIVE', 'green', 'You stay signed in while your session is valid')}
+        ${renderHealthRow('Server Connection', endpointIsTunnel?'REMOTE':'LOCAL', 'blue')}
       </div>`;
     document.getElementById('perf-log-tbody').innerHTML=all.length
-      ?all.slice(0,20).map((q,i)=>{const ms=num(q.response_time_ms);const cls=ms<500?'badge-green':ms<2000?'badge-amber':'badge-red';const query=String(q.query_text||'');return`<tr><td class="td-mono">${i+1}</td><td style="max-width:300px;font-size:13px;">${esc(query.substring(0,70))}${query.length>70?'...':''}<span class="status-note">${esc(q.username||'Guest')} - ${esc((q.intent||'general').replace(/_/g,' '))}</span></td><td><span class="badge ${cls}">${ms}ms</span></td><td>${performanceResultBadge(q)}</td><td class="td-mono">${dateLabel(q.created_at)}</td></tr>`;}).join('')
-      :'<tr><td colspan="5" class="empty">No performance data yet.</td></tr>';
+      ?all.slice(0,20).map((q,i)=>{const ms=num(q.response_time_ms);const cls=ms<500?'badge-green':ms<2000?'badge-amber':'badge-red';const query=String(q.query_text||'');return`<tr><td class="td-mono">${i+1}</td><td style="max-width:300px;font-size:13px;">${esc(query.substring(0,70))}${query.length>70?'...':''}<span class="status-note">${esc(q.anonymous_user||'Guest')} - ${esc((q.intent||'general').replace(/_/g,' '))}</span></td><td><span class="badge ${cls}">${ms}ms</span></td><td>${performanceResultBadge(q)}</td><td class="td-mono">${dateLabel(q.created_at)}</td></tr>`;}).join('')
+      :'<tr><td colspan="5" class="empty">No answer times yet.</td></tr>';
   } catch(e){
     document.getElementById('perf-stats').innerHTML=`<div class="err-msg" style="grid-column:1/-1;">${esc(e.message)}</div>`;
     document.getElementById('rt-buckets').innerHTML=`<div class="err-msg">${esc(e.message)}</div>`;
@@ -2321,7 +2520,6 @@ async function loadPerformance() {
     document.getElementById('perf-log-tbody').innerHTML=`<tr><td colspan="5"><div class="err-msg">${esc(e.message)}</div></td></tr>`;
   }
 }
-
 
 /* ── Startup ── */
 document.addEventListener('keydown', e => {
@@ -2332,5 +2530,6 @@ window.addEventListener('load', () => {
   restoreAdminSession();
 });
 </script>
+<script src="static/js/admin-login.js?v=20260905-1"></script>
 </body>
 </html>
