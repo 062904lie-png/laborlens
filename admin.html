@@ -418,8 +418,8 @@
       .full-doc-text{font-size:13px;padding:14px;max-height:58vh;}
     }
   </style>
-  <link rel="stylesheet" href="static/css/admin-login.css?v=20260905-1"/>
-  <link rel="stylesheet" href="static/css/admin-panel.css?v=20260905-1"/>
+  <link rel="stylesheet" href="static/css/admin-login.css?v=20260905-2"/>
+  <link rel="stylesheet" href="static/css/admin-panel.css?v=20260905-2"/>
 </head>
 <body>
 
@@ -790,7 +790,7 @@
 
 <div id="toast"></div>
 
-<script src="static/js/admin-panel.js?v=20260905-1"></script>
+<script src="static/js/admin-panel.js?v=20260905-2"></script>
 <script>
 // ════════════════════════════════════════════════════════════════
 // CONFIGURATION — Update NGROK_URL here when your ngrok URL changes
@@ -1180,7 +1180,7 @@ function renderDocumentsTable() {
     const originalLink=sourceUrl?`<span class="status-note"><a href="${esc(sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(d.source_url)}</a></span>`:'';
     return `<tr>
       <td class="td-mono"><input type="checkbox" aria-label="Select ${displayTitle}" ${kbSelectedDocumentIds.has(Number(d.id))?'checked':''} onchange="toggleKbDocumentSelection(${d.id},this.checked)"/><span class="status-note">${i+1}</span></td>
-      <td class="td-strong doc-name">${displayTitle}<span class="status-note">${name}${docMeta?` | ${docMeta}`:''}</span><span class="status-note">${versionStatusBadge(d.version_status,d.is_active)}</span>${originalLink}${d.error_message?`<span class="status-note" style="color:var(--red);">${esc(d.error_message)}</span>`:''}</td>
+      <td class="td-strong doc-name"><span class="doc-title-short" title="${displayTitle}">${displayTitle}</span><details class="doc-details"><summary>Details</summary><div><strong>${displayTitle}</strong><span class="status-note">File: ${name}</span>${docMeta?`<span class="status-note">${docMeta}</span>`:''}${originalLink}</div></details><span class="status-note">${versionStatusBadge(d.version_status,d.is_active)}</span>${d.error_message?`<span class="status-note" style="color:var(--red);">${esc(d.error_message)}</span>`:''}</td>
       <td><span class="badge badge-blue kb-category-badge">Primary: ${category}</span>${secondaryLabel}</td>
       <td><span class="badge badge-gray">${docTypeLabel(d)}</span></td>
       <td>${d.file_size?(d.file_size/1048576).toFixed(2)+' MB':'-'}</td>
@@ -2314,6 +2314,7 @@ async function loadAnalytics() {
     document.getElementById('analytics-volume').innerHTML=vv.length
       ?`<div class="sparkline">${vv.map(v=>`<div class="spark-bar gold" style="height:${Math.max(6,pct(v.count,maxV))}%" title="${esc(dateLabel(v.date||v.DATE))}: ${num(v.count)}"></div>`).join('')}</div><div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Questions</th></tr></thead><tbody>${vv.map(v=>`<tr><td class="td-mono">${esc(dateLabel(v.date||v.DATE))}</td><td><strong>${num(v.count).toLocaleString()}</strong></td></tr>`).join('')}</tbody></table></div>`
       :'<div class="empty">No data yet.</div>';
+    if(window.LaborLensAdminUI) document.getElementById('analytics-volume').innerHTML=window.LaborLensAdminUI.dailyChart(vv);
     const lc={en:0,fil:0,hil:0};
     (d.language_distribution||[]).forEach(row=>{
       const l=String(row.language||'en').toLowerCase();
@@ -2491,14 +2492,14 @@ async function loadPerformance() {
     const total=all.length||1;
     const avgMs=all.length?Math.round(all.reduce((s,q)=>s+num(q.response_time_ms),0)/all.length):0;
     document.getElementById('perf-stats').innerHTML=`
-      <div class="stat-card green"><span class="stat-icon">Speed</span><div class="stat-lbl">Average Answer Time</div><div class="stat-val">${avgMs}<span style="font-size:16px;color:var(--muted);"> ms</span></div><div class="stat-sub">Based on recent questions</div></div>
+      <div class="stat-card green"><span class="stat-icon">Speed</span><div class="stat-lbl">Average Answer Time</div><div class="stat-val">${all.length?avgMs:"—"}<span style="font-size:16px;color:var(--muted);">${all.length?" ms":""}</span></div><div class="stat-sub">Based on recent questions</div></div>
       <div class="stat-card blue"><span class="stat-icon">Total</span><div class="stat-lbl">Total Processed</div><div class="stat-val">${t.messages??all.length}</div><div class="stat-sub">All questions</div></div>
       <div class="stat-card ${kb.chunks>0?'gold':'red'}"><span class="stat-icon">Documents</span><div class="stat-lbl">Searchable Sections</div><div class="stat-val">${kb.chunks.toLocaleString()}</div><div class="stat-sub">${kb.indexedDocs} documents ready</div></div>
-      <div class="stat-card ${buckets.slow>5?'red':'green'}"><span class="stat-icon">Slow</span><div class="stat-lbl">Slow (&gt;2s)</div><div class="stat-val">${buckets.slow}</div><div class="stat-sub">Questions</div></div>`;
+      <div class="stat-card ${buckets.slow>5?'red':'green'}"><span class="stat-icon">Slow</span><div class="stat-lbl">Slow (2s or more)</div><div class="stat-val">${buckets.slow}</div><div class="stat-sub">Questions</div></div>`;
     document.getElementById('rt-buckets').innerHTML=`
       <div style="margin-bottom:16px;"><div class="flex-between" style="margin-bottom:6px;"><span style="font-size:13px;font-weight:600;">Fast (&lt;500ms)</span><span style="font-size:13px;color:var(--green);font-weight:700;">${buckets.fast}</span></div><div class="progress-bar"><div class="progress-fill green" style="width:${Math.round((buckets.fast/total)*100)}%"></div></div></div>
-      <div style="margin-bottom:16px;"><div class="flex-between" style="margin-bottom:6px;"><span style="font-size:13px;font-weight:600;">Medium (500ms-2s)</span><span style="font-size:13px;color:var(--amber);font-weight:700;">${buckets.medium}</span></div><div class="progress-bar"><div class="progress-fill gold" style="width:${Math.round((buckets.medium/total)*100)}%"></div></div></div>
-      <div><div class="flex-between" style="margin-bottom:6px;"><span style="font-size:13px;font-weight:600;">Slow (&gt;2s)</span><span style="font-size:13px;color:var(--red);font-weight:700;">${buckets.slow}</span></div><div class="progress-bar"><div class="progress-fill red" style="width:${Math.round((buckets.slow/total)*100)}%"></div></div></div>`;
+      <div style="margin-bottom:16px;"><div class="flex-between" style="margin-bottom:6px;"><span style="font-size:13px;font-weight:600;">Medium (500ms to under 2s)</span><span style="font-size:13px;color:var(--amber);font-weight:700;">${buckets.medium}</span></div><div class="progress-bar"><div class="progress-fill gold" style="width:${Math.round((buckets.medium/total)*100)}%"></div></div></div>
+      <div><div class="flex-between" style="margin-bottom:6px;"><span style="font-size:13px;font-weight:600;">Slow (2s or more)</span><span style="font-size:13px;color:var(--red);font-weight:700;">${buckets.slow}</span></div><div class="progress-bar"><div class="progress-fill red" style="width:${Math.round((buckets.slow/total)*100)}%"></div></div></div>`;
     const vectorRow = kb.chunks > 0
       ? renderHealthRow('Document Search', 'SEARCHABLE', 'green', `${kb.chunks.toLocaleString()} sections ready`)
       : renderHealthRow('Document Search', 'EMPTY', 'amber', 'Upload a document to rebuild searchable sections');
@@ -2508,7 +2509,7 @@ async function loadPerformance() {
         ${renderHealthRow('Application Server', 'ONLINE', 'green')}
         ${vectorRow}
         ${renderHealthRow('Admin Session', 'ACTIVE', 'green', 'You stay signed in while your session is valid')}
-        ${renderHealthRow('Server Connection', endpointIsTunnel?'REMOTE':'LOCAL', 'blue')}
+        ${renderHealthRow('Server Connection', endpointIsTunnel?'TUNNEL':'CONNECTED', 'blue')}
       </div>`;
     document.getElementById('perf-log-tbody').innerHTML=all.length
       ?all.slice(0,20).map((q,i)=>{const ms=num(q.response_time_ms);const cls=ms<500?'badge-green':ms<2000?'badge-amber':'badge-red';const query=String(q.query_text||'');return`<tr><td class="td-mono">${i+1}</td><td style="max-width:300px;font-size:13px;">${esc(query.substring(0,70))}${query.length>70?'...':''}<span class="status-note">${esc(q.anonymous_user||'Guest')} - ${esc((q.intent||'general').replace(/_/g,' '))}</span></td><td><span class="badge ${cls}">${ms}ms</span></td><td>${performanceResultBadge(q)}</td><td class="td-mono">${dateLabel(q.created_at)}</td></tr>`;}).join('')
@@ -2530,6 +2531,6 @@ window.addEventListener('load', () => {
   restoreAdminSession();
 });
 </script>
-<script src="static/js/admin-login.js?v=20260905-1"></script>
+<script src="static/js/admin-login.js?v=20260905-2"></script>
 </body>
 </html>
