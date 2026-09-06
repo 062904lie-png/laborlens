@@ -2973,7 +2973,7 @@
       body.app-ready .disclaimer{margin-top:8px!important;font-size:9px!important;}
     }
   </style>
-  <link rel="stylesheet" href="static/css/workspace.css?v=20260905-1"/>
+  <link rel="stylesheet" href="static/css/workspace.css?v=20260906-1"/>
   <link rel="stylesheet" href="static/css/motion.css?v=20260905-1"/>
   <link rel="stylesheet" href="static/css/voice.css?v=20260905-1"/>
   <link rel="stylesheet" href="static/css/public.css?v=20260905-3"/>
@@ -3276,7 +3276,8 @@
   </div>
 </div>
 
-<script src="static/js/workspace.js?v=20260905-1"></script>
+<script src="static/js/workspace.js?v=20260906-1"></script>
+<script src="static/js/chat-controls.js?v=20260906-1"></script>
 <script src="static/js/motion.js?v=20260905-1"></script>
 <script src="static/js/voice.js?v=20260905-1"></script>
 <script>
@@ -4086,8 +4087,8 @@ async function saveLangSetting(val) {
   }
 }
 function requestLanguageValue() {
-  const selected = localStorage.getItem('ll_lang') || 'auto';
-  return selected || 'auto';
+  const selected = document.getElementById('topbar-lang')?.value || localStorage.getItem('ll_lang') || 'auto';
+  return ['en', 'fil', 'hil', 'auto'].includes(selected) ? selected : 'auto';
 }
 function resetSettings() {
   savePrefs(DEFAULT_PREFS);
@@ -4934,7 +4935,7 @@ function citationText(source) {
   const meta = sourceMetaLine(source);
   return [title, meta, source.source_url].filter(Boolean).join(' | ');
 }
-function renderSources(sources) {
+function uniqueAnswerSources(sources) {
   const unique = [];
   const seen = new Set();
   normalizeSources(sources).forEach(source => {
@@ -4949,9 +4950,11 @@ function renderSources(sources) {
     seen.add(key);
     unique.push(source);
   });
-  const list = unique.slice(0, 12);
+  return unique;
+}
+function renderSources(sources) {
+  const list = uniqueAnswerSources(sources);
   if (!list.length) return '';
-  const citations = list.map(citationText).filter(Boolean).join('\n');
   const items = list.map((source, index) => {
     const title = escapeHtml(sourceDisplayTitle(source));
     const meta = escapeHtml(sourceMetaLine(source, index));
@@ -4967,9 +4970,8 @@ function renderSources(sources) {
   }).join('');
   const sourceCount = list.length;
   const viewLabel = `View All Sources (${sourceCount})`;
-  const view = `<button class="source-card-btn" type="button" data-view-label="${escapeHtml(viewLabel)}" onclick="viewFirstSource(this)"><span aria-hidden="true">&#128279;</span> ${escapeHtml(viewLabel)}</button>`;
-  const copy = `<button class="source-card-btn" type="button" data-citation="${escapeHtml(citations)}" onclick="copyCitation(this)"><span aria-hidden="true">&#128203;</span> Copy Citation</button>`;
-  return `<div class="source-links" aria-label="Sources"><span class="source-links-title">Retrieved sources</span><div class="source-link-list source-hidden-passages">${items}</div><div class="source-card-actions">${view}${copy}</div></div>`;
+  const view = `<button class="source-card-btn" type="button" aria-expanded="false" data-view-label="${escapeHtml(viewLabel)}" onclick="viewFirstSource(this)"><span aria-hidden="true">&#128279;</span> ${escapeHtml(viewLabel)}</button>`;
+  return `<div class="source-links" aria-label="Sources"><span class="source-links-title">Retrieved Sources</span><div class="source-link-list source-hidden-passages">${items}</div><div class="source-card-actions">${view}</div></div>`;
 }
 function normalizeSourceMatchValue(value) {
   const normalized = String(value || '').trim().toLowerCase().replace(/[\s-]+/g, '_');
@@ -5078,18 +5080,14 @@ function renderFeedback(meta = {}, hasSources = false) {
   const sourceMatch = getSourceMatch(meta);
   if (isSimpleConversationIntent(meta?.intent) || meta?.display_mode === 'simple_message' || (!sourceMatch && !hasSources)) return '';
   if (sourceMatch === 'not_required') return '';
-  const sourceButton = hasSources
-    ? `<button class="answer-action-btn" onclick="viewFirstSource(this)"><span aria-hidden="true">&#8635;</span> View Sources</button>`
-    : '';
-  if (isGuest || !token || !meta || !messageId) {
-    return `<div class="answer-actions"><button class="answer-action-btn" onclick="copyMessage(this)"><span aria-hidden="true">&#128203;</span> Copy</button>${sourceButton}</div>`;
-  }
-  return `<div class="answer-actions" data-feedback-for="${Number(messageId)}">
-    <button class="answer-action-btn" onclick="copyMessage(this)"><span aria-hidden="true">&#128203;</span> Copy</button>
-    ${sourceButton}
-    <button class="answer-action-btn" onclick="submitFeedback(${Number(messageId)},'yes',this,'Helpful')"><span aria-hidden="true">&#128077;</span> Helpful</button>
-    <button class="answer-action-btn danger" onclick="showFeedbackReasons(${Number(messageId)},this)"><span aria-hidden="true">&#128078;</span> Not Helpful</button>
-    <button class="answer-action-btn danger" onclick="submitFeedback(${Number(messageId)},'no',this,'Report incorrect answer')"><span aria-hidden="true">&#9873;</span> Report Incorrect Answer</button>
+  const action=(name,label,handler,extra='')=>`<button type="button" class="answer-action-btn answer-icon-btn ${extra}" aria-label="${label}" title="${label}" data-tooltip="${label}" onclick="${handler}">${LaborLensChatControls.icon(name)}</button>`;
+  const copy=action('copy','Copy answer','copyMessage(this)');
+  if (isGuest || !token || !meta || !messageId) return `<div class="answer-actions" role="group" aria-label="Answer actions">${copy}</div>`;
+  return `<div class="answer-actions" role="group" aria-label="Answer actions" data-feedback-for="${Number(messageId)}">
+    ${copy}
+    ${action('up','Mark as helpful',`submitFeedback(${Number(messageId)},'yes',this,'Helpful')`)}
+    ${action('down','Mark as not helpful',`showFeedbackReasons(${Number(messageId)},this)`,'danger')}
+    ${action('flag','Report incorrect answer',`submitFeedback(${Number(messageId)},'no',this,'Report incorrect answer')`,'danger')}
   </div>`;
 }
 function showFeedbackReasons(messageId, btn) {
@@ -5123,12 +5121,14 @@ async function submitFeedback(messageId,rating,btn,comment='') {
     alert(e.message || 'Unable to save feedback.');
   }
 }
-function copyMessage(btn) {
-  const bubble = btn.closest('.msg-bubble');
-  const text = bubble?.querySelector('.answer-content')?.innerText || bubble?.innerText || '';
-  navigator.clipboard?.writeText(text.trim());
-  btn.textContent = 'Copied';
-  setTimeout(() => btn.textContent = 'Copy', 1200);
+async function copyMessage(btn) {
+  const bubble=btn.closest('.msg-bubble');
+  const text=bubble?.querySelector('.answer-content')?.innerText || '';
+  try {
+    await navigator.clipboard.writeText(text.trim());
+    btn.classList.add('saved');btn.title='Copied';btn.setAttribute('aria-label','Answer copied');btn.dataset.tooltip='Copied';
+    setTimeout(()=>{btn.classList.remove('saved');btn.title='Copy answer';btn.setAttribute('aria-label','Copy answer');btn.dataset.tooltip='Copy answer';},1200);
+  } catch (_) { btn.title='Copy failed. Please select and copy the answer.';btn.dataset.tooltip=btn.title; }
 }
 function viewFirstSource(btn) {
   const bubble = btn.closest('.msg-bubble');
@@ -5137,11 +5137,10 @@ function viewFirstSource(btn) {
     const willShow = !hiddenList.classList.contains('show');
     hiddenList.classList.toggle('show', willShow);
     if (btn) {
-      const defaultLabel = btn.getAttribute('data-view-label') || 'View Sources';
+      const defaultLabel = btn.getAttribute('data-view-label') || 'View All Sources';
+      btn.setAttribute('aria-expanded',String(willShow));
       btn.classList.toggle('saved', willShow);
-      btn.innerHTML = willShow
-        ? '<span aria-hidden="true">&#128279;</span> Hide Sources'
-        : `<span aria-hidden="true">&#128279;</span> ${escapeHtml(defaultLabel)}`;
+      btn.innerHTML = `<span aria-hidden="true">&#128279;</span> ${escapeHtml(defaultLabel)}`;
     }
     hiddenList.scrollIntoView({behavior:'smooth', block:'nearest'});
     return;
@@ -5153,12 +5152,6 @@ function openNearestPassage(btn) {
     details.open = true;
     details.scrollIntoView({behavior:'smooth', block:'nearest'});
   }
-}
-function copyCitation(btn) {
-  const citation = btn.getAttribute('data-citation') || '';
-  navigator.clipboard?.writeText(citation);
-  btn.textContent = 'Copied';
-  setTimeout(() => btn.textContent = 'Copy Citation', 1200);
 }
 function renderGuidedActions(content='', meta={}) {
   if (meta?.intent === 'system_error') {
@@ -5303,6 +5296,7 @@ function updateMsg(row, content, sources = [], meta = {}) {
   const displaySources = !isClarification && !['insufficient', 'not_required', 'provider_unavailable'].includes(sourceMatch) ? sources : [];
   row.className = `msg-row ${isUser ? 'user' : 'bot'}`;
   row.innerHTML = `<div class="msg-avatar">${isUser ? initial : '&#9878;'}</div><div class="msg-bubble${isLegalAnswer ? ' legal-answer' : ''}${isCalculation ? ' calculation-card' : ''}">${body}${isUser ? '' : renderGuidedActions(content, meta)}${isUser ? '' : renderSources(displaySources)}${isUser || isClarification ? '' : renderFeedback(meta, hasSources)}<div class="msg-time">${formatTime(row.dataset.createdAt)}</div></div>`;
+  if (!isUser) LaborLensChatControls.linkLegalBasis(row, uniqueAnswerSources(displaySources));
   const box = document.getElementById('msgs');
   if (box) box.scrollTop = box.scrollHeight;
 }
