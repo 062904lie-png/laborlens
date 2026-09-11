@@ -1,0 +1,202 @@
+/* Final presentation layer: shared tokens prevent layout rules defeating themes. */
+body.app-ready {
+  --chat-bg:#f3f6fb; --chat-panel:#fff; --chat-soft:#edf2f9;
+  --chat-text:#192b45; --chat-muted:#51647e; --chat-line:#cbd6e5;
+  --chat-link:#1857ae; --chat-accent:#a46c08;
+  --chat-size:16px;
+}
+body.app-ready.theme-dark {
+  --chat-bg:#0c1524; --chat-panel:#142238; --chat-soft:#1c304b;
+  --chat-text:#e7eef9; --chat-muted:#b0c0d6; --chat-line:#354b66;
+  --chat-link:#99c5ff; --chat-accent:#ffcc61;
+}
+body.app-ready.font-small { --chat-size:14px; }
+body.app-ready.font-large { --chat-size:18px; }
+body.app-ready.ll-reference #app { --rail:290px; --header:76px; --gutter:24px; }
+body.app-ready.ll-reference.sidebar-collapsed #app { --rail:0px; }
+body.app-ready.ll-reference #app.visible { background:var(--chat-bg)!important; color:var(--chat-text)!important; }
+body.app-ready.ll-reference #app :is(#chat-area,#msgs) { background:var(--chat-bg)!important; }
+body.app-ready.ll-reference #app :is(#topbar,#input-zone,#input-box,.consultation-hero,.hero-card,.topic-card,.msg-row.bot .msg-bubble,.status-popover,.modal,#settings-panel) {
+  background:var(--chat-panel)!important; color:var(--chat-text)!important; border-color:var(--chat-line)!important;
+}
+body.app-ready.ll-reference #app :is(.tb-hamburger,.tb-status,.tb-lang select,.tb-user-chip,.sp-select,.source-card,.source-item,.source-card-btn,.answer-icon-btn,.guided-action-btn,.sp-profile-card,.sp-close,.sp-secondary-btn) {
+  background:var(--chat-soft)!important; color:var(--chat-text)!important; border-color:var(--chat-line)!important;
+}
+body.app-ready.ll-reference #app :is(.tb-lang,.tb-uname,.tb-role,.tb-user-copy small,.consultation-copy h2,.hero-content h2,.topic-card,.sp-title,.sp-label,.sp-toggle-label,.sp-profile-name,.answer-label,.answer-section-title,.source-title,.source-links-title,.msg-row.bot .msg-bubble strong) { color:var(--chat-text)!important; }
+body.app-ready.ll-reference #app :is(.consultation-copy p,.hero-content p,.sp-sub,.sp-toggle-sub,.sp-profile-role,.msg-time,.source-meta,.input-disclaimer,.common-topics-title,.topics-header) { color:var(--chat-muted)!important; }
+body.app-ready.ll-reference #app :is(.msg-row.bot .msg-bubble,.answer-body,.answer-content) { color:var(--chat-text)!important;font-size:var(--chat-size)!important;line-height:1.7!important; }
+body.app-ready.ll-reference #app :is(.msg-row.bot a,.legal-source-link) { color:var(--chat-link)!important; }
+body.app-ready.ll-reference #app :is(.answer-section,.source-links,th,td) { border-color:var(--chat-line)!important; }
+body.app-ready.ll-reference #app :is(.answer-section-computation,.calculation-card,.clarification-card,.guided-card,th) { background:var(--chat-soft)!important;color:var(--chat-text)!important; }
+body.app-ready.ll-reference #app #msg-input { background:var(--chat-panel)!important;color:var(--chat-text)!important;border-color:var(--chat-line)!important;font-size:max(16px,var(--chat-size))!important;line-height:1.5!important; }
+body.app-ready.ll-reference #app #msg-input::placeholder { color:var(--chat-muted)!important;opacity:1; }
+body.app-ready.ll-reference #app :is(#mic-btn,.input-sparkle) { background:var(--chat-panel)!important;color:var(--chat-muted)!important;border-color:var(--chat-line)!important; }
+body.app-ready.ll-reference #app .msg-row.user .msg-bubble { background:#174da8!important;color:#fff!important;font-size:var(--chat-size)!important; }
+body.app-ready.ll-reference #app .msg-row.user .msg-bubble :is(strong,a,em) { color:inherit!important; }
+body.app-ready.ll-reference #app .msg-row.user .msg-time { color:#d6e5ff!important; }
+body.app-ready.ll-reference #app .hero-illustration { mix-blend-mode:normal!important;border-radius:12px; }
+body.app-ready.ll-reference #app #sidebar { padding:24px 18px 16px!important; }
+body.app-ready.ll-reference #app .sb-new-btn { width:100%!important;font-size:16px!important;min-height:48px!important;padding:12px!important; }
+body.app-ready.ll-reference #app .sb-new-btn .new-consultation-label { font-size:16px!important;white-space:normal!important; }
+body.app-ready.ll-reference #app .sidebar-brand-copy strong { font-size:28px!important; }
+body.app-ready.ll-reference #app .sidebar-brand-copy small { font-size:11px!important; }
+body.app-ready.ll-reference #app .sidebar-brand { gap:10px!important; }
+body.app-ready.ll-reference #app .sidebar-brand-mark { width:44px!important;height:56px!important;flex-basis:44px!important; }
+body.app-ready.theme-light.ll-reference #app #sidebar { background:#eaf0f8!important;border-color:var(--chat-line)!important; }
+body.app-ready.theme-light.ll-reference #app :is(.sidebar-brand-copy strong,.sidebar-brand-copy small,.sidebar-nav-btn,.sess-title,.sess-icon,.sb-section-label,.session-group-label,.ll-search-icon,.ll-filter-icon) { color:#19385c!important; }
+body.app-ready.ll-reference #app :is(button,select,a,input,textarea):focus-visible { outline:3px solid var(--chat-link)!important;outline-offset:3px; }
+body.app-ready.ll-reference #app :is(.tb-hamburger,.sp-close,.toggle) { min-width:44px!important;min-height:44px!important; }
+body.app-ready.ll-reference #app #settings-panel { position:fixed!important;inset:16px 16px 16px auto!important;width:min(420px,calc(100vw - 32px))!important;max-height:none!important;padding:0!important;overflow:hidden!important;transform:none!important;border:1px solid var(--chat-line)!important;border-radius:16px!important;z-index:201!important;box-shadow:0 16px 60px #0005!important; }
+body.app-ready.ll-reference #app #settings-panel.open { display:flex!important;flex-direction:column; }
+body.app-ready.ll-reference #app .sp-header { flex:0 0 auto;background:var(--chat-soft)!important;border-color:var(--chat-line)!important;padding:18px 20px!important; }
+body.app-ready.ll-reference #app .sp-body { padding:20px!important;overflow-y:auto!important;overscroll-behavior:contain;min-height:0; }
+body.app-ready.ll-reference #app .sp-toggle-row { gap:16px!important;padding:14px 0!important;border-color:var(--chat-line)!important; }
+body.app-ready.ll-reference #app .sp-toggle-row>div { min-width:0;flex:1; }
+body.app-ready.ll-reference #app .sp-toggle-label { font-size:15px!important; }
+body.app-ready.ll-reference #app .sp-toggle-sub { font-size:13px!important;line-height:1.5; }
+body.app-ready.ll-reference #app .toggle { flex-shrink:0;width:48px!important;height:28px!important;min-height:28px!important;border:1px solid var(--chat-line)!important;background:#64748b!important; }
+body.app-ready.ll-reference #app .toggle.on { background:#2563eb!important; }
+body.app-ready.ll-reference #app .sp-select { min-height:44px!important;width:100%!important; }
+body.app-ready.ll-reference #app #settings-overlay.open { display:block!important;z-index:200!important;background:#02081799!important; }
+body.app-ready.ll-reference #app .msg-bubble pre { max-width:100%;overflow:auto; }
+body.app-ready.ll-reference #app #topbar-lang { background:var(--chat-soft)!important;color:var(--chat-text)!important; }
+body.app-ready.ll-reference #app :is(.clarification-card-question,.clarification-card-title,.source-card-title,.source-card-heading) { color:var(--chat-text)!important; }
+body.app-ready.ll-reference #app .clarification-card-question { font-size:var(--chat-size)!important;line-height:1.6!important; }
+body.app-ready.ll-reference #app :is(.clarification-card-hint,.disclaimer,.disclaimer-item,.disclaimer-shield) { color:var(--chat-muted)!important; }
+body.app-ready.ll-reference #app .disclaimer { font-size:11px!important;line-height:1.5!important; }
+body.app-ready.ll-reference #app #msg-input { scrollbar-width:thin;scrollbar-color:var(--chat-line) transparent; }
+body.app-ready.ll-reference #app :is(.answer-section-legal,.answer-section-computation p,.answer-section-computation ul,.source-passage pre,.answer-section blockquote) { background:var(--chat-soft)!important;color:var(--chat-text)!important;border-color:var(--chat-line)!important; }
+body.app-ready.ll-reference #app :is(.source-passage,.source-passage summary) { color:var(--chat-link)!important; }
+body.app-ready.ll-reference #app .answer-content :is(p,li) { font-size:var(--chat-size)!important;line-height:1.7!important; }
+/* Scroll the wrapper, not the table, to avoid an empty strip beside cells. */
+/* Stack calculations beneath the explanation rather than leaving an empty column. */
+body.app-ready.ll-reference #app .answer-dashboard { grid-template-columns:minmax(0,1fr)!important;gap:12px!important;align-items:start!important; }
+body.app-ready.ll-reference #app .answer-col-main { padding-right:0!important;border-right:0!important; }
+body.app-ready.ll-reference #app .answer-col-side { display:block!important;min-width:0!important; }
+body.app-ready.ll-reference #app .answer-section-computation { width:auto!important;max-width:100%!important;min-height:0!important;padding:12px!important;margin:0!important; }
+body.app-ready.ll-reference #app .answer-section-computation :is(p,ul,ol) { padding:0!important;border:0!important;background:transparent!important;margin:6px 0!important; }
+body.app-ready.ll-reference #app .answer-section-computation :is(ul,ol) { padding-left:22px!important; }
+body.app-ready.ll-reference #app .answer-section-computation :is(p,ul,ol,li,.formula-box) { text-align:left!important; }
+body.app-ready.ll-reference #app .answer-section-computation :is(p,li) { line-height:1.6!important; }
+body.app-ready.ll-reference #app .answer-section-computation :is(ul,ol) { columns:1!important; }
+body.app-ready.ll-reference #app .msg-bubble :is(.rate-table-wrap,.answer-table-scroll) { max-width:100%;overflow-x:auto!important;background:var(--chat-panel)!important;border-color:var(--chat-line)!important; }
+body.app-ready.ll-reference #app .msg-bubble table { display:table!important;width:100%!important;max-width:100%;color:var(--chat-text)!important;background:var(--chat-panel)!important; }
+body.app-ready.ll-reference #app .msg-bubble :is(td,tbody,tr) { background:var(--chat-panel)!important;color:var(--chat-text)!important;border-color:var(--chat-line)!important; }
+body.app-ready.ll-reference #app .msg-bubble th { background:var(--chat-soft)!important;color:var(--chat-text)!important;border-color:var(--chat-line)!important; }
+body.app-ready.ll-reference #app .msg-bubble tbody tr:hover td { background:var(--chat-soft)!important; }
+body.app-ready.ll-reference #app .msg-bubble :is(th,td) { overflow-wrap:anywhere; }
+/* Keep answer tables content-sized, including wide Markdown comparisons. */
+body.app-ready.ll-reference #app .msg-bubble :is(.rate-table-wrap,.answer-table-scroll) { box-sizing:border-box!important;width:100%!important;min-width:0!important;height:auto!important;min-height:0!important; }
+body.app-ready.ll-reference #app .msg-bubble table { height:auto!important;min-height:0!important;table-layout:fixed!important;min-width:0!important;font-size:13px!important;line-height:1.45!important; }
+body.app-ready.ll-reference #app .msg-bubble thead { display:table-header-group!important;height:auto!important;min-height:0!important; }
+body.app-ready.ll-reference #app .msg-bubble tbody { display:table-row-group!important;height:auto!important;min-height:0!important; }
+body.app-ready.ll-reference #app .msg-bubble tr { display:table-row!important;height:auto!important;min-height:0!important; }
+body.app-ready.ll-reference #app .msg-bubble :is(th,td) { display:table-cell!important;height:auto!important;min-height:0!important;padding:8px 10px!important;line-height:1.45!important;font-size:13px!important;vertical-align:top!important;white-space:normal!important; }
+/* Generic tables can have more than the three columns in an overtime table. */
+body.app-ready.ll-reference #app .msg-bubble .answer-table-scroll th { width:auto!important; }
+body.app-ready.ll-reference #app .msg-row.bot .money-amount { color:var(--chat-link)!important; }
+body.app-ready.ll-reference #app .msg-row.bot :is(pre,code,blockquote,.formula-box) { background:var(--chat-soft)!important;color:var(--chat-text)!important;border-color:var(--chat-line)!important; }
+body.app-ready.ll-reference #app .msg-row.bot pre code { background:transparent!important; }
+body.app-ready.ll-reference #app .source-cards { grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))!important; }
+/* The grid owns the rail width; children must never use an independent vw width. */
+body.app-ready.ll-reference #app #sidebar-collapse-handle { display:none!important; }
+body.app-ready.ll-reference #app .source-links { background:transparent!important;color:var(--chat-text)!important; }
+body.app-ready.ll-reference #app :is(.source-link-list,.source-hidden-passages) { background:transparent!important; }
+body.app-ready.theme-light.ll-reference #app :is(.sess-meta,.session-date) { color:var(--chat-muted)!important; }
+body.app-ready.theme-light.ll-reference #app #session-search { background:var(--chat-panel)!important;color:var(--chat-text)!important;border:1px solid var(--chat-line)!important; }
+body.app-ready.theme-light.ll-reference #app #session-search::placeholder { color:var(--chat-muted)!important;opacity:1; }
+body.app-ready.ll-reference #app .source-link-item { background:var(--chat-soft)!important;color:var(--chat-text)!important;border-color:var(--chat-line)!important; }
+body.app-ready.ll-reference #app .source-link-title { color:var(--chat-text)!important; }
+/* Session controls must not inherit the legacy white-on-navy icon colors. */
+body.app-ready.ll-reference #app .sess-mini { background:var(--chat-panel)!important;color:var(--chat-text)!important;border:1px solid var(--chat-line)!important; }
+body.app-ready.ll-reference #app .sess-mini:hover { background:var(--chat-soft)!important;color:var(--chat-link)!important; }
+body.app-ready.ll-reference #app .sess-delete { color:#b42318!important; }
+body.app-ready.ll-reference #app .sess-delete:hover { background:#fee4e2!important;color:#912018!important; }
+body.app-ready.theme-dark.ll-reference #app .sess-delete { color:#ffb4ab!important; }
+body.app-ready.theme-dark.ll-reference #app .sess-delete:hover { background:#4c252c!important;color:#ffd9d4!important; }
+body.app-ready.ll-reference #app .sess-pin.is-pinned { color:var(--chat-accent)!important;background:var(--chat-soft)!important; }
+body.app-ready.ll-reference #app .sess-item:focus-within .sess-actions { display:flex!important; }
+body.app-ready.ll-reference #app .sess-item:focus-within .sess-pin { display:grid!important; }
+@media(hover:none) {
+  body.app-ready.ll-reference #app .sess-actions { display:flex!important; }
+  body.app-ready.ll-reference #app .sess-pin { display:grid!important; }
+}
+body.app-ready.ll-reference #app :is(.source-link-meta,.source-link-note) { color:var(--chat-muted)!important; }
+body.app-ready.ll-reference #app .sp-close { width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;border-radius:8px!important;flex-shrink:0; }
+body.app-ready.ll-reference #app :is(button,select,a,input,textarea):focus-visible { outline-width:2px!important;outline-offset:2px; }
+@media(min-width:901px) {
+  body.app-ready.ll-reference #app #sidebar { width:var(--rail)!important;max-width:var(--rail)!important; }
+  body.app-ready.ll-reference #app #chat-area { padding:0!important;overflow:hidden!important; }
+  body.app-ready.ll-reference #app #msgs { width:100%!important;flex:1 1 0!important;min-height:0!important;padding:24px!important;overflow-y:auto!important; }
+  body.app-ready.ll-reference #app #input-zone { position:relative!important;inset:auto!important;width:auto!important;margin:0 24px 20px!important;padding:12px!important;flex:0 0 auto!important; }
+}
+/* Welcome copy sizing stays independent of the illustration dimensions. */
+body.app-ready.ll-reference #app .consultation-hero {
+  display:block!important;grid-template-columns:minmax(0,1fr)!important;
+  height:auto!important;min-height:0!important;padding:clamp(24px,3vw,40px)!important;
+  background:linear-gradient(125deg,var(--chat-panel),var(--chat-soft))!important;
+  border:1px solid var(--chat-line)!important;border-top:3px solid var(--chat-accent)!important;
+  border-radius:16px!important;box-shadow:none!important;
+}
+body.app-ready.ll-reference #app .consultation-copy { padding:0!important;max-width:760px!important;width:100%!important; }
+body.app-ready.ll-reference #app .consultation-copy .consultation-eyebrow { margin:0 0 14px!important;font-size:11px!important;font-weight:700!important;letter-spacing:1.8px!important;color:var(--chat-muted)!important; }
+body.app-ready.ll-reference #app .consultation-title { font-size:clamp(26px,3vw,38px)!important;line-height:1.2!important;max-width:none!important;margin:0 0 16px!important; }
+body.app-ready.ll-reference #app .consultation-title span { color:var(--chat-accent)!important; }
+body.app-ready.ll-reference #app .consultation-accent { display:none!important; }
+body.app-ready.ll-reference #app .consultation-subtitle { max-width:650px!important;font-size:15px!important;line-height:1.7!important;margin:0 0 24px!important; }
+body.app-ready.ll-reference #app .consultation-actions { width:fit-content!important;max-width:100%!important; }
+body.app-ready.ll-reference #app .consultation-actions .mode-tab { flex:0 1 auto!important;width:auto!important;min-height:48px!important;height:auto!important;padding:12px 20px!important;font-size:14px!important;gap:16px!important;background:var(--chat-text)!important;color:var(--chat-panel)!important;border-color:var(--chat-text)!important; }
+body.app-ready.ll-reference #app .consultation-actions .mode-tab-icon { width:20px!important;height:20px!important;flex:0 0 20px!important; }
+/* Transparent artwork inherits the card surface in either theme. Avoid the
+   legacy hero-illustration rules that forced oversized, white-backed artwork. */
+body.app-ready.ll-reference #app #welcome .consultation-hero {
+  display:grid!important;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)!important;
+  align-items:center!important;gap:24px!important;background:var(--chat-panel)!important;
+  border-top-color:var(--chat-accent)!important;
+}
+body.app-ready.ll-reference #app .legal-hero-art {
+  display:grid;place-items:center;min-width:0;width:100%;height:240px;
+  background:var(--chat-panel);overflow:hidden;
+}
+body.app-ready.ll-reference #app .legal-hero-art img {
+  display:block;width:100%;height:100%;max-width:360px;max-height:240px;
+  object-fit:contain;mix-blend-mode:normal;background:transparent;
+}
+@media(max-width:640px) {
+  body.app-ready.ll-reference #app #welcome .consultation-hero { grid-template-columns:minmax(0,1fr)!important;gap:16px!important; }
+  body.app-ready.ll-reference #app .legal-hero-art { grid-row:1;height:150px; }
+  body.app-ready.ll-reference #app .legal-hero-art img { max-height:150px;max-width:220px; }
+}
+@media(max-height:550px) and (max-width:900px) {
+  body.app-ready.ll-reference #app .legal-hero-art { display:none; }
+  body.app-ready.ll-reference #app #welcome .consultation-hero { grid-template-columns:minmax(0,1fr)!important; }
+}
+@media(max-width:900px) {
+  body.app-ready.ll-reference #app.visible { display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:64px minmax(0,1fr)!important;height:100dvh!important;max-height:100dvh!important;overflow:hidden!important; }
+  body.app-ready.ll-reference #app #topbar { grid-column:1!important;grid-row:1!important;height:64px!important;min-height:64px!important;padding:0 12px!important;gap:10px!important; }
+  body.app-ready.ll-reference #app #chat-area { grid-column:1!important;grid-row:2!important;display:flex!important;flex-direction:column!important;height:auto!important;min-height:0!important; }
+  body.app-ready.ll-reference #app #msgs { flex:1 1 0!important;overflow-y:auto!important;padding:16px!important; }
+  body.app-ready.ll-reference #app #sidebar { position:fixed!important;inset:0 auto 0 0!important;width:min(290px,86vw)!important;height:100dvh!important;z-index:151!important; }
+  body.app-ready.ll-reference #app #input-zone { position:relative!important;inset:auto!important;margin:0 12px 12px!important;width:auto!important;flex:0 0 auto!important;padding:10px!important;padding-bottom:max(10px,env(safe-area-inset-bottom))!important; }
+  body.app-ready.ll-reference #app .consultation-hero { grid-template-columns:minmax(0,1fr)!important;padding:22px!important; }
+  body.app-ready.ll-reference #app .consultation-art { display:none!important; }
+  body.app-ready.ll-reference #app .topic-grid { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
+  body.app-ready.ll-reference #app .tb-user-chip { min-width:0!important; }
+  body.app-ready.ll-reference #app .tb-status { min-width:0!important;padding:8px!important;font-size:12px!important; }
+}
+@media(max-width:600px) {
+  body.app-ready.ll-reference #app .tb-user-copy { display:none!important; }
+  body.app-ready.ll-reference #app .tb-lang { margin-left:auto!important;padding:0!important; }
+  body.app-ready.ll-reference #app #topbar-lang { min-width:0!important;width:96px!important;font-size:14px!important; }
+  body.app-ready.ll-reference #app .tb-lang .tb-globe { display:none!important; }
+  body.app-ready.ll-reference #app .tb-status { display:none!important; }
+  body.app-ready.ll-reference #app .msg-row { gap:8px!important; }
+  body.app-ready.ll-reference #app .msg-avatar { width:28px!important;height:28px!important;flex:0 0 28px!important; }
+  body.app-ready.ll-reference #app :is(.answer-grid,.answer-main,.answer-content,.answer-steps) { display:block!important;columns:auto!important; }
+  body.app-ready.ll-reference #app .answer-bottom .answer-section-next { display:block!important; }
+  body.app-ready.ll-reference #app .answer-section :is(ol,ul) { columns:auto!important; }
+  body.app-ready.ll-reference #app .consultation-actions { flex-direction:column!important;gap:10px!important; }
+  body.app-ready.ll-reference #app .mode-tab { min-height:48px!important;flex:auto!important; }
+  body.app-ready.ll-reference #app .input-disclaimer { font-size:10px!important;line-height:1.4!important; }
+  body.app-ready.ll-reference #app #settings-panel { inset:8px!important;width:auto!important;border-radius:12px!important; }
+}
