@@ -155,15 +155,6 @@
     preferredVoiceURI = String(voiceURI || '');
   }
 
-  function replyVoiceLanguage(language) {
-    const reported = String(language || '').trim().toLowerCase();
-    if (reported === 'english' || /^en(?:-|$)/.test(reported)) return 'en';
-    if (reported === 'filipino' || reported === 'tagalog' || reported === 'hiligaynon'
-      || /^(?:fil|tl|hil)(?:-|$)/.test(reported)) return 'fil';
-    // The server normally provides the response language. Unknown values use
-    // the requested default rather than guessing a non-English voice.
-    return 'en';
-  }
   function cleanAnswer(text) {
     const marker = '(?:Sources?\\s*\\d+|S\\s*\\d+)(?:\\s*(?:,|;|&|and|[-–])\\s*(?:(?:Sources?|S)\\s*)?\\d+)*';
     return String(text || '')
@@ -203,8 +194,8 @@
     }
     if (chunk) chunks.push(chunk);
     const speech = new window.SpeechSynthesisUtterance(chunks[0]);
-    const responseLanguage = replyVoiceLanguage(language || document.getElementById('topbar-lang')?.value || document.getElementById('lang-selector')?.value || 'en');
-    const isEnglish = responseLanguage === 'en';
+    const requestedLanguage = String(language || document.getElementById('topbar-lang')?.value || document.getElementById('lang-selector')?.value || 'auto').toLowerCase();
+    const isEnglish = ['en', 'en-us', 'en-ph', 'english'].includes(requestedLanguage);
     speech.lang = isEnglish ? 'en-US' : 'fil-PH';
     const voices = availableVoices();
     const aliases = isEnglish ? ['en'] : ['fil','tl'];
@@ -214,20 +205,12 @@
     const voiceScore = voice => {
       const locale = voice.lang.toLowerCase();
       const female = /blessica|\brosa\b|\bfemale\b/i.test(voice.name || '');
-      return (locale === speech.lang.toLowerCase() ? 200 : 0)
-        + (female ? 50 : 0) + (/-ph$/.test(locale) ? (isEnglish ? 10 : 100) : 0);
+      return (locale === speech.lang.toLowerCase() ? 20 : 0)
+        + (female ? 50 : 0) + (/-ph$/.test(locale) ? 100 : 0);
     };
     const matchingVoice = candidates.sort((a,b) => voiceScore(b) - voiceScore(a))[0];
     const selectedVoice = preferredVoiceURI && voices.find(voice => voiceId(voice) === preferredVoiceURI);
-    const voiceMatchesAnswerLanguage = voice => {
-      const base = String(voice?.lang || '').toLowerCase().split('-')[0];
-      return isEnglish ? base === 'en' : ['fil', 'tl'].includes(base);
-    };
-    const matchingSelectedVoice = selectedVoice && voiceMatchesAnswerLanguage(selectedVoice) ? selectedVoice : null;
-    const englishFallback = voices.find(voice => /^en(?:-|$)/i.test(voice.lang));
-    const availableVoice = matchingSelectedVoice || matchingVoice
-      || (isEnglish ? (voices.find(voice => voice.default) || englishFallback) : englishFallback)
-      || voices.find(voice => voice.default) || voices[0];
+    const availableVoice = selectedVoice || matchingVoice || voices.find(voice => voice.default) || voices[0];
     if (availableVoice) {
       speech.voice = availableVoice;
       speech.lang = availableVoice.lang;
@@ -236,7 +219,7 @@
       // choose its default immediately, preserving the mobile tap gesture.
       speech.lang = '';
     }
-    notify((matchingSelectedVoice || matchingVoice) ? '' : 'Using the device’s available voice. Pronunciation may differ.');
+    notify((selectedVoice || matchingVoice) ? '' : 'Using the device’s available voice. Pronunciation may differ.');
     let button = document.getElementById('voice-stop-reading');
     if (!button) {
       const playback = document.createElement('span');
@@ -287,7 +270,7 @@
     playChunk(0);
   }
   window.LaborLensVoice = {
-    mount, toggle, cancel, finish, speak, stopSpeaking, cleanAnswer, replyVoiceLanguage,
+    mount, toggle, cancel, finish, speak, stopSpeaking, cleanAnswer,
     availableVoices, setPreferredVoice,
   };
   document.addEventListener('DOMContentLoaded', mount);
