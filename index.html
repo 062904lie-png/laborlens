@@ -3084,7 +3084,7 @@
         <div class="field">
           <label for="r-lang">Preferred Language</label>
           <select id="r-lang">
-            <option value="en">English</option>
+            <option value="en">English (United States)</option>
             <option value="fil">Filipino</option>
             <option value="hil">Hiligaynon</option>
           </select>
@@ -3118,8 +3118,8 @@
     <button class="tb-status" onclick="toggleStatusPopover()" aria-label="Show LaborLens status"><div class="tb-dot"></div><span>LaborLens Ready</span></button>
     <label class="tb-lang" for="topbar-lang"><span class="tb-globe" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="11.5"/><path d="M4.5 16h23M16 4.5c3.2 3.1 4.8 6.9 4.8 11.5S19.2 24.4 16 27.5c-3.2-3.1-4.8-6.9-4.8-11.5S12.8 7.6 16 4.5Z"/></svg></span><span>Language</span>
       <select id="topbar-lang" onchange="saveLangSetting(this.value)">
+        <option value="en" selected>English (United States)</option>
         <option value="auto">Auto-detect</option>
-        <option value="en">English</option>
         <option value="fil">Filipino</option>
         <option value="hil">Hiligaynon</option>
       </select>
@@ -3167,7 +3167,7 @@
         <select class="sp-select" id="setting-voice" onchange="saveVoiceSetting(this.value)">
           <option value="">Automatic device voice</option>
         </select>
-        <div class="sp-toggle-sub" id="setting-voice-note">Choose a voice available on this device. Voice choices vary by browser.</div>
+        <div class="sp-toggle-sub" id="setting-voice-note">Automatic mode matches the reply language. Voice choices vary by browser.</div>
       </div>
       <div class="sp-row">
         <span class="sp-label">Preferences</span>
@@ -3307,7 +3307,7 @@
 <script src="static/js/workspace.js?v=20260906-1"></script>
 <script src="static/js/chat-controls.js?v=20260911-1"></script>
 <script src="static/js/motion.js?v=20260905-1"></script>
-<script src="static/js/voice.js?v=20260912-4"></script>
+<script src="static/js/voice.js?v=20260912-6"></script>
 <script>
 const API = 'https://plaster-multiply-tint.ngrok-free.dev/api';
 let token = localStorage.getItem('ll_token');
@@ -3418,7 +3418,7 @@ function populateVoiceOptions() {
   select.value = matchingOption ? preferred : '';
   select.disabled = voices.length === 0;
   if (note) note.textContent = voices.length
-    ? 'Choose a voice available on this device. Your choice is saved only in this browser.'
+    ? 'Automatic mode matches the reply language. Your choice is saved only in this browser.'
     : 'No browser voices are available yet. Open Settings again in a moment.';
 }
 function saveVoiceSetting(value) {
@@ -4163,12 +4163,12 @@ async function saveLangSetting(val) {
 function requestLanguageValue() {
   const selected = document.getElementById('topbar-lang')?.value
     || savedChatLanguage();
-  return ['en', 'fil', 'hil', 'auto'].includes(selected) ? selected : 'auto';
+  return ['en', 'fil', 'hil', 'auto'].includes(selected) ? selected : 'en';
 }
 function resetSettings() {
   savePrefs(DEFAULT_PREFS);
   applyPreferences();
-  saveLangSetting('auto');
+  saveLangSetting('en');
 }
 document.addEventListener('click', function(e) {
   const status = document.getElementById('status-popover');
