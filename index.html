@@ -3163,6 +3163,13 @@
         </select>
       </div>
       <div class="sp-row">
+        <label class="sp-label" for="setting-voice">Reading Voice</label>
+        <select class="sp-select" id="setting-voice" onchange="saveVoiceSetting(this.value)">
+          <option value="">Automatic device voice</option>
+        </select>
+        <div class="sp-toggle-sub" id="setting-voice-note">Choose a voice available on this device. Voice choices vary by browser.</div>
+      </div>
+      <div class="sp-row">
         <span class="sp-label">Preferences</span>
         <div class="sp-toggle-row">
           <div><div class="sp-toggle-label">Read Answers Automatically</div><div class="sp-toggle-sub">Read new replies aloud. You can still use each answer’s speaker button when this is off.</div></div>
@@ -3300,7 +3307,7 @@
 <script src="static/js/workspace.js?v=20260906-1"></script>
 <script src="static/js/chat-controls.js?v=20260911-1"></script>
 <script src="static/js/motion.js?v=20260905-1"></script>
-<script src="static/js/voice.js?v=20260912-2"></script>
+<script src="static/js/voice.js?v=20260912-4"></script>
 <script>
 const API = 'https://plaster-multiply-tint.ngrok-free.dev/api';
 let token = localStorage.getItem('ll_token');
@@ -3337,6 +3344,7 @@ let sessionTooltipTimer = null;
 
 const DEFAULT_PREFS = Object.freeze({
   autoRead:false,
+  voiceURI:'',
   sound:false,
   compact:false,
   timestamps:false,
@@ -3348,6 +3356,7 @@ function normalizePreferences(value={}) {
   return {
     sound:!!prefs.sound,
     autoRead:prefs.autoRead === true,
+    voiceURI:typeof prefs.voiceURI === 'string' ? prefs.voiceURI.slice(0, 500) : '',
     compact:!!prefs.compact,
     timestamps:!!prefs.timestamps,
     theme:prefs.theme === 'light' ? 'light' : 'dark',
@@ -3366,6 +3375,7 @@ function savePrefs(prefs) {
 }
 function applyPreferences() {
   const prefs = getPrefs();
+  window.LaborLensVoice?.setPreferredVoice(prefs.voiceURI);
   ['sound','compact','timestamps','autoRead'].forEach(name => {
     const control = document.getElementById('toggle-' + name);
     control?.setAttribute('aria-pressed', String(!!prefs[name]));
@@ -3391,7 +3401,34 @@ function applyPreferences() {
   if (themeLabel) themeLabel.textContent = isDark ? 'Dark Mode' : 'Light Mode';
   const fontSize = document.getElementById('setting-font-size');
   if (fontSize && fontSize.value !== prefs.fontSize) fontSize.value = prefs.fontSize;
+  populateVoiceOptions();
 }
+function populateVoiceOptions() {
+  const select = document.getElementById('setting-voice');
+  const note = document.getElementById('setting-voice-note');
+  if (!select) return;
+  const voices = window.LaborLensVoice?.availableVoices?.() || window.speechSynthesis?.getVoices?.() || [];
+  const preferred = getPrefs().voiceURI;
+  select.replaceChildren(new Option('Automatic device voice', ''));
+  voices.forEach(voice => {
+    const label = `${voice.name || 'Unnamed voice'} — ${voice.lang || 'Unknown language'}${voice.default ? ' (default)' : ''}`;
+    select.add(new Option(label, voice.voiceURI || `${voice.name || ''}|${voice.lang || ''}`));
+  });
+  const matchingOption = Array.from(select.options).some(option => option.value === preferred);
+  select.value = matchingOption ? preferred : '';
+  select.disabled = voices.length === 0;
+  if (note) note.textContent = voices.length
+    ? 'Choose a voice available on this device. Your choice is saved only in this browser.'
+    : 'No browser voices are available yet. Open Settings again in a moment.';
+}
+function saveVoiceSetting(value) {
+  const prefs = getPrefs();
+  prefs.voiceURI = String(value || '');
+  savePrefs(prefs);
+  window.LaborLensVoice?.setPreferredVoice(prefs.voiceURI);
+  applyPreferences();
+}
+window.speechSynthesis?.addEventListener?.('voiceschanged', populateVoiceOptions);
 function togglePreference(name) {
   const prefs = getPrefs();
   prefs[name] = !prefs[name];
