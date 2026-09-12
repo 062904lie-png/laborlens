@@ -141,6 +141,19 @@
     refresh(false);
   }
   let utterance = null;
+  let preferredVoiceURI = '';
+
+  function availableVoices() {
+    return window.speechSynthesis?.getVoices?.() || [];
+  }
+
+  function voiceId(voice) {
+    return String(voice?.voiceURI || `${voice?.name || ''}|${voice?.lang || ''}`);
+  }
+
+  function setPreferredVoice(voiceURI) {
+    preferredVoiceURI = String(voiceURI || '');
+  }
   function cleanAnswer(text) {
     const marker = '(?:Sources?\\s*\\d+|S\\s*\\d+)(?:\\s*(?:,|;|&|and|[-–])\\s*(?:(?:Sources?|S)\\s*)?\\d+)*';
     return String(text || '')
@@ -166,12 +179,24 @@
       .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/https?:\/\/\S+/g, '')
       .replace(/[*#_`>|]/g, '').trim();
     if (!plain) return;
-    const speech = new window.SpeechSynthesisUtterance(plain);
+    // Keep requests short without splitting words, amounts, or decimal numbers.
+    const chunks = [];
+    let chunk = '';
+    for (const word of plain.split(/\s+/)) {
+      if (chunk && chunk.length + word.length + 1 > 220) {
+        chunks.push(chunk); chunk = '';
+      }
+      chunk += (chunk ? ' ' : '') + word;
+      if (chunk.length >= 100 && /[.!?]$/.test(word)) {
+        chunks.push(chunk); chunk = '';
+      }
+    }
+    if (chunk) chunks.push(chunk);
+    const speech = new window.SpeechSynthesisUtterance(chunks[0]);
     const selected = String(language || document.getElementById('topbar-lang')?.value || document.getElementById('lang-selector')?.value || 'en').toLowerCase();
     const isEnglish = selected === 'english' || /^en(?:-|$)/.test(selected);
-    const voiceLabel = isEnglish ? 'English' : 'Filipino';
     speech.lang = isEnglish ? 'en-PH' : 'fil-PH';
-    const voices = window.speechSynthesis.getVoices?.() || [];
+    const voices = availableVoices();
     const aliases = isEnglish ? ['en'] : ['fil','tl'];
     // The Web Speech API has no gender field. Prefer known female Philippine
     // voices or voices explicitly named Female, while keeping language matching.
@@ -183,7 +208,8 @@
         + (female ? 50 : 0) + (/-ph$/.test(locale) ? 100 : 0);
     };
     const matchingVoice = candidates.sort((a,b) => voiceScore(b) - voiceScore(a))[0];
-    const availableVoice = matchingVoice || voices.find(voice => voice.default)
+    const selectedVoice = preferredVoiceURI && voices.find(voice => voiceId(voice) === preferredVoiceURI);
+    const availableVoice = selectedVoice || matchingVoice || voices.find(voice => voice.default)
       || voices.find(voice => /^en(?:-|$)/i.test(voice.lang)) || voices[0];
     if (availableVoice) {
       speech.voice = availableVoice;
@@ -193,7 +219,7 @@
       // choose its default immediately, preserving the mobile tap gesture.
       speech.lang = '';
     }
-    notify(matchingVoice ? '' : 'Using the device’s available voice. Pronunciation may differ.');
+    notify((selectedVoice || matchingVoice) ? '' : 'Using the device’s available voice. Pronunciation may differ.');
     let button = document.getElementById('voice-stop-reading');
     if (!button) {
       const playback = document.createElement('span');
@@ -216,21 +242,37 @@
       playback.classList.remove('is-speaking');
     }
     button.hidden = false;
-    utterance = speech;
-    speech.onstart = () => { if (utterance === speech) playback?.classList.add('is-speaking'); };
-    speech.onend = speech.onerror = () => {
-      if (utterance === speech) { utterance = null; button.hidden = true; if (playback) playback.hidden = true; }
-    };
-    speech.onerror = event => {
-      if (utterance !== speech) return;
-      stopSpeaking();
-      notify(event.error === 'not-allowed'
-        ? 'Audio playback was blocked. Click the answer’s speaker button to start reading.'
-        : `The selected ${voiceLabel} voice could not play. Try again or check whether this voice is available in your browser.`);
-    };
-    try { window.speechSynthesis.speak(speech); } catch (_) { stopSpeaking(); notify('Reading could not start. Click the answer’s speaker button to try again.'); }
+    function playChunk(index) {
+      const current = index === 0 ? speech : new window.SpeechSynthesisUtterance(chunks[index]);
+      if (availableVoice) current.voice = availableVoice;
+      current.lang = speech.lang;
+      utterance = current;
+      current.onstart = () => { if (utterance === current) playback?.classList.add('is-speaking'); };
+      current.onend = () => {
+        if (utterance !== current) return;
+        if (index + 1 < chunks.length) { playChunk(index + 1); return; }
+        utterance = null; button.hidden = true;
+        if (playback) playback.hidden = true;
+      };
+      current.onerror = event => {
+        if (utterance !== current) return;
+        stopSpeaking();
+        console.log('Speech playback error:', event.error, current.lang);
+        notify(event.error === 'not-allowed'
+          ? 'Audio playback was blocked. Tap the answer’s speaker button to start reading.'
+          : `Your device could not play this voice (${event.error || 'unknown error'}). Try another installed speech voice or browser.`);
+      };
+      try {
+        if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+        window.speechSynthesis.speak(current);
+      } catch (_) { stopSpeaking(); notify('Reading could not start. Tap the answer’s speaker button to try again.'); }
+    }
+    playChunk(0);
   }
-  window.LaborLensVoice = {mount, toggle, cancel, finish, speak, stopSpeaking, cleanAnswer};
+  window.LaborLensVoice = {
+    mount, toggle, cancel, finish, speak, stopSpeaking, cleanAnswer,
+    availableVoices, setPreferredVoice,
+  };
   document.addEventListener('DOMContentLoaded', mount);
   window.addEventListener('pagehide', finish);
   document.addEventListener('visibilitychange', () => { if (document.hidden) finish(); });
