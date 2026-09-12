@@ -141,7 +141,6 @@
     refresh(false);
   }
   let utterance = null;
-  let cancelVoiceWait = null;
   function cleanAnswer(text) {
     const marker = '(?:Sources?\\s*\\d+|S\\s*\\d+)(?:\\s*(?:,|;|&|and|[-–])\\s*(?:(?:Sources?|S)\\s*)?\\d+)*';
     return String(text || '')
@@ -153,7 +152,6 @@
       .replace(/\n{3,}/g, '\n\n').trim();
   }
   function stopSpeaking() {
-    if (cancelVoiceWait) { cancelVoiceWait(); cancelVoiceWait = null; }
     utterance = null;
     window.speechSynthesis?.cancel();
     const button = document.getElementById('voice-stop-reading');
@@ -161,7 +159,7 @@
     const playback = document.getElementById('voice-playback');
     if (playback) playback.hidden = true;
   }
-  function speak(text, language, anchor, waitForVoices = true) {
+  function speak(text, language, anchor) {
     stopSpeaking();
     if (!window.speechSynthesis || !window.SpeechSynthesisUtterance || recognition || document.hidden) return;
     const plain = cleanAnswer(text).replace(/```[\s\S]*?```/g, '')
@@ -185,28 +183,17 @@
         + (female ? 50 : 0) + (/-ph$/.test(locale) ? 100 : 0);
     };
     const matchingVoice = candidates.sort((a,b) => voiceScore(b) - voiceScore(a))[0];
-    if (!matchingVoice) {
-      if (waitForVoices && window.speechSynthesis.addEventListener) {
-        notify(`Loading ${voiceLabel} voices…`);
-        const synth = window.speechSynthesis;
-        let waitTimer;
-        const cleanup = () => { clearTimeout(waitTimer); synth.removeEventListener('voiceschanged', checkVoices); };
-        const retry = () => { cleanup(); cancelVoiceWait = null; speak(text, language, anchor, false); };
-        const checkVoices = () => {
-          if (synth.getVoices().some(voice => aliases.includes(voice.lang.toLowerCase().split('-')[0]))) retry();
-        };
-        cancelVoiceWait = cleanup;
-        synth.addEventListener('voiceschanged', checkVoices);
-        waitTimer = setTimeout(retry, 2500);
-        checkVoices();
-        return;
-      }
-      notify(`A ${voiceLabel} voice is not available in this browser. This site needs a compatible browser voice or a connected speech service.`);
-      return;
+    const availableVoice = matchingVoice || voices.find(voice => voice.default)
+      || voices.find(voice => /^en(?:-|$)/i.test(voice.lang)) || voices[0];
+    if (availableVoice) {
+      speech.voice = availableVoice;
+      speech.lang = availableVoice.lang;
+    } else {
+      // An empty list can mean voices have not loaded yet. Let the browser
+      // choose its default immediately, preserving the mobile tap gesture.
+      speech.lang = '';
     }
-    speech.voice = matchingVoice;
-    speech.lang = matchingVoice.lang;
-    notify('');
+    notify(matchingVoice ? '' : 'Using the device’s available voice. Pronunciation may differ.');
     let button = document.getElementById('voice-stop-reading');
     if (!button) {
       const playback = document.createElement('span');
