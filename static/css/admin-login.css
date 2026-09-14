@@ -1,0 +1,84 @@
+/* Admin sign-in only; dashboard styling is intentionally independent. */
+#login-screen{background:#082665 url('../../assets/admin-courthouse.png') center/100% 100% no-repeat!important;padding:28px 22px;overflow:auto;align-items:flex-start;justify-content:center;isolation:isolate}
+#login-screen .login-card{flex-shrink:0;width:430px;max-width:100%;max-height:none;margin:auto 0;background:#fdfdff;border:0;border-radius:12px;overflow:hidden;box-shadow:0 22px 70px #0004;position:relative}
+#login-screen .login-card:before{content:'';position:absolute;left:0;right:0;top:0;height:9px;background:linear-gradient(90deg,#103aac 0 33.33%,#e30c2d 33.33% 66.66%,#ffcd32 66.66%);z-index:2}
+#login-screen .lc-header{display:flex;align-items:center;justify-content:center;gap:12px;text-align:left;padding:37px 32px 30px;background:transparent!important;background-image:none!important;border:0!important}
+#login-screen .lc-header:before{display:none}
+#login-screen .admin-gold-seal{display:grid;place-items:center;flex-shrink:0;width:52px;height:52px;border-radius:11px;background:linear-gradient(125deg,#ffd94b,#eca515 65%,#ffc837);border:1px solid #ffdc64;color:white}
+#login-screen .admin-gold-seal svg{width:43px;height:43px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#login-screen .lc-title{font:800 32px/1.1 var(--sans);letter-spacing:-1px;color:#09245e}
+#login-screen .lc-title em{font-style:normal;color:#eba71c}
+#login-screen .lc-sub{margin-top:4px;font-size:9px;letter-spacing:3.8px;font-weight:700;color:#52638b}
+#login-screen .lc-body{padding:4px 42px 32px}
+#login-screen h1{font:800 28px/1.2 var(--sans);color:#09245e;margin:0 0 6px;letter-spacing:-.6px}
+#login-screen .admin-login-description{font-size:13px;line-height:1.55;color:#63708d;margin-bottom:22px}
+#login-screen .field{margin-bottom:16px}
+#login-screen .field label{font-size:13px;text-transform:none;letter-spacing:0;color:#314264;margin-bottom:7px}
+#login-screen .admin-input{position:relative}
+#login-screen .admin-input>svg{position:absolute;top:12px;left:13px;width:19px;height:19px;fill:none;stroke:#445779;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+#login-screen .field input{height:43px;padding:10px 42px;font-size:13px;border:1px solid #ced7e5;border-radius:8px;background:transparent;color:#162e59}
+#login-screen .field input::placeholder{color:#8a98b2}
+#login-screen .field input:focus{border-color:#224c9e;box-shadow:0 0 0 3px #174a9c16}
+#login-screen .admin-password-toggle{position:absolute;right:4px;top:3px;width:37px;height:37px;display:grid;place-items:center;border:0;background:transparent;color:#475777;border-radius:6px;cursor:pointer}
+#login-screen .admin-password-toggle svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+#login-screen .login-btn{height:43px;padding:10px;margin-top:5px;font-size:14px;font-weight:700;background:#103581!important;border-radius:8px;box-shadow:0 5px 16px #0b2d7a16}
+#login-screen .login-btn:hover{background:#082866!important;transform:translateY(-1px)}
+#login-screen .login-err:empty{display:none}
+#login-screen .login-err{font-size:12px;line-height:1.5;text-align:left;margin-top:12px;min-height:0}
+#login-screen .admin-login-divider{display:flex;align-items:center;gap:13px;margin:15px 0;color:#8b99b0;font-size:12px}
+#login-screen .admin-login-divider:before,#login-screen .admin-login-divider:after{content:'';height:1px;background:#dae1ec;flex:1}
+#login-screen .return-link{display:flex;align-items:center;justify-content:center;gap:9px;height:43px;margin:0;padding:10px;border:1px solid #c5d0e3;border-radius:8px;color:#0d2c71;font-size:13px;font-weight:700;text-decoration:none;background:transparent}
+#login-screen .return-link span{font-size:21px;line-height:1}
+#login-screen .return-link:hover{background:#eff4fc;border-color:#7790b9}
+#login-screen .admin-public-brand{position:absolute;left:4.6%;top:7%;display:flex;align-items:center;gap:14px;color:#fff;text-decoration:none}
+#login-screen .admin-public-brand .admin-gold-seal{width:59px;height:59px}
+#login-screen .admin-public-brand strong{font-size:31px;letter-spacing:-.5px;line-height:1.15}
+#login-screen .admin-public-brand b{color:#ffbf2d}
+#login-screen .admin-public-brand small{display:block;margin-top:4px;font-size:10px;letter-spacing:1.7px;color:#d4dff7}
+#login-screen .admin-side-message{position:absolute;left:4.6%;top:35%;font:italic 30px/1.5 'Segoe Print','Bradley Hand',cursive;color:#fff;transform:rotate(-5deg)}
+#login-screen .admin-side-message span{display:block;width:48px;height:3px;background:#ffc32d;margin-top:20px;border-radius:3px;transform:rotate(-5deg)}
+#login-screen .admin-bottom-message{position:absolute;left:4.6%;bottom:6%;border-left:2px solid #ffc629;padding:4px 0 4px 17px;color:#dce5ff;font-size:9px;letter-spacing:2px;line-height:1.7}
+#login-screen .admin-bottom-right{left:auto;right:7%;font-size:9px}
+#login-screen .admin-bottom-right i{display:block;width:34px;height:2px;background:#ffc32d;margin-top:8px}
+#login-screen :focus-visible{outline:3px solid #eab432;outline-offset:3px}
+@media(min-width:1500px) and (min-height:800px){
+  #login-screen .login-card{width:480px}
+  #login-screen .lc-header{padding:44px 32px 38px}
+  #login-screen .lc-body{padding:4px 46px 36px}
+  #login-screen .admin-login-description{font-size:14px}
+  #login-screen .field{margin-bottom:20px}
+  #login-screen .admin-public-brand strong{font-size:37px}
+  #login-screen .admin-public-brand .admin-gold-seal{width:68px;height:68px}
+  #login-screen .admin-side-message{font-size:36px}
+}
+@media(max-width:1100px){
+  #login-screen .admin-public-brand strong{font-size:24px}
+  #login-screen .admin-public-brand .admin-gold-seal{width:46px;height:46px}
+  #login-screen .admin-public-brand small{font-size:8px;letter-spacing:1px}
+  #login-screen .admin-side-message{font-size:25px}
+  #login-screen .admin-bottom-message{font-size:7px;letter-spacing:1.3px}
+}
+@media(max-width:800px){
+  #login-screen{padding:28px 18px;background-size:cover!important;background-position:65% center!important}
+  #login-screen .admin-public-brand,#login-screen .admin-side-message,#login-screen .admin-bottom-message{display:none}
+  #login-screen .login-card{width:420px}
+  #login-screen .lc-header{padding:32px 24px 26px}
+  #login-screen .lc-body{padding:4px 28px 28px}
+  #login-screen .field input{height:46px;font-size:16px}
+  #login-screen .admin-input>svg{top:14px}
+  #login-screen .admin-password-toggle{top:4px}
+  #login-screen .login-btn,#login-screen .return-link{height:46px}
+}
+@media(max-width:380px){
+  #login-screen .lc-body{padding-inline:22px}
+  #login-screen .lc-title{font-size:29px}
+  #login-screen .admin-login-description{font-size:12px}
+}
+@media(max-height:580px) and (min-width:801px){
+  #login-screen{padding-block:16px}
+  #login-screen .lc-header{padding-top:24px;padding-bottom:20px}
+  #login-screen .lc-body{padding-bottom:24px}
+  #login-screen .admin-login-description{margin-bottom:15px}
+  #login-screen .admin-side-message{font-size:24px}
+}
+@media(prefers-reduced-motion:reduce){#login-screen .login-card{animation:none}#login-screen .login-btn{transition:none}}
