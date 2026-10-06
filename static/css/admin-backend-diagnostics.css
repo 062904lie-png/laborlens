@@ -1,0 +1,8 @@
+#tab-backend-diagnostics .diagnostics-note { line-height: 1.6; margin: 16px 0; }
+#tab-backend-diagnostics .stat-val { font-size: clamp(20px, 2.3vw, 28px); }
+#tab-backend-diagnostics .tbl-wrap td { vertical-align: top; }
+.diagnostics-json { white-space: pre-wrap; overflow-wrap: anywhere; max-width: 100%; font-size: 12px; line-height: 1.6; }
+@media (max-width: 700px) {
+  #tab-backend-diagnostics .workbench-filters { align-items: stretch; }
+  #tab-backend-diagnostics .workbench-filters > * { flex: 1 1 160px; min-width: 0; }
+}

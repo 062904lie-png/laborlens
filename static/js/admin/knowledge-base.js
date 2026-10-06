@@ -103,7 +103,7 @@ async function uploadFile(input) {
     form.append('superseding_document',document.getElementById('kb-superseding-document')?.value||'');
     form.append('law_version',document.getElementById('kb-version')?.value||'');
     form.append('version_status',document.getElementById('kb-version-status')?.value||'active');
-    const r=await fetch(`${API}/kb/upload`,{method:'POST',headers:{'Authorization':`Bearer ${token}`,'ngrok-skip-browser-warning':'true'},body:form});
+    const r=await fetch(`${API}/kb/upload`,{method:'POST',headers:{'Authorization':`Bearer ${token}`},body:form});
     const d=await r.json();
     if(!r.ok) throw new Error(d.detail||'Upload failed');
     msg.setAttribute('role','status');
@@ -227,7 +227,7 @@ async function submitReplacement(id) {
   try{
     const r=await fetch(`${API}/kb/documents/${id}/replace`,{
       method:'POST',
-      headers:{'Authorization':`Bearer ${token}`,'ngrok-skip-browser-warning':'true'},
+      headers:{'Authorization':`Bearer ${token}`},
       body:form
     });
     const data=await r.json().catch(()=>({}));
@@ -448,7 +448,7 @@ async function loadDocOriginal() {
     const version=encodeURIComponent(doc.file_hash||doc.index_version||doc.filename||"current");
     const fileRes=await fetch(`${API}/kb/documents/${state.id}/file?v=${version}`,{
       cache:"no-store",
-      headers:{'Authorization':`Bearer ${token}`,'ngrok-skip-browser-warning':'true'}
+      headers:{'Authorization':`Bearer ${token}`}
     });
     if(fileRes.status===401){
       token=null; currentUser=null; clearAdminSession();

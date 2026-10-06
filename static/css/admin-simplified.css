@@ -856,3 +856,41 @@ button.reference-metric{cursor:pointer}.reference-metric:hover{border-color:#b8d
 }
 
 #doc-modal:has(.document-detail-actions) .modal-hdr .btn { width: auto; flex: 0 0 auto; }
+
+/* Knowledge Base bulk reindex and per-document action menu. */
+#dashboard #tab-knowledge>.page-hdr{grid-template-columns:minmax(0,1fr) auto auto;}
+#dashboard #tab-knowledge>.page-hdr .kb-reindex-all{grid-column:2;grid-row:2;white-space:nowrap;align-self:start;}
+#dashboard #tab-knowledge>.page-hdr .kb-add-document{grid-column:3;grid-row:2;}
+#dashboard #tab-knowledge>.page-hdr .kb-reindex-status{grid-column:1/-1;grid-row:3;color:var(--ui-muted);font-size:12px;}
+.kb-row-menu{position:relative;display:inline-block;vertical-align:middle;}
+.kb-row-menu>summary{list-style:none;display:grid;place-items:center;width:34px;height:34px;border-radius:6px;}
+.kb-row-menu>summary::-webkit-details-marker{display:none;}
+.kb-row-menu[open]>summary,.kb-row-menu>summary:hover{background:#eef4fb;}
+.kb-row-menu-items{position:absolute;z-index:20;right:0;top:calc(100% + 3px);display:grid;min-width:170px;padding:5px;border:1px solid #d8e2ee;border-radius:8px;background:#fff;box-shadow:0 10px 28px #173c7026;}
+.kb-row-menu-items button{border:0;background:transparent;text-align:left;padding:9px 11px;border-radius:5px;color:#173c70;font-size:12px;cursor:pointer;white-space:nowrap;}
+.kb-row-menu-items button:hover:not(:disabled){background:#f1f6fc;}
+.kb-row-menu-items button:disabled{color:#93a2b5;cursor:not-allowed;}
+/* Keep the six-column document table aligned and reserve enough room for both row actions. */
+#dashboard #tab-knowledge .tbl-wrap>table{width:100%;min-width:1000px;table-layout:fixed;}
+#dashboard #tab-knowledge .tbl-wrap>table th{padding:11px 10px;}
+#dashboard #tab-knowledge .tbl-wrap>table td{padding:10px;vertical-align:middle;overflow-wrap:normal;}
+#dashboard #tab-knowledge .tbl-wrap>table th:nth-child(1){width:35%;}
+#dashboard #tab-knowledge .tbl-wrap>table th:nth-child(2){width:8%;}
+#dashboard #tab-knowledge .tbl-wrap>table th:nth-child(3){width:20%;}
+#dashboard #tab-knowledge .tbl-wrap>table th:nth-child(4){width:12%;}
+#dashboard #tab-knowledge .tbl-wrap>table th:nth-child(5){width:14%;}
+#dashboard #tab-knowledge .tbl-wrap>table th:nth-child(6){width:120px;}
+#dashboard #tab-knowledge #docs-tbody>tr>td:last-child{white-space:nowrap;padding-inline:8px;}
+#dashboard #tab-knowledge #docs-tbody>tr>td:last-child .kb-row-menu{margin:0;}
+#dashboard #tab-knowledge #docs-tbody>tr>td:last-child .kb-more{width:32px;height:32px;margin:0;}
+#dashboard #tab-knowledge #docs-tbody .kb-document-name{display:table-cell;min-width:0;}
+#dashboard #tab-knowledge #docs-tbody .kb-document-name-content{display:flex;align-items:center;gap:12px;min-width:0;}
+#dashboard #tab-knowledge #docs-tbody .kb-document-name-content>.kb-file-icon{flex:0 0 30px;}
+#dashboard #tab-knowledge #docs-tbody .kb-document-name-content>strong{flex:1;min-width:0;}
+@media(max-width:680px){
+  #dashboard #tab-knowledge .tbl-wrap>table{min-width:0;table-layout:auto;}
+  #dashboard #tab-knowledge .tbl-wrap>table th:nth-child(n){width:auto;}
+  #dashboard #tab-knowledge #docs-tbody .kb-document-name{display:flex;}
+}
+@media(max-width:1150px){#dashboard #tab-knowledge>.page-hdr{grid-template-columns:minmax(0,1fr) auto auto;}#dashboard #tab-knowledge>.page-hdr .kb-reindex-all{grid-column:2;grid-row:1;}#dashboard #tab-knowledge>.page-hdr .kb-add-document{grid-column:3;grid-row:1;}}
+@media(max-width:680px){#dashboard #tab-knowledge>.page-hdr .kb-reindex-all,#dashboard #tab-knowledge>.page-hdr .kb-add-document{width:100%;margin:0;justify-content:center;}#dashboard #tab-knowledge>.page-hdr .kb-reindex-all{order:2;}#dashboard #tab-knowledge>.page-hdr .kb-add-document{order:1;}#dashboard #tab-knowledge>.page-hdr .kb-reindex-status{order:4;width:100%;}}

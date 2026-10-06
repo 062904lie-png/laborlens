@@ -1,10 +1,10 @@
 // ════════════════════════════════════════════════════════════════
-// CONFIGURATION — Update NGROK_URL here when your ngrok URL changes
+// Local backend API; the laptop-only launcher binds this address directly.
 // ════════════════════════════════════════════════════════════════
-const NGROK_URL = 'https://3.104.175.253/api';
+const LOCAL_API_URL = 'https://3.104.175.253/api';
 // ════════════════════════════════════════════════════════════════
 
-let API = NGROK_URL;   // Set immediately — no login input needed
+let API = LOCAL_API_URL;   // Set immediately — no login input needed
 let token = null, currentUser = null, allUsers = [], faqCache = [];
 let docContentState = { id: null, offset: 0, limit: 25, total: 0 };
 let docObjectUrl = null;
@@ -445,7 +445,7 @@ function toast(msg, err=false) {
 async function apiFetch(path, opts={}) {
   const response = await fetch(`${API}${path}`, { ...opts, headers: {
     'Content-Type':'application/json','Authorization':`Bearer ${token}`,
-    'ngrok-skip-browser-warning':'true',...(opts.headers||{})
+    ...(opts.headers||{})
   }});
   if (response.status === 401) {
     token = null;
@@ -482,8 +482,7 @@ async function restoreAdminSession() {
 
     const r = await fetch(`${API}/auth/me`, {
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'ngrok-skip-browser-warning': 'true'
+        'Authorization': `Bearer ${token}`
       }
     });
     const d = await r.json().catch(() => ({}));
@@ -513,7 +512,7 @@ async function doLogin() {
   try {
     const r = await fetch(`${API}/auth/login`, {
       method:'POST',
-      headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},
+      headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ email, password: pass })
     });
     const d = await r.json();

@@ -14,10 +14,12 @@
   function render(health){
     if(!health)return '<section class="performance-model-group"><h2>AI Models</h2><p>Model information is unavailable. Try Refresh.</p></section>';
     const rows=Array.isArray(health.providers)?health.providers:[];
-    const groups=[['generation','Answer Generation','Creates a draft; a successful draft still needs answer checking.'],['reranking','Source Ranking','Orders retrieved passages before the answer is written.'],['verification','Answer Checking','Checks draft statements against the sources. A completed check may approve or reject the draft.']];
+    const groups=[['generation','Answer Generation','Writes the draft answer.'],['reranking','Source Ranking','Orders passages before drafting.'],['verification','Answer Checking','Checks draft statements against the sources.']];
     return `<section class="performance-models"><h2>AI Models</h2><p class="performance-note">${escape(health.note||'Observations since backend restart; not a live availability check.')}</p>${renderLda(health.lda)}${groups.map(([role,title,note])=>{
-      const models=rows.filter(row=>(row.role||'generation')===role);
-      return `<section class="performance-model-group"><header><h3>${title}</h3><p>${note}</p></header><div class="performance-model-grid">${models.length?models.map(row=>{
+      const models=rows.filter(row=>(row.role||'generation')===role)
+        .sort((a,b)=>Number(a.priority||999)-Number(b.priority||999));
+      return `<section class="performance-model-group"><header><h3>${title}</h3><p>${note}</p><p class="performance-model-order-note">Configured priority · first row is tried first.</p></header>${models.length?`<ol class="performance-model-list" aria-label="${title} model priority order">${models.map((row,index)=>{
+        const priority=Number.isFinite(Number(row.priority))&&Number(row.priority)>0?Math.floor(Number(row.priority)):index+1;
         const status=row.status||'Not used since restart';
         const tone=/fail|missing|timed out|limit reached/i.test(status)?'warning':/success|active|in use/i.test(status)?'good':'neutral';
         const metrics=row.metrics_available!==false;
@@ -32,8 +34,15 @@
         issues.invalid_verdict='Statement check result was invalid';
         issues.legal_rule_as_user_fact='Legal claim was incorrectly treated as a user fact';
         const issue=issues[row.last_error_detail]||'';
-        return `<article class="performance-model-card"><div class="performance-model-heading"><span>${escape(String(row.provider||'').toUpperCase())}</span><span class="performance-model-status ${tone}">${escape(status)}</span></div><h4>${escape(row.model||'Unknown model')}</h4><dl>${values.map(([label,value])=>`<div><dt>${label}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl>${metrics?`<p class="performance-model-detail">Timeouts: ${number(row.timeouts??0)} · Request-limit errors: ${number(row.rate_limits??0)}</p>`:''}${issue&&row.status!=='Observed successes'?`<p class="performance-model-detail">Last issue: ${escape(issue)}${row.last_http_status?` (HTTP ${number(row.last_http_status)})`:''}</p>`:''}${row.local_rpm_limit!=null?`<p class="performance-model-detail">Calls in last minute: <strong>${number(row.calls_last_minute)} / ${number(row.local_rpm_limit)}</strong> local limit, shared across roles</p>`:''}${row.retry_in_seconds>0?`<p class="performance-model-detail">Retry available in about ${number(row.retry_in_seconds)} seconds. Refresh to update.</p>`:''}${!metrics?'<p class="performance-model-detail">Configured does not mean a live connection has been tested.</p>':''}</article>`;
-      }).join(''):'<p>No models configured for this role.</p>'}</div></section>`;
+        const details=[];
+        if(metrics)details.push(`Timeouts ${number(row.timeouts??0)} · limit errors ${number(row.rate_limits??0)}`);
+        if(row.local_rpm_limit!=null)details.push(`Calls ${number(row.calls_last_minute)} / ${number(row.local_rpm_limit)} per minute`);
+        else if(row.calls_last_minute!=null)details.push(`Calls ${number(row.calls_last_minute)} per minute · no local cap`);
+        if(row.retry_in_seconds>0)details.push(`Retry in about ${number(row.retry_in_seconds)} seconds`);
+        if(issue&&row.status!=='Observed successes')details.push(`Last issue: ${issue}${row.last_http_status?` (HTTP ${number(row.last_http_status)})`:''}`);
+        if(!metrics)details.push('No live metric recorded');
+        return `<li class="performance-model-row" value="${priority}"><div class="performance-model-entry"><div class="performance-model-line"><span class="performance-model-provider">${escape(String(row.provider||'').toUpperCase())}</span><h4>${escape(row.model||'Unknown model')}</h4><span class="performance-model-status ${tone}" aria-live="polite">${escape(status)}</span></div><dl>${values.map(([label,value])=>`<div><dt>${label}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl>${details.length?`<p class="performance-model-detail">${details.map(escape).join(' · ')}</p>`:''}</div></li>`;
+      }).join('')}</ol>`:'<p class="performance-model-empty">No models configured for this role.</p>'}</section>`;
     }).join('')}</section>`;
   }
   root.AdminModelReport={render};

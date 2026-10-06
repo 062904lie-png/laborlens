@@ -2990,7 +2990,7 @@
     }
   </style>
   <link rel="stylesheet" href="static/css/workspace.css?v=20260911-2"/>
-  <link rel="stylesheet" href="static/css/motion.css?v=20260910-2"/>
+  <link rel="stylesheet" href="static/css/motion.css?v=20261005-response-timer-1"/>
   <link rel="stylesheet" href="static/css/public.css?v=20260905-3"/>
   <link rel="stylesheet" href="static/css/chat-appearance.css?v=20260911-3"/>
   <link rel="stylesheet" href="static/css/voice.css?v=20260914-composer-6"/>
@@ -3342,7 +3342,7 @@
 
 <script src="static/js/workspace.js?v=20260906-1"></script>
 <script src="static/js/chat-controls.js?v=20260911-1"></script>
-<script src="static/js/motion.js?v=20260905-1"></script>
+<script src="static/js/motion.js?v=20261005-response-timer-1"></script>
 <script src="static/js/voice.js?v=20260914-voice-surface-2"></script>
 <script>
 const API = 'https://3.104.175.253/api';
@@ -3924,7 +3924,7 @@ async function doLogin() {
   document.getElementById('login-err').textContent = '';
   try {
     if (!email || !pass) throw new Error('Please enter your email and password.');
-    const r = await fetch(`${API}/auth/login`, { method:'POST', headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'}, body: JSON.stringify({email, password: pass}) });
+    const r = await fetch(`${API}/auth/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email, password: pass}) });
     const d = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(d.detail || 'Login failed');
     saveAuth(d);
@@ -3943,7 +3943,7 @@ async function doRegister() {
     if (password.length < 8) throw new Error('Password must be at least 8 characters.');
     if (new TextEncoder().encode(password).length > 72) throw new Error('Password is too long. Use at most 72 bytes; symbols and non-English characters may use multiple bytes.');
     if (password !== confirm) throw new Error('Passwords do not match.');
-    const r = await fetch(`${API}/auth/register`, { method:'POST', headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'}, body: JSON.stringify({username, email, password, language_preference: lang}) });
+    const r = await fetch(`${API}/auth/register`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username, email, password, language_preference: lang}) });
     const d = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(d.detail || 'Registration failed');
     saveAuth(d);
@@ -3955,11 +3955,11 @@ async function continueGoogle() {
     : document.getElementById('login-err');
   visibleError.textContent = '';
   try {
-    const frontendUrl = window.location.href.split('#')[0];
-    // Top-level navigation lets the API set its own HttpOnly OAuth cookie.
-    window.location.href = `${API}/auth/google/start?frontend_url=${encodeURIComponent(frontendUrl)}`;
+    const firebaseSignIn = window.LaborLensFirebase;
+    if (!firebaseSignIn) throw new Error('Google sign-in is still loading. Refresh the page and try again.');
+    await firebaseSignIn.signIn(API);
   } catch(e) {
-    visibleError.textContent = e.message;
+    visibleError.textContent = e.message || 'Google sign-in failed. Please try again.';
   }
 }
 function openForgotPassword() {
@@ -4003,7 +4003,7 @@ async function requestPasswordReset() {
   try {
     const r = await fetch(`${API}/auth/forgot-password`, {
       method:'POST',
-      headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},
+      headers:{'Content-Type':'application/json'},
       body: JSON.stringify({email})
     });
     const d = await r.json().catch(() => ({}));
@@ -4029,7 +4029,7 @@ async function submitNewPassword() {
     if (password !== confirm) throw new Error('Passwords do not match.');
     const r = await fetch(`${API}/auth/reset-password`, {
       method:'POST',
-      headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},
+      headers:{'Content-Type':'application/json'},
       body: JSON.stringify({token: tokenValue, new_password: password})
     });
     const d = await r.json().catch(() => ({}));
@@ -4162,7 +4162,7 @@ async function loadSystemStatus() {
   const chatSub = document.querySelector('.chat-sub');
   if (!statusText) return;
   try {
-    const res = await fetch(`${API}/status`, {headers:{'ngrok-skip-browser-warning':'true'}});
+    const res = await fetch(`${API}/status`);
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail || 'Status unavailable');
     const kb = data.knowledge_base || {};
@@ -4192,7 +4192,7 @@ async function loadSystemStatus() {
   const chatSub = document.querySelector('.chat-sub');
   if (!statusText) return;
   try {
-    const res = await fetch(`${API}/status`, {headers:{'ngrok-skip-browser-warning':'true'}});
+    const res = await fetch(`${API}/status`);
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail || 'Status unavailable');
     statusCache = data;
@@ -4476,7 +4476,7 @@ async function refreshGuestUsage() {
   const revision = ++guestUsageRevision;
   try {
     const response = await fetch(`${API}/chat/guest-status`, {
-      cache:'no-store', headers:{'ngrok-skip-browser-warning':'true'}
+      cache:'no-store'
     });
     if (!response.ok) throw new Error('Guest status unavailable');
     const usage = await response.json();
@@ -4995,7 +4995,7 @@ async function sendMsg() {
       ? await fetch(`${API}/chat/guest-message`, {
           method:'POST',
           cache:'no-store',
-          headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},
+          headers:{'Content-Type':'application/json'},
           body: JSON.stringify({
             message: text,
             session_id: guestSessionId,
@@ -5304,6 +5304,9 @@ function getSavedConfidenceTier(meta = {}) {
 }
 function getConfidenceMatchTier(meta = {}) {
   const validatedStatus = String(meta?.source_match || meta?.source_status || '').toLowerCase();
+  if (!['insufficient', 'conflicting', 'provider_unavailable', 'not_required'].includes(validatedStatus)
+      && (String(meta?.confidence_reason || '').includes('independent verification disabled')
+          || meta?.confidence_label === 'Source-based answer')) return 'source_based';
   if (['insufficient', 'conflicting', 'provider_unavailable', 'not_required', 'partial'].includes(validatedStatus)) return validatedStatus;
   const savedTier = getSavedConfidenceTier(meta);
   if (savedTier) return savedTier;
@@ -5322,6 +5325,7 @@ function renderConfidence(meta = {}) {
   const level = getSourceMatch(meta);
   if (!level || level === 'not_required') return '';
   const SOURCE_MATCH_UI = {
+    source_based: { label: null, className: null, icon: null },
     unverified: { label: 'Unverified test answer', className: 'source-match--partial', icon: 'alert-triangle' },
     high: { label: 'High confidence match', className: 'source-match--high', icon: 'check-circle' },
     source: { label: 'Source match', className: 'source-match--source', icon: 'check-circle' },
@@ -6008,7 +6012,7 @@ function autoResize(el) {
   el.style.height=Math.min(el.scrollHeight,140)+'px';
 }
 async function authFetch(path, opts={}) {
-  return fetch(`${API}${path}`, {...opts, cache:'no-store', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`,'ngrok-skip-browser-warning':'true',...(opts.headers||{})}});
+  return fetch(`${API}${path}`, {...opts, cache:'no-store', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`,...(opts.headers||{})}});
 }
 document.addEventListener('keydown', e => {
   if(e.key==='Escape'){
@@ -6027,5 +6031,6 @@ prepareChatUi();
 if (!handleGoogleCallback() && !handlePasswordResetLink() && token && currentUser) initApp();
 </script>
 <script src="static/js/public.js?v=20260905-2"></script>
+<script type="module" src="static/js/firebase-auth.js?v=20261007-1"></script>
 </body>
 </html>
