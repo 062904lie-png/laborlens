@@ -29,3 +29,9 @@
 #tab-performance .performance-lda-card dl{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media(max-width:800px){#tab-performance .performance-lda-card dl{grid-template-columns:repeat(2,minmax(0,1fr))}#tab-performance .performance-model-line{flex-wrap:wrap}#tab-performance .performance-model-status{margin-left:auto}}
 @media(max-width:380px){#tab-performance .performance-model-card{padding:11px}#tab-performance .performance-model-card dl{grid-template-columns:1fr}#tab-performance .performance-model-list{padding-left:24px}#tab-performance .performance-model-entry dl{gap:3px 10px}}
+
+#tab-performance .performance-model-list{list-style:none;padding-left:0}
+#tab-performance .performance-model-row{padding:14px 0}
+#tab-performance .performance-model-entry h4{font-size:14px}
+#tab-performance .performance-model-entry dt,#tab-performance .performance-model-entry dd,#tab-performance .performance-model-detail{font-size:12px!important}
+#tab-performance .performance-model-status{font-size:11px}

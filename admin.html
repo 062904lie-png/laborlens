@@ -11,8 +11,7 @@
   <link rel="stylesheet" href="static/css/admin-workbench.css?v=20260907-1"/>
   <link rel="stylesheet" href="static/css/admin-reference.css?v=20260907-7"/>
   <link rel="stylesheet" href="static/css/admin-simplified.css?v=20261005-kb-table-cell-fix"/>
-  <link rel="stylesheet" href="static/css/admin-model-report.css?v=20261005-model-priority-compact"/>
-  <link rel="stylesheet" href="static/css/admin-backend-diagnostics.css?v=20261003"/>
+  <link rel="stylesheet" href="static/css/admin-model-report.css?v=20261007-admin-display"/>
 </head>
 <body>
 
@@ -25,7 +24,7 @@
     <div class="lc-body">
       <h1 id="admin-login-title">Login</h1>
       <p class="admin-login-description">Enter your credentials to access the admin portal.</p>
-      <input type="hidden" id="api-url" value="http://127.0.0.1:8000/api"/>
+      <input type="hidden" id="api-url" value="https://3.104.175.253/api"/>
       <div class="field"><label for="l-email">Email</label><div class="admin-input"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 6 8 7 8-7"/></svg><input type="email" id="l-email" placeholder="Enter your email" autocomplete="username"/></div></div>
       <div class="field"><label for="l-pass">Password</label><div class="admin-input"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></svg><input type="password" id="l-pass" placeholder="Enter your password" autocomplete="current-password"/><button class="admin-password-toggle" type="button" aria-label="Show password" aria-controls="l-pass" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="admin-eye-slash" d="m3 3 18 18"/></svg></button></div></div>
       <button class="login-btn" type="button" onclick="doLogin()">Login</button>
@@ -103,7 +102,7 @@
         </div>
 
         <!-- 3. FREQUENTLY ASKED -->
-        
+
 
         <!-- 4. KNOWLEDGE BASE -->
         <div id="tab-knowledge">
@@ -276,10 +275,10 @@
         </div>
 
         <!-- 6. SYSTEM PERFORMANCE -->
-        
+
 
         <!-- 7. UNRESOLVED QUERIES -->
-        
+
 
       </div>
     </div>
@@ -318,11 +317,10 @@
 <script src="static/js/admin/settings.js?v=20260921-password-revocation"></script>
 <script src="static/js/admin/exports.js?v=20260910-simple-words"></script>
 <script src="static/js/admin/reviews.js?v=20260923-question-topics"></script>
-<script src="static/js/admin/documents-view.js?v=20261005-kb-table-cell-fix"></script>
+<script src="static/js/admin/documents-view.js?v=20261007-admin-display"></script>
 <script src="static/js/admin/upload-wizard.js?v=20260922-auto-file-details"></script>
-  <script src="static/js/admin/model-report.js?v=20261005-luna-local-rpm-exempt"></script>
-  <script src="static/js/admin/maintenance.js?v=20261001-checker-reliability"></script>
-<script src="static/js/admin/backend-diagnostics.js?v=20261006-regional"></script>
-<script src="static/js/admin/navigation.js?v=20261003-backend-diagnostics"></script>
+  <script src="static/js/admin/model-report.js?v=20261007-admin-display"></script>
+  <script src="static/js/admin/maintenance.js?v=20261007-admin-display"></script>
+<script src="static/js/admin/navigation.js?v=20261007-admin-display"></script>
 </body>
 </html>
