@@ -6,12 +6,12 @@ import {
 } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyACbScu2F1HdC_09TUUvEzE2slpEvOKJLA',
+  apiKey: 'AIzaSyAcBscu2Fnidc_o9tUUv6EZcS1pE6vKJLA',
   authDomain: 'laborlens-31a9c.firebaseapp.com',
   projectId: 'laborlens-31a9c',
   storageBucket: 'laborlens-31a9c.firebasestorage.app',
   messagingSenderId: '373394325577',
-  appId: '1:373394325577:web:5aafdc3b9d114e6c8bf98',
+  appId: '1:373394325577:web:5aafdac3b9d114e6c8bf98',
   measurementId: 'G-FEGGZ5PX88',
 };
 
