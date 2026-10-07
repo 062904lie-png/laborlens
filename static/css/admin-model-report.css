@@ -1,3 +1,13 @@
+#tab-performance .performance-scheduler{margin:16px 0;padding:18px;border:1px solid #d8e3ef;border-radius:12px;background:#f7faff}
+#tab-performance .performance-scheduler header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#tab-performance .performance-scheduler h3{font-size:16px;margin:0}
+#tab-performance .performance-scheduler p{font-size:12px;line-height:1.5;color:#526b86;margin:8px 0 0;overflow-wrap:anywhere}
+#tab-performance .performance-scheduler dl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}
+#tab-performance .performance-scheduler dl>div{min-width:0;padding:12px;border:1px solid #dce6f0;border-radius:8px;background:#fff}
+#tab-performance .performance-scheduler dt{font-size:11px;line-height:1.4;color:#526b86;overflow-wrap:anywhere}
+#tab-performance .performance-scheduler dd{margin:5px 0 0;font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+@media(max-width:800px){#tab-performance .performance-scheduler dl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:380px){#tab-performance .performance-scheduler{padding:12px}#tab-performance .performance-scheduler dl{gap:8px}#tab-performance .performance-scheduler dl>div{padding:9px}#tab-performance .performance-scheduler dd{font-size:21px}}
 #tab-performance .performance-models{margin:20px 0;color:#173e6d}
 #tab-performance .performance-models h2{font-size:19px;margin:0 0 6px}
 #tab-performance .performance-model-group{margin:14px 0}
