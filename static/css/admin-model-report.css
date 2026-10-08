@@ -1,3 +1,5 @@
+#tab-performance .performance-models{margin:20px 0;color:#173e6d}
+#tab-performance .performance-models h2{font-size:19px;margin:0 0 6px}
 #tab-performance .performance-scheduler{margin:16px 0;padding:18px;border:1px solid #d8e3ef;border-radius:12px;background:#f7faff}
 #tab-performance .performance-scheduler header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 #tab-performance .performance-scheduler h3{font-size:16px;margin:0}
@@ -8,8 +10,6 @@
 #tab-performance .performance-scheduler dd{margin:5px 0 0;font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 @media(max-width:800px){#tab-performance .performance-scheduler dl{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:380px){#tab-performance .performance-scheduler{padding:12px}#tab-performance .performance-scheduler dl{gap:8px}#tab-performance .performance-scheduler dl>div{padding:9px}#tab-performance .performance-scheduler dd{font-size:21px}}
-#tab-performance .performance-models{margin:20px 0;color:#173e6d}
-#tab-performance .performance-models h2{font-size:19px;margin:0 0 6px}
 #tab-performance .performance-model-group{margin:14px 0}
 #tab-performance .performance-model-group h3{font-size:15px;margin:0 0 2px}
 #tab-performance .performance-model-group header p,#tab-performance .performance-note{font-size:11px;line-height:1.4;color:#526b86;margin:2px 0}
@@ -36,12 +36,6 @@
 #tab-performance .performance-model-card dd{margin:0;font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;white-space:normal}
 #tab-performance .performance-model-entry dd{margin:0;font-size:10px;font-weight:700;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;white-space:normal}
 #tab-performance .performance-model-detail{font-size:9px!important;line-height:1.35;color:#647d97;overflow-wrap:anywhere;margin:2px 0 0}
-#tab-performance .performance-lda-card dl{grid-template-columns:repeat(4,minmax(0,1fr))}
+#tab-performance .performance-lda-card dl{grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(max-width:800px){#tab-performance .performance-lda-card dl{grid-template-columns:repeat(2,minmax(0,1fr))}#tab-performance .performance-model-line{flex-wrap:wrap}#tab-performance .performance-model-status{margin-left:auto}}
 @media(max-width:380px){#tab-performance .performance-model-card{padding:11px}#tab-performance .performance-model-card dl{grid-template-columns:1fr}#tab-performance .performance-model-list{padding-left:24px}#tab-performance .performance-model-entry dl{gap:3px 10px}}
-
-#tab-performance .performance-model-list{list-style:none;padding-left:0}
-#tab-performance .performance-model-row{padding:14px 0}
-#tab-performance .performance-model-entry h4{font-size:14px}
-#tab-performance .performance-model-entry dt,#tab-performance .performance-model-entry dd,#tab-performance .performance-model-detail{font-size:12px!important}
-#tab-performance .performance-model-status{font-size:11px}

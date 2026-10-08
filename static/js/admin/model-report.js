@@ -17,47 +17,40 @@
     const status=data?.status||'Unavailable';
     const ready=data?.ready===true&&['Ready','Matching chunks','Matching incomplete'].includes(status);
     const tone=status==='Ready'?'good':['Failed','Needs documents','Unavailable','Matching incomplete'].includes(status)?'warning':'neutral';
-    const values=[['Topics learned',ready?number(data.topic_count):'—'],['Training chunks',ready?number(data.trained_chunk_count):'—'],['Topic selection',data?.topic_selection||'—'],['Search hints',data?(data.search_hints_enabled?(ready?'On':'Waiting'):'Off'):'—']];
-    const coverage=data?.assignment_checked_chunks!=null?`<p class="performance-model-detail">Chunks checked: <strong>${number(data.assignment_checked_chunks)} / ${number(data.assignment_total_chunks)}</strong> · With topic matches: ${number(data.assignment_classified_chunks)} · No clear match: ${number(data.assignment_unclassified_chunks)}</p>`:'';
-    return `<section class="performance-model-group"><header><h3>Topic Learning (LDA)</h3><p>Helps find related document passages. It does not write or check answers.</p></header><article class="performance-model-card performance-lda-card"><div class="performance-model-heading"><span>KNOWLEDGE BASE</span><span class="performance-model-status ${tone}" aria-live="polite">${escape(status)}</span></div><h4>Document topics</h4><dl>${values.map(([label,value])=>`<div><dt>${label}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl>${coverage}<p class="performance-model-detail">${escape(data?.detail||'Topic-learning status is unavailable. Refresh the page after restarting the backend.')}</p><p class="performance-model-detail">Topics are learned from a document sample; all chunks are then checked. A chunk can match several topics, with no top-10 cutoff. Unclear matches never block search. Status is for this backend worker and resets after restart.</p></article></section>`;
-  }
-  function generationStatus(row){
-    if(row.enabled===false)return 'Disabled';
-    if(row.configured===false)return 'Not configured';
-    return row.status||'No status reported';
-  }
-  function generationSummary(health){
-    if(!health)return 'Status unavailable';
-    const rows=(Array.isArray(health.providers)?health.providers:[]).filter(row=>(row.role||'generation')==='generation');
-    if(!rows.length)return 'No generation models reported';
-    const eligible=rows.filter(row=>row.enabled!==false&&row.configured!==false);
-    if(!eligible.length)return 'No enabled, configured models';
-    if(eligible.some(row=>generationStatus(row)==='In use'))return 'Generating a response';
-    if(eligible.some(row=>/fail|timed out|limit reached|waiting|incomplete|interrupted/i.test(generationStatus(row))))return 'Model issues reported — see details';
-    if(eligible.some(row=>generationStatus(row)==='Observed successes'))return 'Successful model calls recorded';
-    return 'No successful model calls reported';
+    const values=[['Topics learned',ready?number(data.topic_count):'—'],['Training chunks',ready?number(data.trained_chunk_count):'—']];
+    const coverage=data?.assignment_checked_chunks!=null?`<p class="performance-model-detail">Chunks processed: <strong>${number(data.assignment_checked_chunks)} / ${number(data.assignment_total_chunks)}</strong></p>`:'';
+    return `<section class="performance-model-group"><header><h3>Background Topic-Model Training</h3><p>Shows training progress only. The current chat retrieval path does not use LDA search hints.</p></header><article class="performance-model-card performance-lda-card"><div class="performance-model-heading"><span>KNOWLEDGE BASE</span><span class="performance-model-status ${tone}" aria-live="polite">${escape(status)}</span></div><h4>Document topics</h4><dl>${values.map(([label,value])=>`<div><dt>${label}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl>${coverage}<p class="performance-model-detail">${escape(data?.detail||'Topic-learning status is unavailable. Refresh the page after restarting the backend.')}</p><p class="performance-model-detail">Topics are learned from a document sample; all chunks are then checked. A chunk can match several topics. Status is for this backend worker and resets after restart.</p></article></section>`;
   }
   function render(health){
-    if(!health)return '<section class="performance-model-group"><h2>Answer Generation</h2><p>Model information is unavailable. Try Refresh.</p></section>';
-    const models=(Array.isArray(health.providers)?health.providers:[]).filter(row=>(row.role||'generation')==='generation')
-      .sort((a,b)=>(Number(a.priority)>0?Number(a.priority):Infinity)-(Number(b.priority)>0?Number(b.priority):Infinity));
-    const items=models.map(row=>{
-      const status=generationStatus(row);
-      const tone=/fail|missing|not configured|timed out|limit reached|waiting|incomplete|interrupted/i.test(status)?'warning':status==='Observed successes'?'good':'neutral';
-      const observed=row.metrics_available!==false;
-      const metric=key=>observed?number(row[key]):'—';
-      const completed=Number(row.successes)+Number(row.failures);
-      const latency=observed&&Number.isFinite(completed)&&completed>0?seconds(row.average_latency_ms):'Not recorded';
-      const values=[['Model calls',metric('requests')],['Successful calls',metric('successes')],['Failed calls',metric('failures')],['Average completed call',latency]];
-      const details=[];
-      if(Number(row.priority)>0)details.push('Configured preference '+number(row.priority));
-      if(observed&&row.timeouts!=null)details.push('Timeouts '+number(row.timeouts));
-      if(observed&&row.rate_limits!=null)details.push('Rate-limit errors '+number(row.rate_limits));
-      if(row.retry_in_seconds>0)details.push('Retry in about '+number(row.retry_in_seconds)+' seconds');
-      if(!observed)details.push('Metrics unavailable');
-      return `<li class="performance-model-row"><div class="performance-model-entry"><div class="performance-model-line"><span class="performance-model-provider">${escape(String(row.provider||'').toUpperCase())}</span><h4>${escape(row.model||'Model not reported')}</h4><span class="performance-model-status ${tone}">${escape(status)}</span></div><dl>${values.map(([label,value])=>`<div><dt>${label}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl><p class="performance-model-detail">${details.map(escape).join(' · ')}</p></div></li>`;
-    }).join('');
-    return `<section class="performance-models">${renderScheduler(health.generation_scheduler)}<section class="performance-model-group"><header><h2>Answer Generation</h2><p>Models used to draft responses. The backend reports these observations since its last restart.</p><p class="performance-note">Successful model calls are not a count of final answers delivered or a measure of answer accuracy. One question can involve several model calls.</p><p class="performance-model-order-note">Listed by configured preference; availability, limits and retries can change which model handles a request.</p></header>${models.length?`<ul class="performance-model-list" aria-label="Answer generation models">${items}</ul>`:'<p class="performance-model-empty">No generation models reported by the backend.</p>'}</section>${renderLda(health.lda)}</section>`;
+    if(!health)return '<section class="performance-model-group"><h2>AI Models</h2><p>Model information is unavailable. Try Refresh.</p></section>';
+    const rows=Array.isArray(health.providers)?health.providers:[];
+    const groups=[['generation','Answer Generation','Primary models share the answer workload.','primary'],['generation','Backup Answer Generation','Used only after primary OpenAI models fail or are unavailable.','backup'],['reranking','Recovery Conflict Ranking','Used only when recovery finds conflicting evidence.']];
+    return `<section class="performance-models"><h2>AI Models</h2><p class="performance-note">${escape(health.note||'Observations since backend restart; not a live availability check.')}</p>${renderScheduler(health.generation_scheduler)}${renderLda(health.lda)}${groups.map(([role,title,note,tier])=>{
+      const models=rows.filter(row=>(row.role||'generation')===role&&(!tier||(row.generation_tier||'primary')===tier))
+        .sort((a,b)=>Number(a.priority||999)-Number(b.priority||999));
+      const orderNote=role==='generation'?(tier==='backup'?'Fallback-only · not used to balance a busy primary pool.':'Idle models first · least-busy models next · configured priority breaks ties.'):'Configured priority · first row is tried first.';
+      return `<section class="performance-model-group"><header><h3>${title}</h3><p>${note}</p><p class="performance-model-order-note">${orderNote}</p></header>${models.length?`<ol class="performance-model-list" aria-label="${title} model priority order">${models.map((row,index)=>{
+        const priority=Number.isFinite(Number(row.priority))&&Number(row.priority)>0?Math.floor(Number(row.priority)):index+1;
+        const status=row.status||'Not used since restart';
+        const tone=/fail|missing|timed out|limit reached/i.test(status)?'warning':/success|active|in use/i.test(status)?'good':'neutral';
+        const metrics=row.metrics_available!==false;
+        const values=[['Attempts',number(row.requests??0)],[role==='generation'?'Drafts created':'Successful',number(row.successes??0)],['Failed',number(row.failures??0)],['Average time',seconds(row.average_latency_ms)]];
+        if(role==='generation'&&row.concurrency_limit!=null)values.push(['Active requests',`${number(row.active_requests)} / ${number(row.concurrency_limit)}`]);
+        else if(role==='generation'&&row.concurrency_uncapped===true)values.push(['Active requests',number(row.active_requests)],['App concurrency cap','No local cap']);
+        if(metrics&&row.local_tpm_limit!=null)values.push(['Estimated tokens · last minute',number(row.estimated_tokens_last_minute)],['Local token limit · shared',number(row.local_tpm_limit)]);
+        const issues={invalid_ranking_order:'Invalid ranking order',invalid_json:'Unreadable structured response',output_truncated:'Response was cut off',empty_output:'Model returned no visible response',missing_output:'Model response missing',provider_rejected_request:'Provider rejected the request',authentication_failed:'Authentication failed',permission_denied:'Model access denied',model_not_found:'Model not found',request_too_large:'Request too large'};
+        const issue=issues[row.last_error_detail]||'';
+        const details=[];
+        if(role==='generation'&&row.available_slots!=null)details.push(`Available slots ${number(row.available_slots)} · this backend worker`);
+        if(metrics)details.push(`Timeouts ${number(row.timeouts??0)} · limit errors ${number(row.rate_limits??0)}`);
+        if(row.local_rpm_limit!=null)details.push(`Calls ${number(row.calls_last_minute)} / ${number(row.local_rpm_limit)} per minute`);
+        else if(row.calls_last_minute!=null)details.push(`Calls ${number(row.calls_last_minute)} per minute · no local cap`);
+        if(row.retry_in_seconds>0)details.push(`Retry in about ${number(row.retry_in_seconds)} seconds`);
+        if(issue&&row.status!=='Observed successes')details.push(`Last issue: ${issue}${row.last_http_status?` (HTTP ${number(row.last_http_status)})`:''}`);
+        if(!metrics)details.push('No live metric recorded');
+        return `<li class="performance-model-row" value="${priority}"><div class="performance-model-entry"><div class="performance-model-line"><span class="performance-model-provider">${escape(String(row.provider||'').toUpperCase())}</span><h4>${escape(row.model||'Unknown model')}</h4><span class="performance-model-status ${tone}" aria-live="polite">${escape(status)}</span></div><dl>${values.map(([label,value])=>`<div><dt>${label}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl>${details.length?`<p class="performance-model-detail">${details.map(escape).join(' · ')}</p>`:''}</div></li>`;
+      }).join('')}</ol>`:'<p class="performance-model-empty">No models configured for this role.</p>'}</section>`;
+    }).join('')}</section>`;
   }
-  root.AdminModelReport={render,generationSummary};
+  root.AdminModelReport={render};
 })(globalThis);

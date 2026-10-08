@@ -180,8 +180,9 @@ window.AdminMaintenance = (() => {
     const p=summary?.performance;
     const components=Array.isArray(health?.components)?health.components:[],providers=Array.isArray(health?.providers)?health.providers:[];
     const observation=name=>components.find(component=>component.name===name)?.status||'Unavailable / no observation';
-    const ai=AdminModelReport.generationSummary(health);
-    const statusTone=value=>/^(no |not |status unavailable)/i.test(String(value))?'blue':/unavailable|error|fail|issues/i.test(String(value))?'red':/connected|ready|success/i.test(String(value))?'green':'blue';
+    const answerModels=providers.filter(row=>!row.role||row.role==='generation');
+    const ai=!health?'Status unavailable':answerModels.some(row=>row.active_requests>0)?'Generating answers — see active slots below':answerModels.some(row=>row.successes>0)?'Answer generation succeeded — see models below':answerModels.some(row=>row.failures>0)?'Some generation attempts failed — see models below':answerModels.some(row=>row.configured&&row.enabled!==false)?'Configured — no successful drafts recorded':'Not set up';
+    const statusTone=value=>/connected|ready|success/i.test(String(value))?'green':/unavailable|error|fail/i.test(String(value))?'red':'blue';
     const serviceRows=[['AI Provider',ai],['Database',observation('Database')],['Knowledge Base',observation('Knowledge Base')]];
     const service=`<section class="performance-service-card"><h2>Service Status</h2>${U.table(['Service','Observation'],serviceRows.map(([name,status])=>[esc(name),U.badge(status,statusTone(status))]),'performance-service-table')}</section>`;
     const timing=summary&&p?`<section class="performance-timing"><div class="performance-metrics">${[['Average Response Time',ms(p.average),'chart'],['Middle Response Time',ms(p.median),'chart']].map(([label,value,icon])=>`<article><span>${U.icon(icon)}</span><div><small>${label}</small><strong>${esc(value)}</strong></div></article>`).join('')}</div><p>Response times from the last ${adminReportPeriod()} days. Missing times do not mean the service is offline.</p></section>`:`<section class="performance-timing performance-unavailable"><p>Stored performance metrics unavailable.</p></section>`;

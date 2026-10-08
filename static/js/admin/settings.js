@@ -29,22 +29,22 @@ const settingsPage=AdminPages.register('settings','Settings','Manage LaborLens c
   const readOnly='<span class="settings-readonly">Read only · Live system information</span>';
  const home=()=>`<section class="settings-home"><div class="settings-grid">${[
   ['general','General','Application and system information.','settings'],
-  ['ai','AI Models','Model pools, provider availability, and answer-generation settings.','chat'],
+  ['ai','AI Models','Answer-generation models, provider availability, and response limits.','chat'],
   ['retrieval','Retrieval','Search breadth, evidence size, and search-cache settings.','search'],
   ['knowledge','Knowledge Base','Processing, storage, and document information.','folder'],
   ['preferences','Admin Preferences','Account and display preferences for this browser.','users']
   ].map(card=>settingsCard(...card)).join('')}</div><aside class="settings-note"><span>${AdminUI.icon('file')}</span><div><strong>Safe settings</strong><p>AI models, retrieval limits, and response budgets can be changed here. Provider keys, passwords, and live system status remain protected.</p></div></aside></section>`;
  const details={
    general:{description:'Edit the application name and review basic system information.',body:()=>`${settingsConfigForm('general',values,[{title:'Application',fields:[{key:'APP_NAME',label:'Application Name',kind:'text',help:'Shown in the API documentation and admin configuration.'}]}])}<section class="settings-detail-block"><div class="settings-detail-heading"><h2>Security & System Information</h2>${readOnly}</div>${settingsList([['Application Description','AI-powered Philippine Labor Law Assistant'],['System Version','Not available'],['Supported Languages','English, Filipino, Hiligaynon'],['Admin Authentication',account?.role==='admin'?'Enabled':'Unavailable'],['Session Expiration',values.JWT_EXPIRE_MINUTES?`${values.JWT_EXPIRE_MINUTES} minutes`:'Not available'],['Secret Values','Hidden'],['Signed-in Role',account?.role||'Not available']])}</section>`},
-   ai:{description:'Edit the configured model pools, provider availability, and response limits.',body:()=>settingsConfigForm('ai',values,[
-    {title:'Model Pools',description:'One provider/model per line, in attempt order. No five-model cap; up to 32 supported model IDs per pool.',fields:[
+   ai:{description:'Edit the answer-generation models, provider availability, and response limits.',body:()=>settingsConfigForm('ai',values,[
+    {title:'Answer Generation',description:'One provider/model per line, in attempt order. No five-model cap; up to 32 supported model IDs.',fields:[
      {key:'LABORLENS_GENERATOR_POOL',label:'Answer-generation models',kind:'pool'},
-     {key:'LABORLENS_RERANKER_POOL',label:'Passage-ranking models',kind:'pool'},
-     {key:'LABORLENS_VERIFIER_POOL',label:'Answer-checking models',kind:'pool'},
-     {key:'LABORLENS_QUERY_POOL',label:'Query-understanding models',kind:'pool'},
      {key:'LABORLENS_MODEL_POOLS_ENABLED',label:'Use configured model pools',kind:'boolean',help:'Turn this off to use the legacy primary/fallback provider route.'},
      {key:'LABORLENS_OPENAI_ENABLED',label:'Allow OpenAI models',kind:'boolean'},
      {key:'LABORLENS_GEMINI_ENABLED',label:'Allow Gemini models',kind:'boolean'}]},
+    {title:'Recovery Ranking',description:'Used only when retrieval recovery finds conflicting evidence; it is not part of every answer.',fields:[
+     {key:'LABORLENS_RERANKER_POOL',label:'Recovery-ranking models',kind:'pool'},
+     {key:'LABORLENS_LLM_RERANK_ENABLED',label:'Use model ranking for conflicting recovery evidence',kind:'boolean'}]},
     {title:'Answer and Timing Limits',fields:[
      {key:'LABORLENS_MAX_OUTPUT_TOKENS',label:'Normal answer token limit',kind:'integer',min:400,max:2048},
      {key:'LABORLENS_MAX_OUTPUT_TOKENS_COMPLEX',label:'Detailed answer token limit',kind:'integer',min:400,max:2048},
@@ -58,13 +58,9 @@ const settingsPage=AdminPages.register('settings','Settings','Manage LaborLens c
     {title:'Search and Evidence',fields:[
      {key:'RAG_INITIAL_TOP_K',label:'Initial search passages',kind:'integer',min:4,max:30},
      {key:'RAG_EXPANDED_TOP_K',label:'Wider search passages',kind:'integer',min:4,max:50,help:'Must be at least the initial search count.'},
-     {key:'RAG_CANDIDATE_POOL_SIZE',label:'Candidate passages for ranking',kind:'integer',min:10,max:50},
+     {key:'RAG_CANDIDATE_POOL_SIZE',label:'Candidate passages considered',kind:'integer',min:10,max:50},
      {key:'RAG_CONTEXT_TOKEN_BUDGET',label:'Evidence context token budget',kind:'integer',min:256,max:30000},
-     {key:'LABORLENS_LLM_RERANK_ENABLED',label:'Use model-based passage reranking',kind:'boolean'},
-     {key:'LABORLENS_CONDITIONAL_RERANK_ENABLED',label:'Skip reranking when evidence is already clear',kind:'boolean'},
-     {key:'LABORLENS_QUERY_REFORMULATION_ENABLED',label:'Use query reformulation for difficult searches',kind:'boolean'},
-     {key:'LDA_RERANK_ENABLED',label:'Use learned topic hints in ranking',kind:'boolean'},
-     {key:'LDA_SEARCH_HINTS_ENABLED',label:'Use learned topic hints in search',kind:'boolean'}]},
+     {key:'LDA_RERANK_ENABLED',label:'Train the background document-topic model',kind:'boolean',help:'This tracks topic-model training; the current chat retrieval path does not use its search hints.'}]},
     {title:'Search Cache',description:'A larger cache uses more memory; a longer duration may reuse older search results.',fields:[
      {key:'LABORLENS_RETRIEVAL_CACHE_SIZE',label:'Maximum cached searches',kind:'integer',min:16,max:2048},
      {key:'LABORLENS_RETRIEVAL_CACHE_TTL_SECONDS',label:'Cache duration (seconds)',kind:'number',min:0,max:86400}]}])},
