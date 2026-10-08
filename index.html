@@ -3265,7 +3265,7 @@
             <button class="quick-btn" onclick="qs('What are my leave benefits?')">Leave Benefits</button>
             <button class="quick-btn" onclick="qs('What are the grounds for termination?')">Termination</button>
             <button class="quick-btn" onclick="qs('How is separation pay calculated?')">Separation Pay</button>
-            <button class="quick-btn" onclick="qs('What is overtime pay?')">Overtime Pay</button>
+            <button class="quick-btn" onclick="qs('What are the overtime pay rules?')">Overtime Pay</button>
           </div>
         </div>
       </div>
@@ -3280,7 +3280,7 @@
         <div id="composer-shortcuts" role="group" aria-label="Popular labor-law topics">
           <button class="composer-shortcut" type="button" onclick="qs('How is 13th month pay computed?')"><span aria-hidden="true">▤</span>13th Month Pay</button>
           <button class="composer-shortcut" type="button" onclick="qs('What is service incentive leave?')"><span aria-hidden="true">♡</span>Sick Leave</button>
-          <button class="composer-shortcut" type="button" onclick="qs('What is overtime pay?')"><span aria-hidden="true">◷</span>Overtime Pay</button>
+          <button class="composer-shortcut" type="button" onclick="qs('What are the overtime pay rules?')"><span aria-hidden="true">◷</span>Overtime Pay</button>
           <button class="composer-shortcut" type="button" onclick="qs('What are valid grounds for termination?')"><span aria-hidden="true">♧</span>Termination Rights</button>
           <button class="composer-shortcut" type="button" onclick="document.getElementById('msg-input').focus()"><span aria-hidden="true">•••</span>More topics</button>
         </div>
@@ -4397,7 +4397,7 @@ function welcomeHtml(guest=false) {
           <h3 class="common-topics-title" id="common-topics-title"><span aria-hidden="true">✣</span> Explore common topics</h3>
           <div class="topic-card-grid">
             <button class="quick-btn topic-card" onclick="qs('How is 13th month pay computed?')"><span class="topic-icon" aria-hidden="true">🎁</span><span>13th Month Pay</span><span class="topic-arrow" aria-hidden="true">›</span></button>
-            <button class="quick-btn topic-card" onclick="qs('What is overtime pay?')"><span class="topic-icon purple" aria-hidden="true">◷</span><span>Overtime Pay</span><span class="topic-arrow" aria-hidden="true">›</span></button>
+            <button class="quick-btn topic-card" onclick="qs('What are the overtime pay rules?')"><span class="topic-icon purple" aria-hidden="true">◷</span><span>Overtime Pay</span><span class="topic-arrow" aria-hidden="true">›</span></button>
             <button class="quick-btn topic-card" onclick="qs('How does holiday pay work?')"><span class="topic-icon orange" aria-hidden="true">▣</span><span>Holiday Pay</span><span class="topic-arrow" aria-hidden="true">›</span></button>
             <button class="quick-btn topic-card" onclick="qs('How is separation pay calculated?')"><span class="topic-icon green" aria-hidden="true">♧</span><span>Separation Pay</span><span class="topic-arrow" aria-hidden="true">›</span></button>
             <button class="quick-btn topic-card" onclick="qs('What is service incentive leave?')"><span class="topic-icon blue" aria-hidden="true">▤</span><span>Service Incentive Leave</span><span class="topic-arrow" aria-hidden="true">›</span></button>
@@ -4431,7 +4431,7 @@ function restoredWelcomeHtml(guest=false) {
       <div class="topic-group-title">Common topics</div>
       <div class="quick-grid">
         <button class="quick-btn" onclick="qs('How is 13th month pay computed?')">13th Month Pay</button>
-        <button class="quick-btn" onclick="qs('What is overtime pay?')">Overtime Pay</button>
+        <button class="quick-btn" onclick="qs('What are the overtime pay rules?')">Overtime Pay</button>
         <button class="quick-btn" onclick="qs('How does holiday pay work?')">Holiday Pay</button>
         <button class="quick-btn" onclick="qs('What leave benefits may employees have?')">Leave Benefits</button>
         <button class="quick-btn" onclick="qs('What are the rules on employment status?')">Employment Status</button>
@@ -5218,7 +5218,6 @@ function renderSources(sources) {
   const items = list.map((source, index) => {
     const title = escapeHtml(sourceDisplayTitle(source));
     const meta = escapeHtml(sourceMetaLine(source, index));
-    const excerpt = String(source.excerpt || '').trim();
     const sourceUrl = safeSourceUrl(source.source_url) || safeSourceUrl(source.official_url);
     const rawUrl = sourceUrl;
     const label = humanSourceLabel(source.label, index);
@@ -5226,9 +5225,7 @@ function renderSources(sources) {
     const openLink = sourceUrl
       ? `<a class="source-link-open" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Open source link &#8599;</a><span class="source-link-note">${escapeHtml(rawUrl)}</span>`
       : `<span class="source-link-note">No original source link saved for this document.</span>`;
-    const exactLabel = escapeHtml(source.citation ? `View source excerpt for ${source.citation}` : 'View source excerpt');
-    const preview = excerpt ? `<details class="source-passage"><summary>${exactLabel}</summary><pre>${escapeHtml(excerpt)}</pre></details>` : '';
-    return `<div class="source-link-item"><span class="source-link-index" aria-label="${escapeHtml(label)}">${escapeHtml(number)}</span><div><span class="source-link-title">${title}</span>${meta ? `<span class="source-link-meta">${meta}</span>` : ''}${openLink}${preview}</div></div>`;
+    return `<div class="source-link-item"><span class="source-link-index" aria-label="${escapeHtml(label)}">${escapeHtml(number)}</span><div><span class="source-link-title">${title}</span>${meta ? `<span class="source-link-meta">${meta}</span>` : ''}${openLink}</div></div>`;
   }).join('');
   const sourceCount = list.length;
   const viewLabel = `View All Sources (${sourceCount})`;

@@ -705,6 +705,22 @@ button.reference-metric{cursor:pointer}.reference-metric:hover{border-color:#b8d
 #dashboard #tab-settings .settings-list>div+div{border-top:1px solid #e7edf4}
 #dashboard #tab-settings .settings-list dt{color:#526d8c;font-size:11px;font-weight:700}
 #dashboard #tab-settings .settings-list dd{min-width:0;margin:0;color:#244b78;font-size:12px;font-weight:600;overflow-wrap:anywhere}
+#dashboard #tab-settings .settings-config-form{display:grid;gap:16px}
+#dashboard #tab-settings .settings-config-section{min-width:0;padding:0 0 16px;border-bottom:1px solid #e7edf4}
+#dashboard #tab-settings .settings-config-section:last-of-type{padding-bottom:0;border-bottom:0}
+#dashboard #tab-settings .settings-config-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px}
+#dashboard #tab-settings .settings-config-field{display:grid;align-content:start;gap:7px;min-width:0;color:#405f82;font-size:12px;font-weight:700}
+#dashboard #tab-settings .settings-config-field input,#dashboard #tab-settings .settings-config-field textarea{box-sizing:border-box;width:100%;min-width:0;padding:10px 11px;border:1px solid #cedbe9;border-radius:8px;background:#fff;color:#173b68;font:500 13px var(--sans,Arial,sans-serif)}
+#dashboard #tab-settings .settings-config-field textarea{min-height:112px;resize:vertical;line-height:1.5}
+#dashboard #tab-settings .settings-config-field input:focus,#dashboard #tab-settings .settings-config-field textarea:focus{outline:3px solid #d6e8ff;border-color:#4386cc}
+#dashboard #tab-settings .settings-config-field small,#dashboard #tab-settings .settings-config-toggle small{color:#617b99;font-size:10px;font-weight:400;line-height:1.45}
+#dashboard #tab-settings .settings-config-wide{grid-column:1/-1}
+#dashboard #tab-settings .settings-config-toggle{display:grid;grid-template-columns:20px minmax(0,1fr);align-items:center;gap:6px 9px;min-height:44px;color:#315476;font-size:12px;font-weight:700}
+#dashboard #tab-settings .settings-config-toggle input{width:17px;height:17px;margin:0;accent-color:#2168b1}
+#dashboard #tab-settings .settings-config-toggle small{grid-column:2}
+#dashboard #tab-settings .settings-config-form>.btn{justify-self:start}
+#dashboard #tab-settings .settings-save-message{margin:0;color:#9b3b22;font-size:12px;line-height:1.5}
+#dashboard #tab-settings .settings-save-message:empty{display:none}
 #dashboard #tab-settings .settings-preferences{display:grid;max-width:680px;gap:16px}
 #dashboard #tab-settings .settings-preferences fieldset{display:flex;flex-wrap:wrap;gap:10px 22px;margin:0;padding:13px;border:1px solid #dbe5f0;border-radius:9px}
 #dashboard #tab-settings .settings-preferences legend,#dashboard #tab-settings .settings-preferences>label,#dashboard #tab-settings .settings-account-form label{color:#405f82;font-size:12px;font-weight:700}
@@ -715,7 +731,7 @@ button.reference-metric{cursor:pointer}.reference-metric:hover{border-color:#b8d
 #dashboard #tab-settings .settings-account-form{display:grid;max-width:680px;gap:14px;margin-top:16px}
 #dashboard #tab-settings .settings-account-form small,#dashboard #tab-settings #account-save-message{margin:0;color:#607a99;font-size:11px;line-height:1.5}
 #dashboard #tab-settings #account-save-message:not(:empty){padding:10px 12px;border-radius:8px;background:#f2f7fd;color:#285b92}
-@media(max-width:760px){#dashboard #tab-settings .settings-grid{grid-template-columns:1fr;gap:12px}#dashboard #tab-settings .settings-card{grid-template-columns:62px minmax(0,1fr) 18px;gap:14px;min-height:98px;padding:16px}#dashboard #tab-settings .settings-card-icon{width:56px;height:56px;border-radius:10px}#dashboard #tab-settings .settings-card-icon svg{width:29px;height:29px}#dashboard #tab-settings .settings-card-copy{gap:4px}#dashboard #tab-settings .settings-card-copy strong{font-size:15px}#dashboard #tab-settings .settings-card-copy small{font-size:11px}#dashboard #tab-settings .settings-card>b{font-size:26px}#dashboard #tab-settings .settings-note{margin-top:14px;padding:14px}#dashboard #tab-settings .settings-detail-block{padding:14px}#dashboard #tab-settings .settings-detail-heading{align-items:flex-start;flex-direction:column;gap:7px}#dashboard #tab-settings .settings-list>div{grid-template-columns:1fr;gap:5px;padding:11px}#dashboard #tab-settings .settings-preferences select,#dashboard #tab-settings .settings-account-form input{max-width:none}}
+@media(max-width:760px){#dashboard #tab-settings .settings-grid{grid-template-columns:1fr;gap:12px}#dashboard #tab-settings .settings-card{grid-template-columns:62px minmax(0,1fr) 18px;gap:14px;min-height:98px;padding:16px}#dashboard #tab-settings .settings-card-icon{width:56px;height:56px;border-radius:10px}#dashboard #tab-settings .settings-card-icon svg{width:29px;height:29px}#dashboard #tab-settings .settings-card-copy{gap:4px}#dashboard #tab-settings .settings-card-copy strong{font-size:15px}#dashboard #tab-settings .settings-card-copy small{font-size:11px}#dashboard #tab-settings .settings-card>b{font-size:26px}#dashboard #tab-settings .settings-note{margin-top:14px;padding:14px}#dashboard #tab-settings .settings-detail-block{padding:14px}#dashboard #tab-settings .settings-detail-heading{align-items:flex-start;flex-direction:column;gap:7px}#dashboard #tab-settings .settings-list>div{grid-template-columns:1fr;gap:5px;padding:11px}#dashboard #tab-settings .settings-config-grid{grid-template-columns:1fr;gap:12px}#dashboard #tab-settings .settings-config-wide{grid-column:auto}#dashboard #tab-settings .settings-preferences select,#dashboard #tab-settings .settings-account-form input{max-width:none}}
 
 /* Shared responsive foundation — applies to every Admin section and detail page. */
 #dashboard .content-inner>*{min-width:0}
