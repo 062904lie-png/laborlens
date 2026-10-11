@@ -1,11 +1,40 @@
 /* -- Reference Documents -- */
+function documentVectorMissing(d, fallback=false) {
+  if(d.vector_index_available===true){
+    const count=Number(d.vector_chunk_count);
+    return !Number.isFinite(count)||count<=0;
+  }
+  if(d.vector_index_available===false)return true;
+  return Boolean(fallback);
+}
+function documentSearchableChunkCount(d, fallback=false) {
+  if(d.vector_index_available===true){
+    const count=Number(d.vector_chunk_count);
+    return Number.isFinite(count)&&count>0?count:0;
+  }
+  if(d.vector_index_available===false||fallback)return 0;
+  const count=Number(d.chunk_count);
+  return Number.isFinite(count)&&count>0?count:0;
+}
+function documentRetrievalEligible(d) {
+  const versionStatus=String(d.version_status||'active').trim().toLowerCase();
+  const activeValue=d.is_active;
+  const isActive=activeValue===undefined||activeValue===null||![false,0,'0','false'].includes(typeof activeValue==='string'?activeValue.toLowerCase():activeValue);
+  return isActive&&['active','current'].includes(versionStatus);
+}
 function documentProcessingStatus(d, vectorMissing=false) {
-  if(String(d.version_status||'').toLowerCase()==='archived') return 'Archived';
+  const versionStatus=String(d.version_status||'active').trim().toLowerCase();
+  if(versionStatus==='archived') return 'Archived';
   const state=String(d.status||'pending').toLowerCase();
   const stage=String(d.processing_stage||'').toLowerCase();
   if(state==='error'||state==='failed')return 'Failed';
   if(stage.startsWith('replacing'))return 'Replacing';
-  if(state==='indexed')return vectorMissing||Number(d.chunk_count||0)===0?'Not ready':'Ready';
+  if(state==='indexed'){
+    const exactIndexStatus=d.vector_index_available===true;
+    const chunkCount=Number(exactIndexStatus?d.vector_chunk_count:d.chunk_count);
+    const missingIndexChunks=exactIndexStatus?documentVectorMissing(d):documentVectorMissing(d,vectorMissing);
+    return missingIndexChunks||!documentRetrievalEligible(d)||!Number.isFinite(chunkCount)||chunkCount<=0?'Not ready':'Ready';
+  }
   if(/chunk/.test(stage))return 'Splitting text';
   if(/extract|ocr|pars/.test(stage))return 'Reading text';
   if(/embed|index|vector/.test(stage))return 'Preparing for search';
@@ -59,20 +88,19 @@ async function refreshDocuments() {
         : `<strong>No searchable sections yet.</strong> Upload a legal document and wait until it is ready to search.${modelNote}${resetNote}`;
       document.getElementById('kb-chunks').textContent=summary.chunks.toLocaleString();
     }
-    const dr=await apiFetch('/kb/documents');
+    const [dr,indexStatusResponse]=await Promise.all([
+      apiFetch('/kb/documents'),
+      apiFetch('/kb/documents/index-status',{cache:'no-store'}).catch(()=>null)
+    ]);
     const docs=await dr.json();
     if(!dr.ok) throw new Error(docs.detail||'Failed');
-    kbDocumentsCache = Array.isArray(docs) ? docs : [];
-    const hasSearchableChunks=searchableChunks===null
-      ? Number(document.getElementById('kb-chunks').textContent.replace(/,/g,''))>0
-      : searchableChunks>0;
-      const readyCount=hasSearchableChunks
-        ? docs.filter(d=>d.status==='indexed' && (d.chunk_count??0)>0 && d.is_active && ['active','current'].includes(String(d.version_status||'active').toLowerCase())).length
-        : 0;
+    const indexStatus=indexStatusResponse?.ok?await indexStatusResponse.json().catch(()=>null):null;
+    kbDocumentsCache=attachDocumentIndexStatus(docs,indexStatus||{available:false});
+    const readyCount=kbDocumentsCache.filter(d=>documentProcessingStatus(d)==='Ready').length;
     document.getElementById('kb-docs-count').textContent=readyCount;
     kbSearchableChunks = searchableChunks;
     renderDocumentsTable();
-  } catch(e){tb.innerHTML=`<tr><td colspan="6"><div class="err-msg">Error: ${esc(e.message)} <button class="btn btn-sm" onclick="loadDocuments()">Retry</button></div></td></tr>`;}
+  } catch(e){tb.innerHTML=`<tr><td colspan="7"><div class="err-msg">Error: ${esc(e.message)} <button class="btn btn-sm" onclick="loadDocuments()">Retry</button></div></td></tr>`;}
 }
 
 async function uploadFile(input) {
@@ -300,9 +328,13 @@ async function viewDocHealth(id,name='Document Health') {
     if(!r.ok) throw new Error(data.detail||'Unable to load document health.');
     const doc=data.document||{};
     const health=data.health||{};
+    const healthStatusDoc=attachDocumentIndexStatus([doc],{
+      available:true,
+      document_chunk_counts:{[String(doc.id??id)]:Number(health.chunk_count)||0}
+    })[0];
     const stages=health.stages||{};
     const stageCard=(label,key,note='')=>`<div class="mini-metric"><div class="mini-metric-lbl">${label}</div><div class="mini-metric-val" style="font-size:18px;">${stages[key]?'YES':'NO'}</div>${note?`<div class="status-note">${note}</div>`:''}</div>`;
-    document.getElementById('doc-modal-sub').textContent=`${doc.category||KB_CATEGORIES[0]} | ${documentProcessingStatus(doc)}`;
+    document.getElementById('doc-modal-sub').textContent=`${doc.category||KB_CATEGORIES[0]} | ${documentProcessingStatus(healthStatusDoc)}`;
     document.getElementById('doc-modal-body').innerHTML=`
       <div class="doc-meta-grid">
         ${stageCard('Uploaded file','uploaded', health.file_exists?'File exists on server':'File missing on server')}
@@ -315,7 +347,7 @@ async function viewDocHealth(id,name='Document Health') {
       <div class="full-doc-card">
         <div class="full-doc-toolbar">${documentTitleHtml(doc.document_title||doc.original_filename||'Document')}<span>${num(health.page_count)} pages</span></div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">
-          <div class="mini-metric"><div class="mini-metric-lbl">Status</div><div class="mini-metric-val" style="font-size:18px;">${statusBadge(doc)}</div></div>
+          <div class="mini-metric"><div class="mini-metric-lbl">Status</div><div class="mini-metric-val" style="font-size:18px;">${statusBadge(healthStatusDoc)}</div></div>
           <div class="mini-metric"><div class="mini-metric-lbl">Visibility</div><div class="mini-metric-val" style="font-size:18px;">${doc.is_active?'ACTIVE':'INACTIVE'}</div></div>
           <div class="mini-metric"><div class="mini-metric-lbl">Processing stage</div><div class="mini-metric-val" style="font-size:18px;">${esc(String(doc.processing_stage||'uploaded').toUpperCase())}</div></div>
           <div class="mini-metric"><div class="mini-metric-lbl">Last indexed</div><div class="mini-metric-val" style="font-size:18px;">${esc(dateLabel(doc.last_indexed_at||doc.created_at))}</div></div>
@@ -336,9 +368,14 @@ async function editDocumentMeta(id) {
   document.getElementById('doc-modal-body').innerHTML='<div class="loading">Loading document metadata...</div>';
   document.getElementById('doc-modal-foot').innerHTML='';
   try{
-    const r=await apiFetch(`/kb/documents/${id}`);
+    const [r,indexStatusResponse]=await Promise.all([
+      apiFetch(`/kb/documents/${id}`),
+      apiFetch('/kb/documents/index-status',{cache:'no-store'}).catch(()=>null)
+    ]);
     const doc=await r.json();
     if(!r.ok) throw new Error(doc.detail||'Unable to load document metadata.');
+    const indexStatus=indexStatusResponse?.ok?await indexStatusResponse.json().catch(()=>null):null;
+    const statusDoc=attachDocumentIndexStatus([doc],indexStatus||{available:false})[0];
     const categoryOptions=(KB_CATEGORIES||[]).map(cat=>`<option value="${esc(cat)}" ${cat===(doc.category||KB_CATEGORIES[0])?'selected':''}>${esc(cat)}</option>`).join('');
     const versionOptions=DOC_VERSION_STATUSES.map(status=>`<option value="${status}" ${status===String(doc.version_status||'active').toLowerCase()?'selected':''}>${status.charAt(0).toUpperCase()+status.slice(1)}</option>`).join('');
     document.getElementById('doc-modal-body').innerHTML=`
@@ -373,7 +410,7 @@ async function editDocumentMeta(id) {
         <div class="form-group"><label>Original Source Link</label><input type="url" id="doc-edit-source-url" value="${esc(doc.source_url||'')}"/></div>
         <div class="form-row">
           <div class="form-group"><label>Main Category</label><select id="doc-edit-category" onchange="syncSecondaryCategoryOptions('doc-edit-secondary-categories',this.value)">${categoryOptions}</select></div>
-          <div class="form-group"><label>Status</label><div>${statusBadge(doc)}</div><span class="status-note">Updated automatically during processing.</span><input type="hidden" id="doc-edit-version-status" value="${esc(doc.version_status||'active')}"/></div>
+          <div class="form-group"><label>Status</label><div>${statusBadge(statusDoc)}</div><span class="status-note">Updated automatically during processing.</span><input type="hidden" id="doc-edit-version-status" value="${esc(doc.version_status||'active')}"/></div>
         </div>
         <div class="form-group"><label>Extra Categories</label><div class="kb-secondary-grid" id="doc-edit-secondary-categories"></div></div>
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);"><input type="checkbox" id="doc-edit-active" ${doc.is_active?'checked':''}/> Active for chatbot retrieval</label>

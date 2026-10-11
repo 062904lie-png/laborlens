@@ -293,3 +293,15 @@ body.app-ready.theme-light.ll-reference #app #settings-panel .sp-profile-save-bt
 body.app-ready.theme-light.ll-reference #app #settings-panel #profile-settings-status[data-state="success"]{color:#167249!important}
 body.app-ready.theme-light.ll-reference #app #settings-panel #profile-settings-status[data-state="error"]{color:#b42335!important}
 body.app-ready.theme-light.ll-reference #app #settings-panel #profile-settings-status[data-state="muted"]{color:#637e99!important}
+
+/* Keep the in-flight stop control visible even though the composer hides button text. */
+body.app-ready.theme-dark.ll-reference #app #send-btn.is-stop,
+body.app-ready.theme-light.ll-reference #app #send-btn.is-stop{background:#b42318!important;color:#fff!important;box-shadow:0 6px 16px rgba(180,35,24,.28)!important}
+body.app-ready.theme-dark.ll-reference #app #send-btn.is-stop:hover:not(:disabled),
+body.app-ready.theme-light.ll-reference #app #send-btn.is-stop:hover:not(:disabled){background:#921b14!important}
+body.app-ready.theme-dark.ll-reference #app #send-btn.is-stop>span[aria-hidden="true"],
+body.app-ready.theme-light.ll-reference #app #send-btn.is-stop>span[aria-hidden="true"]{display:block!important;width:15px!important;height:15px!important;min-width:15px!important;min-height:15px!important;padding:0!important;border-radius:3px!important;background:currentColor!important;font-size:0!important;line-height:0!important;animation:ll-stop-square-in 180ms cubic-bezier(.2,.8,.2,1) both}
+body.app-ready.theme-dark.ll-reference #app[data-responding="true"] #send-btn.is-stop::after,
+body.app-ready.theme-light.ll-reference #app[data-responding="true"] #send-btn.is-stop::after{content:none!important;display:none!important;animation:none!important}
+@keyframes ll-stop-square-in{from{opacity:0;transform:scale(.55) rotate(-12deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+@media(prefers-reduced-motion:reduce){body.app-ready.ll-reference #app #send-btn.is-stop>span[aria-hidden="true"]{animation:none!important}}

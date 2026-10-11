@@ -638,6 +638,19 @@
     .source-links-title{display:block;margin-bottom:8px;color:#475467;font-weight:700;font-size:11px;line-height:1.45;}
     .source-link-list{display:grid;gap:12px;}
     .source-link-item{display:block;}
+    .source-document-group{border:1px solid #dbe4ef;border-radius:7px;background:#f8fafc;overflow:hidden;}
+    .source-document-summary{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:2px 8px;padding:7px 9px;cursor:pointer;list-style:none;}
+    .source-document-summary::-webkit-details-marker{display:none;}
+    .source-document-count{grid-column:1;grid-row:1/3;color:#475569;font-size:10px;font-weight:800;white-space:nowrap;}
+    .source-document-title{grid-column:2;grid-row:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#111827;font-size:12px;font-weight:800;}
+    .source-document-locator{grid-column:2;grid-row:2;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#667085;font-size:10.5px;line-height:1.3;}
+    .source-document-chevron{grid-column:3;grid-row:1/3;color:#667085;font-size:13px;}
+    .source-document-passages{padding:0 9px 5px;border-top:1px solid #dbe4ef;}
+    .source-compact-passage{padding:6px 0;border-bottom:1px solid #e5eaf1;}
+    .source-compact-passage:last-child{border-bottom:0;}
+    .source-compact-passage-heading{display:flex;align-items:center;gap:6px;color:#475569;font-size:10.5px;line-height:1.35;}
+    .source-compact-details{margin:4px 0 0 25px;font-size:10.5px;}
+    .source-compact-details>summary{cursor:pointer;color:#2563eb;font-weight:700;}
     .source-link-title{display:block;color:#111827;font-size:13px;font-weight:800;line-height:1.45;}
     .source-link-meta{display:block;margin-top:3px;color:#667085;font-size:11px;line-height:1.45;}
     .source-link-open{display:inline-flex;align-items:center;gap:5px;margin-top:6px;color:#2563eb;font-size:12px;font-weight:700;line-height:1.45;text-decoration:underline;text-underline-offset:3px;}
@@ -702,6 +715,7 @@
     .source-match-badge.conflicting,.source-match-badge.source-match--conflicting{background:#fff7ed;border-color:#fed7aa;color:#9a3412;}
     .source-match-badge.more{background:#f8fafc;border-color:#cbd5e1;color:#475569;}
     .source-card-actions,.answer-actions,.guided-actions,.feedback-reasons{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+    .feedback-reasons-label{flex:0 0 100%;font-size:12px;font-weight:700;color:#667085;}
     .source-card-btn,.answer-action-btn,.guided-action-btn,.feedback-reason-btn{border:1px solid #cfd7e3;background:#fff;border-radius:8px;padding:7px 10px;cursor:pointer;color:#0b2d7a;font-size:12px;font-weight:800;text-decoration:none;line-height:1.2;}
     .source-card-btn:hover,.answer-action-btn:hover,.guided-action-btn:hover,.feedback-reason-btn:hover{background:#eef5ff;border-color:#0b2d7a;}
     .answer-action-btn.danger,.feedback-reason-btn.danger{color:#b42318;border-color:#f3b8b3;background:#fff8f7;}
@@ -1983,52 +1997,88 @@
       column-gap:28px!important;
     }
     body.app-ready .source-links{
-      padding:10px 18px 12px!important;
+      padding:7px 12px 8px!important;
       margin:0!important;
       border-top:1px solid var(--border)!important;
       background:#fff!important;
     }
     body.app-ready .source-links-title{
-      margin-bottom:8px!important;
+      margin-bottom:5px!important;
       color:#61708a!important;
       font-size:10.5px!important;
       font-weight:800!important;
     }
     body.app-ready .source-link-list.show{
       display:grid!important;
-      grid-template-columns:repeat(auto-fit,minmax(260px,1fr))!important;
-      gap:8px!important;
-      margin:8px 0 10px!important;
+      grid-template-columns:minmax(0,1fr)!important;
+      gap:5px!important;
+      margin:5px 0 7px!important;
     }
-    body.app-ready .source-link-item{
-      display:grid!important;
-      grid-template-columns:22px minmax(0,1fr)!important;
-      gap:8px!important;
-      border:1px solid #e1e9f4!important;
-      background:#fbfdff!important;
+    body.app-ready .source-document-group{
+      border:1px solid var(--chat-line,#dbe4ef)!important;
       border-radius:7px!important;
-      padding:9px!important;
-      min-width:0!important;
+      background:var(--chat-soft,#f8fafc)!important;
+      color:var(--chat-text,#111827)!important;
+      overflow:hidden!important;
+    }
+    body.app-ready .source-document-summary{
+      display:grid!important;
+      grid-template-columns:auto minmax(0,1fr) auto!important;
+      align-items:center!important;
+      gap:2px 8px!important;
+      min-height:0!important;
+      padding:6px 9px!important;
+      cursor:pointer!important;
+      list-style:none!important;
+    }
+    body.app-ready .source-document-summary::-webkit-details-marker{display:none!important;}
+    body.app-ready .source-document-count{
+      grid-column:1!important;grid-row:1/3!important;
+      color:var(--chat-muted,#475569)!important;font-size:10px!important;font-weight:800!important;white-space:nowrap!important;
+    }
+    body.app-ready .source-document-title{
+      grid-column:2!important;grid-row:1!important;min-width:0!important;display:block!important;
+      overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+      color:var(--chat-text,#111c34)!important;font-size:11.5px!important;font-weight:900!important;line-height:1.3!important;
+    }
+    body.app-ready .source-document-locator{
+      grid-column:2!important;grid-row:2!important;min-width:0!important;display:block!important;
+      overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+      color:var(--chat-muted,#60718b)!important;font-size:10px!important;line-height:1.3!important;
+    }
+    body.app-ready .source-document-chevron{
+      grid-column:3!important;grid-row:1/3!important;color:var(--chat-muted,#60718b)!important;
+      font-size:12px!important;transition:transform .15s ease!important;
+    }
+    body.app-ready .source-document-group[open] .source-document-chevron{transform:rotate(180deg)!important;}
+    body.app-ready .source-document-passages{
+      padding:0 9px 4px!important;border-top:1px solid var(--chat-line,#dbe4ef)!important;
+    }
+    body.app-ready .source-compact-passage{padding:5px 0!important;border-bottom:1px solid var(--chat-line,#e5eaf1)!important;}
+    body.app-ready .source-compact-passage:last-child{border-bottom:0!important;}
+    body.app-ready .source-compact-passage-heading{
+      display:flex!important;align-items:center!important;gap:6px!important;
+      color:var(--chat-muted,#475569)!important;font-size:10px!important;line-height:1.35!important;
     }
     body.app-ready .source-link-index{
-      width:20px!important;height:20px!important;border-radius:50%!important;
-      display:grid!important;place-items:center!important;background:#eef6ff!important;
-      border:1px solid #b8cff1!important;color:#0b3b92!important;font-size:11px!important;font-weight:900!important;
+      width:auto!important;height:auto!important;min-width:18px!important;min-height:18px!important;
+      display:inline-flex!important;align-items:center!important;justify-content:center!important;
+      padding:0 4px!important;border-radius:999px!important;background:var(--chat-panel,#eef6ff)!important;
+      border:1px solid var(--chat-line,#b8cff1)!important;color:var(--chat-link,#0b3b92)!important;
+      font-size:9px!important;font-weight:900!important;line-height:1.2!important;
     }
-    body.app-ready .source-link-title{
-      display:block!important;color:#111c34!important;font-size:12px!important;font-weight:900!important;
-      overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
-    }
+    body.app-ready .source-compact-details{margin:3px 0 0 24px!important;font-size:10px!important;}
+    body.app-ready .source-compact-details>summary{cursor:pointer!important;color:var(--chat-link,#0b57d0)!important;font-size:10px!important;font-weight:800!important;}
     body.app-ready .source-link-meta,
     body.app-ready .source-link-note{
-      display:block!important;color:#60718b!important;font-size:10.5px!important;line-height:1.35!important;
-      word-break:break-word!important;
+      display:block!important;color:var(--chat-muted,#60718b)!important;font-size:10px!important;line-height:1.35!important;
+      word-break:break-word!important;margin-top:4px!important;
     }
     body.app-ready .source-link-open{
-      display:inline-block!important;margin:4px 0 2px!important;color:#0b57d0!important;
-      font-size:12px!important;font-weight:800!important;text-decoration:underline!important;text-underline-offset:3px!important;
+      display:inline-block!important;margin:4px 0 2px!important;color:var(--chat-link,#0b57d0)!important;
+      font-size:10.5px!important;font-weight:800!important;text-decoration:underline!important;text-underline-offset:3px!important;
     }
-    body.app-ready .source-passage summary{color:#0b57d0!important;font-size:11.5px!important;font-weight:800!important;cursor:pointer!important;}
+    body.app-ready .source-passage summary{color:var(--chat-link,#0b57d0)!important;font-size:10px!important;font-weight:800!important;cursor:pointer!important;}
     body.app-ready .source-passage pre{
       max-height:145px!important;overflow:auto!important;white-space:pre-wrap!important;
       background:#f3f6fb!important;border:1px solid #e2e8f2!important;border-radius:6px!important;
@@ -2128,6 +2178,9 @@
       box-shadow:0 8px 16px rgba(18,63,160,.18)!important;
     }
     body.app-ready #send-btn:disabled{opacity:.45!important;cursor:not-allowed!important;box-shadow:none!important;}
+    body.ll-reference #app #send-btn.is-stop{background:#b42318!important;color:#fff!important;box-shadow:0 6px 16px rgba(180,35,24,.28)!important;}
+    body.ll-reference #app #send-btn.is-stop:hover:not(:disabled){background:#921b14!important;}
+    body.ll-reference #app[data-responding="true"] #send-btn.is-stop::after{content:none!important;display:none!important;animation:none!important;}
     body.app-ready .disclaimer{
       width:min(1320px,100%)!important;
       margin:7px auto 0!important;
@@ -2994,7 +3047,7 @@
   <link rel="stylesheet" href="static/css/public.css?v=20260905-3"/>
   <link rel="stylesheet" href="static/css/chat-appearance.css?v=20260911-3"/>
   <link rel="stylesheet" href="static/css/voice.css?v=20260914-composer-6"/>
-  <link rel="stylesheet" href="static/css/reference-chat.css?v=20260914-5"/>
+  <link rel="stylesheet" href="static/css/reference-chat.css?v=20261011-stop-square-1"/>
 </head>
 <body class="ll-reference">
 <a class="skip-link" href="#msg-input">Skip to chat input</a>
@@ -3142,7 +3195,8 @@
 
   <div class="status-popover" id="status-popover" role="dialog" aria-label="LaborLens system status">
     <h3>LaborLens Status</h3>
-    <div class="status-line"><strong>Backend</strong><span id="status-backend">Checking...</span></div>
+    <div class="status-line"><strong>Database</strong><span id="status-database">Checking...</span></div>
+    <div class="status-line"><strong>Search index</strong><span id="status-search-index">Checking...</span></div>
     <div class="status-line"><strong>Knowledge base</strong><span id="status-kb">Checking...</span></div>
     <div class="status-line"><strong>Documents indexed</strong><span id="status-docs">-</span></div>
     <div class="status-line"><strong>Last update</strong><span id="status-updated">-</span></div>
@@ -3265,7 +3319,7 @@
             <button class="quick-btn" onclick="qs('What are my leave benefits?')">Leave Benefits</button>
             <button class="quick-btn" onclick="qs('What are the grounds for termination?')">Termination</button>
             <button class="quick-btn" onclick="qs('How is separation pay calculated?')">Separation Pay</button>
-            <button class="quick-btn" onclick="qs('What are the overtime pay rules?')">Overtime Pay</button>
+            <button class="quick-btn" onclick="qs('What are overtime pay rules?')">Overtime Rules</button>
           </div>
         </div>
       </div>
@@ -3287,7 +3341,7 @@
         <div id="input-box">
           <textarea id="msg-input" rows="1" aria-label="Type your labor law question" placeholder="Type your legal query here..." onkeydown="handleKey(event)" oninput="autoResize(this); updateSendState()"></textarea>
           <button id="mic-btn" type="button" aria-label="Start voice input" title="Speak your legal question"><span class="voice-mic-icon" aria-hidden="true"></span></button>
-          <button id="send-btn" onclick="sendMsg()" aria-label="Send message">➤</button>
+          <button id="send-btn" onclick="handleSendButtonClick()" aria-label="Send message">➤</button>
         </div>
         <section id="voice-activity-panel" hidden aria-live="polite" aria-label="Voice assistant activity">
           <div class="voice-activity-leading">
@@ -3346,8 +3400,18 @@
 <script src="static/js/voice.js?v=20260914-voice-surface-2"></script>
 <script>
 const API = 'https://3.104.175.253/api';
+function readStoredJson(key, fallback, isValid = () => true) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (raw === null || raw === '') return fallback;
+    const value = JSON.parse(raw);
+    if (isValid(value)) return value;
+  } catch (_) {}
+  try { localStorage.removeItem(key); } catch (_) {}
+  return fallback;
+}
 let token = localStorage.getItem('ll_token');
-let currentUser = JSON.parse(localStorage.getItem('ll_user') || 'null');
+let currentUser = readStoredJson('ll_user', null, value => value === null || (typeof value === 'object' && !Array.isArray(value)));
 function activeSessionStorageKey(userId=currentUser?.id) {
   return userId ? `ll_active_session_${userId}` : '';
 }
@@ -3371,12 +3435,13 @@ let guestSessionId = localStorage.getItem('ll_guest_session') || null;
 let guestCount = Number(localStorage.getItem('ll_guest_count') || '0');
 let guestUsageRevision = 0;
 let guestResetsAt = null;
-let guestHistory = JSON.parse(localStorage.getItem('ll_guest_history') || '[]');
+let guestHistory = readStoredJson('ll_guest_history', [], Array.isArray);
 let sessionCache = [];
 let sessionLoadSequence = 0;
 let statusCache = null;
 let typingTimer = null;
 let sendingMessage = false;
+let activeChatController = null;
 let chatViewRevision = 0;
 let chatLoading = false;
 let identitySyncPromise = null;
@@ -3955,11 +4020,11 @@ async function continueGoogle() {
     : document.getElementById('login-err');
   visibleError.textContent = '';
   try {
-    const firebaseSignIn = window.LaborLensFirebase;
-    if (!firebaseSignIn) throw new Error('Google sign-in is still loading. Refresh the page and try again.');
-    await firebaseSignIn.signIn(API);
+    const frontendUrl = window.location.href.split('#')[0];
+    // Top-level navigation lets the API set its own HttpOnly OAuth cookie.
+    window.location.href = `${API}/auth/google/start?frontend_url=${encodeURIComponent(frontendUrl)}`;
   } catch(e) {
-    visibleError.textContent = e.message || 'Google sign-in failed. Please try again.';
+    visibleError.textContent = e.message;
   }
 }
 function openForgotPassword() {
@@ -4082,7 +4147,7 @@ function startGuestChat() {
   lastAssistantIntent = null;
   guestSessionId = localStorage.getItem('ll_guest_session') || null;
   guestCount = Number(localStorage.getItem('ll_guest_count') || '0');
-  guestHistory = JSON.parse(localStorage.getItem('ll_guest_history') || '[]');
+  guestHistory = readStoredJson('ll_guest_history', [], Array.isArray);
   localStorage.removeItem('ll_token');
   localStorage.removeItem('ll_user');
   localStorage.removeItem('ll_active_session'); // Remove the legacy non-user-scoped key.
@@ -4105,7 +4170,46 @@ function saveAuth(data) {
   localStorage.setItem('ll_token', token);
   localStorage.setItem('ll_user', JSON.stringify(currentUser));
   localStorage.removeItem('ll_guest');
+  restoreExpiredDraft(currentUser.id);
   initApp();
+}
+function restoreExpiredDraft(userId) {
+  try {
+    const saved = JSON.parse(sessionStorage.getItem('ll_expired_draft') || 'null');
+    sessionStorage.removeItem('ll_expired_draft');
+    if (!saved || String(saved.userId) !== String(userId) || typeof saved.text !== 'string') return;
+    const input = document.getElementById('msg-input');
+    if (!input) return;
+    input.value = saved.text;
+    autoResize(input);
+    updateSendState();
+  } catch (_) {}
+}
+function expireAuthenticatedSession(requestToken) {
+  if (!requestToken || requestToken !== token || isGuest) return;
+  token = null;
+  currentUser = null;
+  currentSessionId = null;
+  lastAssistantIntent = null;
+  sessionCache = [];
+  identitySyncPromise = null;
+  localStorage.removeItem('ll_token');
+  localStorage.removeItem('ll_user');
+  closeSettings();
+  invalidateChatView();
+  sendingMessage = false;
+  const messages = document.getElementById('msgs');
+  if (messages) messages.innerHTML = accountWelcomeHtml();
+  const sessions = document.getElementById('session-list');
+  if (sessions) sessions.innerHTML = '';
+  document.getElementById('app')?.classList.remove('visible');
+  document.body.classList.remove('guest-mode');
+  updateUserIdentityUi();
+  switchAuthTab('login');
+  showAuth();
+  const loginError = document.getElementById('login-err');
+  if (loginError) loginError.textContent = 'Your session expired. Please sign in again to continue.';
+  updateSendState();
 }
 function doLogout() {
   invalidateChatView();
@@ -4157,25 +4261,6 @@ function initApp() {
   }
 }
 
-async function loadSystemStatus() {
-  const statusText = document.querySelector('.tb-status span');
-  const chatSub = document.querySelector('.chat-sub');
-  if (!statusText) return;
-  try {
-    const res = await fetch(`${API}/status`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.detail || 'Status unavailable');
-    const kb = data.knowledge_base || {};
-    const chunks = Number(kb.total_chunks || 0);
-    const indexed = Number(kb.indexed_documents || 0);
-    const lastUpdate = kb.last_document_update ? new Date(kb.last_document_update).toLocaleDateString() : 'No indexed documents yet';
-    statusText.textContent = chunks > 0 ? `AI Ready · KB ${chunks.toLocaleString()} chunks` : 'AI Ready · KB Empty';
-    if (chatSub) chatSub.textContent = `Knowledge base: ${indexed.toLocaleString()} indexed document${indexed===1?'':'s'} · Last update: ${lastUpdate}`;
-  } catch (_) {
-    statusText.textContent = 'Status unavailable';
-  }
-}
-
 /* Settings */
 function chatLanguageKey() {
   return !isGuest && currentUser?.id != null ? `ll_lang_user_${currentUser.id}` : 'll_lang';
@@ -4187,30 +4272,96 @@ function savedChatLanguage() {
     : ['en', 'fil', 'hil', 'auto'].includes(fallback) ? fallback : 'auto';
 }
 
+let statusCheckInFlight = false;
+function statusDependencyLabel(value) {
+  return value === 'ok' ? 'Available' : value === 'unavailable' ? 'Unavailable' : 'Unknown';
+}
+function setStatusDot(state) {
+  const dot = document.querySelector('.tb-status .tb-dot');
+  if (!dot) return;
+  const colors = {
+    ready: ['#06a65d', '0 0 0 2px #bcebd3'],
+    degraded: ['#d99000', '0 0 0 2px #f5dfaa'],
+    unavailable: ['#c62828', '0 0 0 2px #f2c3c3'],
+    unknown: ['#667085', '0 0 0 2px #d0d5dd']
+  };
+  const [background, shadow] = colors[state] || colors.unknown;
+  dot.style.setProperty('background-color', background, 'important');
+  dot.style.setProperty('box-shadow', shadow, 'important');
+}
 async function loadSystemStatus() {
   const statusText = document.querySelector('.tb-status span');
   const chatSub = document.querySelector('.chat-sub');
-  if (!statusText) return;
+  if (!statusText || statusCheckInFlight) return;
+  statusCheckInFlight = true;
+  const apiRoot = API.replace(/\/api\/?$/, '');
+  const readJson = async url => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    try {
+      const response = await fetch(url, {cache:'no-store', signal:controller.signal});
+      return {ok:response.ok, data:await response.json().catch(() => ({}))};
+    } finally {
+      clearTimeout(timeout);
+    }
+  };
   try {
-    const res = await fetch(`${API}/status`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.detail || 'Status unavailable');
-    statusCache = data;
-    const kb = data.knowledge_base || {};
-    const chunks = Number(kb.total_chunks || 0);
-    const indexed = Number(kb.indexed_documents || 0);
-    const lastUpdate = kb.last_document_update ? new Date(kb.last_document_update).toLocaleDateString() : 'No indexed documents yet';
-    statusText.textContent = chunks > 0 ? 'LaborLens Ready' : 'KB Empty';
-    if (chatSub) chatSub.textContent = `Knowledge base: ${indexed.toLocaleString()} indexed document${indexed===1?'':'s'} | Last update: ${lastUpdate}`;
-    document.getElementById('status-backend').textContent = 'Online';
-    document.getElementById('status-kb').textContent = chunks > 0 ? 'Ready' : 'Empty';
-    document.getElementById('status-docs').textContent = indexed.toLocaleString();
-    document.getElementById('status-updated').textContent = lastUpdate;
+    const [readyResult, statusResult] = await Promise.allSettled([
+      readJson(`${apiRoot}/ready`),
+      readJson(`${API}/status`)
+    ]);
+    const readiness = readyResult.status === 'fulfilled' ? readyResult.value.data : {};
+    const checks = readiness.checks || {};
+    const apiStatus = statusResult.status === 'fulfilled' && statusResult.value.ok
+      ? statusResult.value.data : null;
+    statusCache = {readiness, apiStatus};
+    const databaseState = readyResult.status === 'rejected' ? 'unknown' : checks.database;
+    const searchState = readyResult.status === 'rejected' ? 'unknown' : checks.search_index;
+    const allReady = readyResult.status === 'fulfilled' && readyResult.value.ok
+      && databaseState === 'ok' && searchState === 'ok';
+    const anyUnavailable = databaseState === 'unavailable' || searchState === 'unavailable';
+    const overall = allReady ? 'ready' : anyUnavailable ? 'degraded' : 'unknown';
+    setStatusDot(overall);
+    statusText.textContent = allReady ? 'LaborLens Ready'
+      : anyUnavailable ? 'Service degraded' : 'Status unavailable';
+    const databaseEl = document.getElementById('status-database');
+    const searchEl = document.getElementById('status-search-index');
+    if (databaseEl) databaseEl.textContent = statusDependencyLabel(databaseState);
+    if (searchEl) searchEl.textContent = statusDependencyLabel(searchState);
+
+    const kb = apiStatus?.knowledge_base || {};
+    const chunkCount = Number(kb.total_chunks);
+    const indexedCount = Number(kb.indexed_documents);
+    const chunks = Number.isFinite(chunkCount) && chunkCount >= 0 ? chunkCount : null;
+    const indexed = Number.isFinite(indexedCount) && indexedCount >= 0 ? indexedCount : null;
+    const lastUpdate = kb.last_document_update
+      ? new Date(kb.last_document_update).toLocaleDateString() : 'No indexed documents yet';
+    const kbEl = document.getElementById('status-kb');
+    if (kbEl) {
+      kbEl.textContent = searchState === 'unavailable' ? 'Unavailable'
+        : searchState === 'ok' ? (chunks === null ? 'Available · Details unavailable'
+          : chunks > 0 ? `Ready · ${chunks.toLocaleString()} chunks` : 'Available · Empty')
+        : 'Unknown';
+    }
+    const docsEl = document.getElementById('status-docs');
+    const updatedEl = document.getElementById('status-updated');
+    if (docsEl) docsEl.textContent = indexed === null ? 'Unknown' : indexed.toLocaleString();
+    if (updatedEl) updatedEl.textContent = apiStatus ? lastUpdate : 'Unknown';
+    if (chatSub && apiStatus) {
+      chatSub.textContent = `Knowledge base: ${indexed.toLocaleString()} indexed document${indexed===1?'':'s'} | Last update: ${lastUpdate}`;
+    }
   } catch (_) {
     statusCache = null;
     statusText.textContent = 'Service unavailable';
-    document.getElementById('status-backend').textContent = 'Offline';
-    document.getElementById('status-kb').textContent = 'Unavailable';
+    setStatusDot('unavailable');
+    const databaseEl = document.getElementById('status-database');
+    const searchEl = document.getElementById('status-search-index');
+    const kbEl = document.getElementById('status-kb');
+    if (databaseEl) databaseEl.textContent = 'Unknown';
+    if (searchEl) searchEl.textContent = 'Unknown';
+    if (kbEl) kbEl.textContent = 'Unknown';
+  } finally {
+    statusCheckInFlight = false;
   }
 }
 
@@ -4251,8 +4402,18 @@ document.addEventListener('keydown', event => {
   else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
 });
 function toggleStatusPopover() {
-  document.getElementById('status-popover')?.classList.toggle('open');
+  const popover = document.getElementById('status-popover');
+  popover?.classList.toggle('open');
+  if (popover?.classList.contains('open')) void loadSystemStatus();
 }
+setInterval(() => {
+  if (document.getElementById('app')?.classList.contains('visible')
+      && document.visibilityState === 'visible') void loadSystemStatus();
+}, 60000);
+document.addEventListener('visibilitychange', () => {
+  if (document.getElementById('app')?.classList.contains('visible')
+      && document.visibilityState === 'visible') void loadSystemStatus();
+});
 async function saveLangSetting(val) {
   if (!['en', 'fil', 'hil', 'auto'].includes(val)) return;
   localStorage.setItem(chatLanguageKey(), val);
@@ -4755,6 +4916,9 @@ async function renameSession(event, id, currentTitle) {
 function invalidateChatView() {
   chatViewRevision++;
   sessionLoadSequence++;
+  if (activeChatController) activeChatController.abort();
+  activeChatController = null;
+  sendingMessage = false;
   chatLoading = false;
   window.LaborLensVoice.finish();
   window.LaborLensMotion.setResponding(false);
@@ -4929,7 +5093,7 @@ function stopTypingSteps() {
   const box = document.getElementById('msgs');
   if (box) box.scrollTop = box.scrollHeight;
 }
-async function readValidatedChatStream(response, row, isCurrent = () => true) {
+async function readValidatedChatStream(response, row, isCurrent = () => true, onPartial = () => {}) {
   if (!response.ok) throw new Error((await response.text()) || 'Unable to send message');
   if (!response.body) throw new Error('Streaming is not supported by this browser.');
   const reader = response.body.getReader();
@@ -4950,6 +5114,7 @@ async function readValidatedChatStream(response, row, isCurrent = () => true) {
         window.LaborLensMotion.setReplyState(row, 'thinking', event.message || 'Checking legal sources…');
       } else if (event.type === 'delta') {
         answer += event.text || '';
+        onPartial(answer);
         if (isCurrent()) {
           updateMsg(row, answer, [], {});
           window.LaborLensMotion.setReplyState(row, 'streaming');
@@ -4974,6 +5139,10 @@ async function sendMsg() {
   const revision = ++chatViewRevision;
   const requestIsGuest = isGuest;
   const requestToken = token;
+  const requestUserId = typeof currentUser === 'undefined' ? null : currentUser?.id;
+  const controller = new AbortController();
+  activeChatController = controller;
+  let partialAnswer = '';
   const isCurrent = () => revision === chatViewRevision;
   const sameIdentity = () => requestToken === token && requestIsGuest === isGuest;
   window.LaborLensVoice.finish();
@@ -4985,7 +5154,7 @@ async function sendMsg() {
   inp.value = ''; inp.style.height = 'auto';
   const w = document.getElementById('welcome');
   if (w) w.remove();
-  appendMsg('user', text);
+  const userRow = appendMsg('user', text);
   const streamingRow = appendMsg('assistant', '');
   window.LaborLensMotion.setReplyState(streamingRow, 'thinking');
   window.LaborLensMotion.setResponding(true);
@@ -4995,6 +5164,7 @@ async function sendMsg() {
       ? await fetch(`${API}/chat/guest-message`, {
           method:'POST',
           cache:'no-store',
+          signal:controller.signal,
           headers:{'Content-Type':'application/json'},
           body: JSON.stringify({
             message: text,
@@ -5006,10 +5176,11 @@ async function sendMsg() {
         })
       : await authFetch('/chat/message/stream', {
           method:'POST',
+          signal:controller.signal,
           headers:{'Accept':'text/event-stream'},
           body: JSON.stringify({message: text, session_id: currentSessionId, language: lang, previous_intent: lastAssistantIntent})
         });
-    const d = requestIsGuest ? await r.json() : await readValidatedChatStream(r, streamingRow, isCurrent);
+    const d = requestIsGuest ? await r.json() : await readValidatedChatStream(r, streamingRow, isCurrent, answer => { partialAnswer = answer; });
     if (requestIsGuest && !r.ok) throw new Error(d.detail || 'Unable to send message');
     if (!isCurrent()) {
       if (sameIdentity()) {
@@ -5076,19 +5247,47 @@ async function sendMsg() {
     if (getPrefs().autoRead) window.LaborLensVoice.speak(d.answer, d.language || lang, streamingRow?.querySelector('.answer-read-btn'));
     loadSessions();
   } catch(_) {
+    if (controller.signal.aborted) {
+      if (isCurrent()) {
+        const stoppedText = partialAnswer
+          ? `${partialAnswer}\n\n_Response stopped early; this answer may be incomplete._`
+          : 'Response stopped.';
+        updateMsg(streamingRow, stoppedText, [], {intent:'system_notice'});
+        window.LaborLensMotion.setReplyState(streamingRow, 'error');
+      }
+      return;
+    }
+    if (requestToken && requestToken !== token) {
+      try {
+        sessionStorage.setItem('ll_expired_draft', JSON.stringify({userId:requestUserId, text}));
+      } catch (_) {}
+      userRow.remove();
+      streamingRow.remove();
+      return;
+    }
     if (!isCurrent()) return;
     const errorMeta = {intent:'system_error', retryText:text};
     if (streamingRow) updateMsg(streamingRow, "LaborLens cannot connect to the legal-information service right now. Please try again later.", [], errorMeta);
     else appendMsg('assistant', "LaborLens cannot connect to the legal-information service right now. Please try again later.", new Date().toISOString(), [], errorMeta);
     window.LaborLensMotion.setReplyState(streamingRow, 'error');
   } finally {
-    if (isCurrent()) {
-      window.LaborLensMotion.setResponding(false);
-      stopTypingSteps();
+    if (activeChatController === controller) {
+      activeChatController = null;
+      if (isCurrent()) {
+        window.LaborLensMotion.setResponding(false);
+        stopTypingSteps();
+      }
+      sendingMessage = false;
+      updateSendState();
     }
-    sendingMessage = false;
-    updateSendState();
   }
+}
+function stopActiveChat() {
+  if (activeChatController && sendingMessage) activeChatController.abort();
+}
+function handleSendButtonClick() {
+  if (sendingMessage) stopActiveChat();
+  else sendMsg();
 }
 function formatTime(value) {
   const date = value ? new Date(value) : new Date();
@@ -5212,23 +5411,62 @@ function uniqueAnswerSources(sources) {
   // title/page here can hide distinct evidence and redirect answer citations.
   return normalizeSources(sources).filter(source => source && typeof source === 'object' && !Array.isArray(source));
 }
+function compactSourceLocator(sources) {
+  const provisions = [];
+  const pages = [];
+  const provisionKeys = new Set();
+  const pageKeys = new Set();
+  for (const source of sources || []) {
+    for (const value of [source.article_section, source.article_title, source.article, source.section, source.citation]) {
+      const text = String(value || '').trim();
+      const key = text.toLowerCase().replace(/[^a-z0-9]+/g, '');
+      if (text && key && !provisionKeys.has(key)) {
+        provisionKeys.add(key);
+        provisions.push(text);
+      }
+    }
+    const page = String(source.page || source.page_number || '').trim();
+    if (page && page !== '0' && !pageKeys.has(page.toLowerCase())) {
+      pageKeys.add(page.toLowerCase());
+      pages.push(page);
+    }
+  }
+  const pageText = pages.length === 1 ? `p. ${pages[0]}` : pages.length ? `pp. ${pages.join(', ')}` : 'Page not listed';
+  return [...provisions, pageText].filter(Boolean).join(' · ');
+}
+function groupSourcesByDocument(sources) {
+  const groups = new Map();
+  sources.forEach((source, index) => {
+    const title = sourceDisplayTitle(source);
+    const key = title && title !== 'Knowledge base source' ? title.toLocaleLowerCase() : `source-${index}`;
+    if (!groups.has(key)) groups.set(key, {title, entries: []});
+    groups.get(key).entries.push({source, index, label: humanSourceLabel(source.label, index)});
+  });
+  return [...groups.values()];
+}
 function renderSources(sources) {
   const list = uniqueAnswerSources(sources);
   if (!list.length) return '';
-  const items = list.map((source, index) => {
-    const title = escapeHtml(sourceDisplayTitle(source));
-    const meta = escapeHtml(sourceMetaLine(source, index));
-    const sourceUrl = safeSourceUrl(source.source_url) || safeSourceUrl(source.official_url);
-    const rawUrl = sourceUrl;
-    const label = humanSourceLabel(source.label, index);
-    const number = label.match(/^Source\s+(\d+)$/i)?.[1] || label;
-    const openLink = sourceUrl
-      ? `<a class="source-link-open" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Open source link &#8599;</a><span class="source-link-note">${escapeHtml(rawUrl)}</span>`
-      : `<span class="source-link-note">No original source link saved for this document.</span>`;
-    return `<div class="source-link-item"><span class="source-link-index" aria-label="${escapeHtml(label)}">${escapeHtml(number)}</span><div><span class="source-link-title">${title}</span>${meta ? `<span class="source-link-meta">${meta}</span>` : ''}${openLink}</div></div>`;
+  const items = groupSourcesByDocument(list).map(group => {
+    const refs = group.entries.map(entry => entry.label.replace(/^Source\s+/i, '')).join(', ');
+    const locator = escapeHtml(compactSourceLocator(group.entries.map(entry => entry.source)));
+    const passages = group.entries.map(({source, index, label}) => {
+      const fullMeta = escapeHtml(sourceMetaLine(source, index));
+      const sourceUrl = safeSourceUrl(source.source_url) || safeSourceUrl(source.official_url);
+      const link = sourceUrl
+        ? `<a class="source-link-open" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Open original source &#8599;</a><span class="source-link-note">${escapeHtml(sourceUrl)}</span>`
+        : `<span class="source-link-note">No original source link saved for this document.</span>`;
+      const excerpt = String(source.excerpt || '').trim();
+      const passage = excerpt
+        ? `<details class="source-passage"><summary>View passage excerpt</summary><pre>${escapeHtml(excerpt)}</pre></details>`
+        : '';
+      const number = label.match(/^Source\s+(\d+)$/i)?.[1] || label;
+      return `<div class="source-compact-passage"><div class="source-compact-passage-heading"><span class="source-link-index" aria-label="${escapeHtml(label)}">${escapeHtml(number)}</span><span>${escapeHtml(compactSourceLocator([source]))}</span></div><details class="source-compact-details"><summary>Source details</summary>${fullMeta ? `<span class="source-link-meta">${fullMeta}</span>` : ''}${link}${passage}</details></div>`;
+    }).join('');
+    return `<details class="source-document-group"><summary class="source-document-summary"><span class="source-document-count">Source${group.entries.length === 1 ? '' : 's'} ${escapeHtml(refs)}</span><span class="source-document-title">${escapeHtml(group.title)}</span><span class="source-document-locator">${locator}</span><span class="source-document-chevron" aria-hidden="true">&#9662;</span></summary><div class="source-document-passages">${passages}</div></details>`;
   }).join('');
   const sourceCount = list.length;
-  const viewLabel = `View All Sources (${sourceCount})`;
+  const viewLabel = `View Sources (${sourceCount})`;
   const view = `<button class="source-card-btn" type="button" aria-expanded="false" data-view-label="${escapeHtml(viewLabel)}" onclick="viewFirstSource(this)"><span aria-hidden="true">&#128279;</span> ${escapeHtml(viewLabel)}</button>`;
   return `<div class="source-links" aria-label="Sources"><span class="source-links-title">Retrieved Sources</span><div class="source-link-list source-hidden-passages">${items}</div><div class="source-card-actions">${view}</div></div>`;
 }
@@ -5353,14 +5591,22 @@ function renderFeedback(meta = {}, hasSources = false) {
   return `<div class="answer-actions" role="group" aria-label="Answer actions" data-feedback-for="${Number(messageId)}">
     ${copy}
     ${action('up','Mark as helpful',`submitFeedback(${Number(messageId)},'yes',this,'Helpful')`)}
-    ${action('down','Mark as not helpful',`showFeedbackReasons(${Number(messageId)},this)`,'danger')}
-    ${action('flag','Report incorrect answer',`submitFeedback(${Number(messageId)},'no',this,'Report incorrect answer')`,'danger')}
+    ${action('down','Mark as not helpful',`submitFeedback(${Number(messageId)},'no',this,'Not helpful')`,'danger')}
+    ${action('flag','Report answer',`showFeedbackReasons(${Number(messageId)},this)`,'danger')}
     ${read}
   </div>`;
 }
 function showFeedbackReasons(messageId, btn) {
   const row = btn.closest('.answer-actions');
-  if (!row || row.nextElementSibling?.classList.contains('feedback-reasons')) return;
+  const parent = row?.parentElement;
+  if (!row || !parent) return;
+  const feedbackId = Number(messageId);
+  const selector = `.feedback-reasons[data-feedback-for="${feedbackId}"]`;
+  const existing = [...parent.querySelectorAll(selector)];
+  if (existing.length) {
+    existing.forEach(panel => panel.remove());
+    return;
+  }
   const reasons = [
     'Incorrect information',
     'Wrong article or law',
@@ -5370,7 +5616,12 @@ function showFeedbackReasons(messageId, btn) {
     'Wrong language',
     'Wrong or unnatural language'
   ];
-  row.insertAdjacentHTML('afterend', `<div class="feedback-reasons">${reasons.map(reason => `<button class="feedback-reason-btn danger" onclick="submitFeedback(${Number(messageId)},'no',this,'${escapeHtml(reason)}')">${escapeHtml(reason)}</button>`).join('')}</div>`);
+  const options = reasons.map(reason => {
+    const reportComment = `Report incorrect answer: ${reason}`;
+    const handler = escapeHtml(`submitFeedback(${feedbackId},'no',this,${JSON.stringify(reportComment)})`);
+    return `<button type="button" class="feedback-reason-btn danger" onclick="${handler}">${escapeHtml(reason)}</button>`;
+  }).join('');
+  row.insertAdjacentHTML('afterend', `<div class="feedback-reasons" data-feedback-for="${feedbackId}" role="group" aria-label="Report reason"><span class="feedback-reasons-label">Choose a reason to report this answer:</span>${options}</div>`);
 }
 async function submitFeedback(messageId,rating,btn,comment='') {
   try {
@@ -5380,11 +5631,17 @@ async function submitFeedback(messageId,rating,btn,comment='') {
     });
     const data = await r.json().catch(()=>({}));
     if(!r.ok) throw new Error(data.detail || 'Unable to save feedback.');
-    const row = btn.closest('.answer-actions') || btn.closest('.feedback-reasons')?.previousElementSibling;
+    const reportPanel = btn.closest('.feedback-reasons');
+    const row = btn.closest('.answer-actions') || reportPanel?.previousElementSibling;
+    const feedbackId = Number(messageId);
+    const reportComment = /^report incorrect answer(?::|$)/i.test(String(comment || '').trim());
     row?.querySelectorAll('.answer-action-btn').forEach(b=>b.classList.remove('saved'));
-    btn.classList.add('saved');
-    btn.closest('.feedback-reasons')?.remove();
-    row?.insertAdjacentHTML('afterend', '<div class="source-link-note">Feedback saved for admin review.</div>');
+    (reportComment ? row?.querySelector('[aria-label="Report answer"]') : btn)?.classList.add('saved');
+    reportPanel?.remove();
+    const parent = row?.parentElement;
+    parent?.querySelectorAll(`.feedback-reasons[data-feedback-for="${feedbackId}"]`).forEach(panel=>panel.remove());
+    parent?.querySelectorAll(`.feedback-save-note[data-feedback-for="${feedbackId}"]`).forEach(note=>note.remove());
+    row?.insertAdjacentHTML('afterend', `<div class="source-link-note feedback-save-note" data-feedback-for="${feedbackId}">${reportComment?'Report sent for admin review.':'Thanks for your feedback.'}</div>`);
   } catch(e) {
     alert(e.message || 'Unable to save feedback.');
   }
@@ -5418,7 +5675,7 @@ function viewFirstSource(btn) {
       const defaultLabel = btn.getAttribute('data-view-label') || 'View All Sources';
       btn.setAttribute('aria-expanded',String(willShow));
       btn.classList.toggle('saved', willShow);
-      btn.innerHTML = `<span aria-hidden="true">&#128279;</span> ${escapeHtml(defaultLabel)}`;
+      btn.innerHTML = `<span aria-hidden="true">&#128279;</span> ${escapeHtml(willShow ? 'Hide Sources' : defaultLabel)}`;
     }
     hiddenList.scrollIntoView({behavior:'smooth', block:'nearest'});
     return;
@@ -6000,7 +6257,12 @@ function updateSendState() {
   const btn = document.getElementById('send-btn');
   const input = document.getElementById('msg-input');
   if (!btn || !input) return;
-  btn.disabled = sendingMessage || chatLoading || !input.value.trim();
+  const canStop = sendingMessage && !!activeChatController;
+  btn.classList.toggle('is-stop', canStop);
+  btn.disabled = chatLoading || (sendingMessage ? !canStop : !input.value.trim());
+  btn.setAttribute('aria-label', canStop ? 'Stop response' : 'Send message');
+  btn.title = canStop ? 'Stop response' : 'Send message';
+  btn.innerHTML = canStop ? '<span aria-hidden="true">■</span>' : '➤';
   btn.setAttribute('aria-busy', sendingMessage ? 'true' : 'false');
 }
 function handleKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();} }
@@ -6009,7 +6271,10 @@ function autoResize(el) {
   el.style.height=Math.min(el.scrollHeight,140)+'px';
 }
 async function authFetch(path, opts={}) {
-  return fetch(`${API}${path}`, {...opts, cache:'no-store', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`,...(opts.headers||{})}});
+  const requestToken = token;
+  const response = await fetch(`${API}${path}`, {...opts, cache:'no-store', headers:{'Content-Type':'application/json','Authorization':`Bearer ${requestToken}`,...(opts.headers||{})}});
+  if (response.status === 401) expireAuthenticatedSession(requestToken);
+  return response;
 }
 document.addEventListener('keydown', e => {
   if(e.key==='Escape'){
@@ -6028,6 +6293,5 @@ prepareChatUi();
 if (!handleGoogleCallback() && !handlePasswordResetLink() && token && currentUser) initApp();
 </script>
 <script src="static/js/public.js?v=20260905-2"></script>
-<script type="module" src="static/js/firebase-auth.js?v=20261007-1"></script>
 </body>
 </html>

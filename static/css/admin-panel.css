@@ -164,16 +164,14 @@
 #dashboard .admin-extra-fields{border:1px solid #dbe7f6;background:#f8fbff;border-radius:9px;padding:12px;margin:14px 0}
 #dashboard .admin-extra-fields>summary{font-size:12px;font-weight:600;color:#214e86;cursor:pointer}
 #dashboard .admin-extra-fields[open]>summary{margin-bottom:16px}
-#dashboard .admin-doc-table{table-layout:fixed;min-width:980px!important}
-#dashboard .admin-doc-table th:nth-child(1){width:40px}
-#dashboard .admin-doc-table th:nth-child(2){width:24%}
-#dashboard .admin-doc-table th:nth-child(3){width:16%}
-#dashboard .admin-doc-table th:nth-child(4){width:60px}
-#dashboard .admin-doc-table th:nth-child(5){width:65px}
-#dashboard .admin-doc-table th:nth-child(6){width:65px}
-#dashboard .admin-doc-table th:nth-child(7){width:100px}
-#dashboard .admin-doc-table th:nth-child(8){width:100px}
-#dashboard .admin-doc-table th:nth-child(9){width:160px}
+#dashboard .admin-doc-table{table-layout:fixed;min-width:1000px!important}
+#dashboard .admin-doc-table th:nth-child(1){width:4%}
+#dashboard .admin-doc-table th:nth-child(2){width:32%}
+#dashboard .admin-doc-table th:nth-child(3){width:9%}
+#dashboard .admin-doc-table th:nth-child(4){width:18%}
+#dashboard .admin-doc-table th:nth-child(5){width:12%}
+#dashboard .admin-doc-table th:nth-child(6){width:12%}
+#dashboard .admin-doc-table th:nth-child(7){width:13%}
 #dashboard .admin-doc-table td{vertical-align:top;padding:12px 9px;overflow-wrap:anywhere}
 #dashboard .doc-title-short{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.5;font-size:12px}
 #dashboard .doc-details{margin-top:5px;font-weight:400}

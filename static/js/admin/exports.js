@@ -1,6 +1,10 @@
 /* -- Analytics -- */
 function csvCell(value) {
-  const text=String(value??'').replace(/\r?\n/g,' ').replace(/"/g,'""');
+  let text=String(value??'').replace(/\r?\n/g,' ');
+  // Quoting CSV fields does not stop spreadsheet applications from evaluating
+  // formulas. Prefix risky text with an apostrophe before CSV escaping.
+  if(typeof value!=='number'&&(/^[\u0000-\u0020\uFEFF\u200B]*[=+\-@]/.test(text)||/^[\u0000-\u001F\u007F]/.test(text)))text="'"+text;
+  text=text.replace(/"/g,'""');
   return `"${text}"`;
 }
 

@@ -1,7 +1,7 @@
 // ════════════════════════════════════════════════════════════════
 // Local backend API; the laptop-only launcher binds this address directly.
 // ════════════════════════════════════════════════════════════════
-const LOCAL_API_URL = 'https://3.104.175.253/api';
+const LOCAL_API_URL = 'http://127.0.0.1:8000/api';
 // ════════════════════════════════════════════════════════════════
 
 let API = LOCAL_API_URL;   // Set immediately — no login input needed
@@ -19,6 +19,10 @@ const ADMIN_SESSION_KEY = 'laborlens_admin_session';
 function adminPageSize(){const value=Number(localStorage.getItem('laborlens_admin_page_size')||10);return [7,10,20,50].includes(value)?value:10;}
 function adminReportPeriod(){return localStorage.getItem('laborlens_default_report_period')==='7'?'7':'30';}
 const DOC_VERSION_STATUSES = ['current', 'active', 'superseded', 'historical', 'under_review', 'amended', 'repealed', 'archived', 'inactive', 'replaced', 'outdated'];
+window.KB_DOCUMENT_STATUS_OPTIONS = Object.freeze([
+  'Pending', 'Reading text', 'Splitting text', 'Preparing for search',
+  'Processing', 'Replacing', 'Ready', 'Not ready', 'Failed', 'Archived'
+]);
 const KB_CATEGORIES = [
   'Core Labor Laws',
   'Employment Benefits',
@@ -199,6 +203,21 @@ function kbSummary(stats={}) {
   return { chunks, indexedDocs, activeCategories };
 }
 
+function attachDocumentIndexStatus(documents=[], indexStatus={}) {
+  const available=indexStatus?.available===true;
+  const counts=indexStatus?.document_chunk_counts&&typeof indexStatus.document_chunk_counts==='object'
+    ? indexStatus.document_chunk_counts
+    : {};
+  return (Array.isArray(documents)?documents:[]).map(doc=>{
+    const count=Number(counts[String(doc.id)]??0);
+    return {
+      ...doc,
+      vector_index_available:available,
+      vector_chunk_count:available&&Number.isFinite(count)&&count>=0?count:null
+    };
+  });
+}
+
 function documentDisplayTitle(doc={}) {
   return doc.document_title || doc.original_filename || doc.filename || 'Untitled document';
 }
@@ -220,7 +239,7 @@ function normalizedKbCategory(category='') {
 }
 
 function isIndexedKbDocument(doc={}) {
-  return String(doc.status || '').toLowerCase() === 'indexed' && Number(doc.chunk_count || 0) > 0;
+  return documentProcessingStatus(doc) === 'Ready';
 }
 
 function kbCategoryCounts(docs=kbDocumentsCache) {
@@ -284,7 +303,7 @@ function filteredKbDocuments() {
     const matchesSecondary=kbAdvancedFilters.secondary==='All'||secondary.includes(kbAdvancedFilters.secondary);
     const matchesIssuer=kbAdvancedFilters.issuer==='All'||String(doc.issuing_agency||'')===kbAdvancedFilters.issuer;
     const matchesType=kbAdvancedFilters.type==='All'||String(doc.document_type||'')===kbAdvancedFilters.type;
-    const matchesStatus=kbAdvancedFilters.status==='All'||documentProcessingStatus(doc)===kbAdvancedFilters.status;
+    const matchesStatus=kbAdvancedFilters.status==='All'||documentProcessingStatus(doc,kbSearchableChunks===null||kbSearchableChunks===0)===kbAdvancedFilters.status;
     return inCategory&&matchesPrimary&&matchesSecondary&&matchesIssuer&&matchesType&&matchesStatus&&documentMatchesSearch(doc,kbDocumentSearch);
   });
 }
@@ -296,7 +315,7 @@ function renderKbAdvancedFilters(){
   const secondary=document.getElementById('kb-secondary-filter');if(secondary)secondary.innerHTML=optionHtml(KB_CATEGORIES,kbAdvancedFilters.secondary,'All extra categories');
   const issuer=document.getElementById('kb-issuer-filter');if(issuer)issuer.innerHTML=optionHtml(unique('issuing_agency'),kbAdvancedFilters.issuer,'All issuers');
   const type=document.getElementById('kb-type-filter');if(type)type.innerHTML=optionHtml(unique('document_type'),kbAdvancedFilters.type,'All document types');
-  const status=document.getElementById('kb-status-filter');if(status)status.innerHTML=optionHtml(['Pending','Reading text','Splitting text','Preparing for search','Processing','Replacing','Ready','Not ready','Failed'],kbAdvancedFilters.status,'All statuses');
+  const status=document.getElementById('kb-status-filter');if(status)status.innerHTML=optionHtml(window.KB_DOCUMENT_STATUS_OPTIONS,kbAdvancedFilters.status,'All statuses');
 }
 
 function setKbAdvancedFilter(kind,value='All'){
@@ -393,8 +412,9 @@ function renderDocumentsTable() {
     const isReplacing=processingStage.startsWith('replacing');
     const isProcessing=d.status==='processing'||d.status==='pending'||isReplacing;
     const canRetry=!isProcessing;
-    const vectorMissing=kbSearchableChunks===0 && d.status==='indexed' && (d.chunk_count??0)>0;
-    const shownChunks=vectorMissing ? 0 : (d.chunk_count??0);
+    const fallbackVectorMissing=(kbSearchableChunks===null||kbSearchableChunks===0) && d.status==='indexed' && (d.chunk_count??0)>0;
+    const vectorMissing=documentVectorMissing(d,fallbackVectorMissing);
+    const shownChunks=documentSearchableChunkCount(d,fallbackVectorMissing);
     const canView=!!d.filename;
     const displayTitle=esc(d.document_title||d.original_filename);
     const name=esc(d.original_filename);

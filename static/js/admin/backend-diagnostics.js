@@ -10,13 +10,14 @@
                   ...(details.evidence_candidate_trace || [])];
     if (!rows.length) return '';
     return U.panel('Retrieved / selected / rejected evidence', U.table(
-      ['Document ID', 'Region', 'Search method', 'Decision'], rows.map(row => [
-        esc(row.doc_db_id || 'Unknown'), esc(row.region ? String(row.region).replace(/_/g, ' ').toUpperCase() : 'Not recorded'),
+      ['Document ID', 'Scope', 'Region', 'Search method', 'Decision'], rows.map(row => [
+        esc(row.doc_db_id || 'Unknown'), esc(row.scope ? String(row.scope).replace(/_/g, ' ') : 'Not recorded'),
+        esc(row.region ? String(row.region).replace(/_/g, ' ').toUpperCase() : 'Not recorded'),
         esc((Array.isArray(row.retrieval_method) ? row.retrieval_method.join(', ') : row.retrieval_method) || ''),
         esc(String(row.decision || '').replace(/_/g, ' '))])));
   }
   const page = AdminPages.register('backend-diagnostics', 'Backend Diagnostics',
-    'Find retrieval gaps, model errors and answer-check failures without opening the server terminal.',
+    'Find retrieval gaps and model errors without opening the server terminal.',
     async (_search, section) => {
       const days = section.querySelector('[name="days"]').value;
       const level = section.querySelector('[name="level"]').value;

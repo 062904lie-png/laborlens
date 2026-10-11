@@ -46,7 +46,7 @@ window.AdminReviews=(()=>{
   if(queryStatusKey(row)==='unresolved')return U.badge('Unresolved','gold');
   if(queryStatusKey(row)==='awaiting_user')return U.badge('Awaiting user response','blue');
   const status=String(row.admin_review_status||'needs_review').replaceAll('_',' ');
-  return U.badge(status.replace(/\b\w/g,letter=>letter.toUpperCase()),status==='completed'||status==='correct'||status==='resolved'?'green':'red');
+  return U.badge(status.replace(/\b\w/g,letter=>letter.toUpperCase()),['completed','correct','partial correct','resolved'].includes(status)?'green':'red');
  }
  function renderSummary(s,conversations){
   const metrics=[['chat','Needs Review',metricValue(s?.needs_review),'Answers currently requiring attention','red'],['check','Reviewed',metricValue(s?.completed),'Completed admin assessments','green'],['flag','Flagged / Reported',metricValue(s?.reported),'Reports submitted for review','gold'],['users','Total Conversations',conversations?metricValue(conversations.total):'Unavailable',conversations?'Recorded chat sessions':'Conversation count unavailable','blue']];
@@ -62,6 +62,12 @@ window.AdminReviews=(()=>{
  }
  async function load(){
   const v=++version,limit=Number($('review-page-size')?.value||adminPageSize());$('review-rows').innerHTML='<div class="loading">Loading review queue...</div>';
+  const dateFrom=$('review-from').value,dateTo=$('review-to').value;
+  $('review-from').removeAttribute('aria-invalid');$('review-to').removeAttribute('aria-invalid');
+  if(dateFrom&&dateTo&&dateFrom>dateTo){
+   $('review-from').setAttribute('aria-invalid','true');$('review-to').setAttribute('aria-invalid','true');
+   $('review-rows').innerHTML='<div class="err-msg" role="alert">The “From” date must be on or before the “To” date.</div>';$('review-pager').innerHTML='';return;
+  }
   const p=new URLSearchParams({q:$('review-search').value,category:$('review-category').value,language:$('review-language').value,feedback:$('review-feedback').value,query_status:$('review-query-status').value,offset,limit});
   if(active==='needs_review')p.set('needs_attention','true');
   else if(active==='completed')p.set('completed','true');
@@ -70,8 +76,8 @@ window.AdminReviews=(()=>{
   if(issue==='not_helpful')p.set('feedback','no');
   if(issue==='unresolved')p.set('query_status','unresolved');
   if(issue==='other_needed')p.set('other_issue','true');
-  if($('review-from').value)p.set('date_from',$('review-from').value);
-  if($('review-to').value)p.set('date_to',$('review-to').value);
+  if(dateFrom)p.set('date_from',dateFrom);
+  if(dateTo)p.set('date_to',dateTo);
   try{
    const [data,s,conversations]=await Promise.all([api('/admin/answer-reviews?'+p),api('/admin/review-summary'),api('/admin/conversations?limit=1').catch(()=>null)]);
    if(v!==version)return;summary=s;
@@ -101,7 +107,7 @@ window.AdminReviews=(()=>{
   if(queryStatusKey(row)==='unresolved')return U.badge('Unresolved','gold');
   if(queryStatusKey(row)==='awaiting_user')return U.badge('Awaiting user response','blue');
   const status=String(row.admin_review_status||'needs_review').replaceAll('_',' ');
-  return U.badge(status.replace(/\b\w/g,letter=>letter.toUpperCase()),['correct','completed','resolved'].includes(status)?'green':'red');
+  return U.badge(status.replace(/\b\w/g,letter=>letter.toUpperCase()),['correct','partial correct','completed','resolved'].includes(status)?'green':'red');
  }
  function dateAsked(value){
   if(!value)return ['Unavailable',''];
@@ -127,22 +133,27 @@ window.AdminReviews=(()=>{
    const sources=Array.isArray(row.sources)?row.sources:[];
    const match=sourceMatchLabel(row),queryStatus=queryStatusKey(row);
    const [askedDate,askedTime]=dateAsked(row.created_at);
-   const answer=`<label class="form-group">Answer Rating<select id="answer-assessment"><option value="">Choose your rating</option><option value="correct">Correct</option><option value="partial_correct">Partly Correct</option><option value="incorrect">Incorrect</option><option value="kb_update">Needs Document Update</option></select></label><label class="form-group">Review Note<textarea id="answer-note" maxlength="2000" placeholder="Add a note about this review...">${esc(row.admin_review_note||'')}</textarea></label><p class="review-helper">Your rating is saved. The original answer stays the same.</p>`;
+   const answer=`<label class="form-group">Answer Rating<select id="answer-assessment"><option value="">Choose your rating</option><option value="correct">Correct</option><option value="partial_correct">Partly Correct</option><option value="incorrect">Incorrect</option><option value="kb_update">Needs Document Update</option></select></label><label class="form-group">Review Note<textarea id="answer-note" maxlength="2000" placeholder="Add a note about this review...">${esc(row.admin_review_note||'')}</textarea></label><p class="review-helper">Your rating is saved separately from the query workflow status. The original answer stays the same.</p><label class="form-group">Query Status<select id="answer-query-status"><option value="">Use source recommendation</option><option value="resolved">Resolved</option><option value="unresolved">Unresolved</option></select></label><p class="review-helper">Saving query status changes only the query workflow status; your answer rating and note stay unchanged.</p>`;
    const sourceHTML=sources.length?sources.map(source=>{const url=safeUrl(source.source_url||source.url);return `<article class="review-source-card"><div><strong>${documentTitleHtml(source.document_title||source.source||source.filename||'Retrieved source')}</strong>${source.article_section||source.article?`<small>${esc(source.article_section||source.article)}</small>`:''}</div><details><summary>Read source excerpt</summary><p>${esc(source.text||source.content||source.excerpt||'Source excerpt not stored.')}</p></details>${url?`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Open legal source</a>`:''}</article>`;}).join(''):match==='Not Required'?`<article class="review-source-card"><strong>No legal source required</strong><span>This was a conversational or system response, so legal retrieval was not needed.</span></article>`:`<article class="review-source-warning"><strong>⚠ Insufficient legal source</strong><span>No sources recorded for this answer.</span></article>`;
    const feedbackItems=(row.feedback||[]);
+    const reportItems=feedbackItems.filter(item=>item.reported===true||Number(item.reported)===1);
    const feedbackHTML=feedbackItems.length?feedbackItems.map(item=>`<article class="review-feedback-item">${U.badge(item.rating==='yes'?'Helpful':'Not Helpful',item.rating==='yes'?'green':'red')}<p>${esc(item.comment||'No comment provided')}</p><small>${esc(dateAsked(item.created_at).filter(Boolean).join(' · ')||'Date not recorded')}</small></article>`).join(''):'<article class="review-feedback-item"><p>No feedback or reports recorded.</p></article>';
-   const workflowHTML=feedbackItems.length?feedbackItems.map(item=>`<article class="review-workflow-item"><label class="form-group">Report status<select id="report-${Number(item.id)}">${['pending','under_review','resolved','dismissed','reviewed'].map(status=>`<option value="${status}" ${status===item.review_status?'selected':''}>${status.replaceAll('_',' ')}</option>`).join('')}</select></label><label class="form-group">Report note<textarea id="report-note-${Number(item.id)}" maxlength="2000" placeholder="Add a note about this review...">${esc(item.admin_notes||'')}</textarea></label><button class="btn btn-sm" data-report="${Number(item.id)}">Save report status</button></article>`).join(''):'<article class="review-workflow-item"><p>No report status is recorded.</p></article>';
-   $('doc-modal-body').innerHTML=`<section class="review-detail-summary" aria-label="Review document details"><article><small>Status</small>${reviewStatusBadge(row)}</article><article><small>Date Asked</small><strong>${esc(askedDate)}</strong>${askedTime?`<span>${esc(askedTime)}</span>`:''}</article></section><section class="review-section"><h3>User Question</h3><article class="review-question-card"><button class="btn btn-sm review-copy" type="button" data-copy-question>▣ Copy</button><p>${esc(row.question||'Question not recorded')}</p><small>${esc(languageLabel(row.language))}</small></article></section><section class="review-section"><h3>LaborLens Answer</h3><article class="review-answer"><p>${esc(row.answer||'Answer not recorded')}</p><button class="btn btn-sm review-copy" type="button" data-copy-answer>▣ Copy</button></article></section><section class="review-section"><h3>Sources Used</h3>${sourceHTML}</section>${feedbackItems.length?`<details class="review-accordion"><summary>Feedback and reports (${feedbackItems.length})</summary>${feedbackHTML}<details><summary>Manage report status</summary>${workflowHTML}</details></details>`:''}<details class="review-accordion review-context"><summary>Related Messages</summary><button class="btn btn-sm" id="full-context" type="button">▣ View Full Chat</button><div id="nearby-context" class="loading">Loading nearby messages...</div><div id="full-context-output"></div></details><section class="review-admin-section"><h3>Admin Review</h3>${answer}</section>`;
+    const workflowHTML=reportItems.map(item=>`<article class="review-workflow-item"><label class="form-group">Report status<select id="report-${Number(item.id)}">${['pending','under_review','resolved','dismissed','reviewed'].map(status=>`<option value="${status}" ${status===item.review_status?'selected':''}>${status.replaceAll('_',' ')}</option>`).join('')}</select></label><label class="form-group">Report note<textarea id="report-note-${Number(item.id)}" maxlength="2000" placeholder="Add a note about this review...">${esc(item.admin_notes||'')}</textarea></label><button class="btn btn-sm" data-report="${Number(item.id)}">Save report status</button></article>`).join('');
+    const reportWorkflowHTML=reportItems.length?`<details><summary>Manage report status (${reportItems.length})</summary>${workflowHTML}</details>`:'';
+    $('doc-modal-body').innerHTML=`<section class="review-detail-summary" aria-label="Review document details"><article><small>Status</small>${reviewStatusBadge(row)}</article><article><small>Date Asked</small><strong>${esc(askedDate)}</strong>${askedTime?`<span>${esc(askedTime)}</span>`:''}</article></section><section class="review-section"><h3>User Question</h3><article class="review-question-card"><button class="btn btn-sm review-copy" type="button" data-copy-question>▣ Copy</button><p>${esc(row.question||'Question not recorded')}</p><small>${esc(languageLabel(row.language))}</small></article></section><section class="review-section"><h3>LaborLens Answer</h3><article class="review-answer"><p>${esc(row.answer||'Answer not recorded')}</p><button class="btn btn-sm review-copy" type="button" data-copy-answer>▣ Copy</button></article></section><section class="review-section"><h3>Sources Used</h3>${sourceHTML}</section>${feedbackItems.length?`<details class="review-accordion"><summary>Feedback and reports (${feedbackItems.length})</summary>${feedbackHTML}${reportWorkflowHTML}</details>`:''}<details class="review-accordion review-context"><summary>Related Messages</summary><button class="btn btn-sm" id="full-context" type="button">▣ View Full Chat</button><div id="nearby-context" class="loading">Loading nearby messages...</div><div id="full-context-output"></div></details><section class="review-admin-section"><h3>Admin Review</h3>${answer}</section>`;
 
 
-   $('answer-assessment').value=['correct','partial_correct','incorrect','kb_update'].includes(row.admin_review_status)?row.admin_review_status:'';
-   $('doc-modal-foot').innerHTML='<button class="btn" id="open-correction">▣ Create / Open Correction</button><div><button class="btn" id="cancel-review">Cancel</button><button class="btn btn-primary" id="save-assessment">Save Review</button></div>';
+   const savedAssessment=row.answer_review_status||row.admin_review_status;
+   $('answer-assessment').value=['correct','partial_correct','incorrect','kb_update'].includes(savedAssessment)?savedAssessment:'';
+   $('answer-query-status').value=['resolved','unresolved'].includes(row.admin_query_status)?row.admin_query_status:'';
+   $('doc-modal-foot').innerHTML='<button class="btn" id="open-correction">▣ Create / Open Correction</button><div><button class="btn" id="cancel-review">Cancel</button><button class="btn btn-primary" id="save-assessment">Save Review</button><button class="btn" id="save-query-status">Save Query Status</button></div>';
    $('open-correction').onclick=()=>AdminMaintenance.correction(id);
    $('cancel-review').onclick=closeReview;
    $('doc-modal-body').querySelector('[data-copy-question]').onclick=()=>copyReviewText(row.question||'');
    $('doc-modal-body').querySelector('[data-copy-answer]').onclick=()=>copyReviewText(row.answer||'');
 
    $('save-assessment').onclick=async()=>{const button=$('save-assessment'),status=$('answer-assessment').value;if(!status)return toast('Choose your rating.',true);button.disabled=true;try{await api(`/admin/answer-reviews/${id}`,{method:'PUT',body:JSON.stringify({status,note:$('answer-note').value})});toast(status==='kb_update'?'Review saved. Create a correction to track the KB update.':'Review saved.');await open(id);load();}catch(error){toast(error.message,true);}finally{button.disabled=false;}};
+   $('save-query-status').onclick=async()=>{const button=$('save-query-status');button.disabled=true;try{await api(`/admin/answer-reviews/${id}/query-status`,{method:'PUT',body:JSON.stringify({query_status:$('answer-query-status').value||null})});toast('Query status saved.');await open(id);load();}catch(error){toast(error.message,true);}finally{button.disabled=false;}};
    $('doc-modal-body').querySelectorAll('[data-report]').forEach(button=>button.onclick=async()=>{button.disabled=true;try{const feedbackId=button.dataset.report;await api(`/admin/review-queue/${feedbackId}`,{method:'PUT',body:JSON.stringify({review_status:$('report-'+feedbackId).value,admin_notes:$('report-note-'+feedbackId).value})});toast('Report workflow saved.');load();}catch(error){toast(error.message,true);}finally{button.disabled=false;}});
    $('full-context').onclick=()=>fullContext(row.session_id,0,v);
    const contextPanel=$('nearby-context').closest('details');let contextLoaded=false;

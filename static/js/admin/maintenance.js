@@ -32,13 +32,17 @@ window.AdminMaintenance = (() => {
 
   const correctionsPage=AdminPages.register('corrections','Answer Corrections','Track a reported answer through KB changes and retesting. Original answers are preserved.', async (search,page) => {
     const rows = await api('/corrections');
-    const stage=page.querySelector('#correction-stage-filter')?.value||'';
-    const documentId=page.querySelector('#correction-document-filter')?.value||'';
-    const range=page.querySelector('#correction-date-range')?.value||'';
+    // The shared page loader replaces .page-results before calling this
+    // function. The correction filter form is mounted inside that container,
+    // so read from its retained node reference while it is temporarily detached.
+    const readFilter=selector=>correctionFilters.querySelector(selector);
+    const stage=readFilter('#correction-stage-filter')?.value||'';
+    const documentId=readFilter('#correction-document-filter')?.value||'';
+    const range=readFilter('#correction-date-range')?.value||'';
     const now=Date.now(),withinRange=row=>!range||Date.parse(row.updated_at||'')>=now-Number(range)*86400000;
-    const query=search.toLowerCase().trim();
+    const query=String(readFilter('input[type="search"]')?.value??search??'').toLowerCase().trim();
     const documentOptions=[...new Map(rows.flatMap(correctionDocuments).map(doc=>[String(doc.id),doc.title])).entries()];
-    const documentFilter=page.querySelector('#correction-document-filter');
+    const documentFilter=readFilter('#correction-document-filter');
     if(documentFilter){documentFilter.innerHTML=`<option value="">All documents</option><option value="__linked__">Linked documents</option>${documentOptions.map(([id,title])=>`<option value="${esc(id)}">${esc(title)}</option>`).join('')}`;documentFilter.value=documentId;}
     const filtered=rows.filter(row=>!stage||row.stage===stage).filter(row=>!documentId||(documentId==='__linked__'?correctionDocuments(row).length>0:correctionDocuments(row).some(doc=>String(doc.id)===documentId))).filter(withinRange).filter(row=>!query||[row.message_id,row.note,row.stage,row.document_title,row.answer_preview].join(' ').toLowerCase().includes(query));
     const size=Number(page.querySelector('#correction-page-size')?.value||adminPageSize()),totalPages=Math.max(1,Math.ceil(filtered.length/size));
@@ -53,7 +57,7 @@ window.AdminMaintenance = (() => {
     const emptyAction=rows.length?'Reset Filters':'Go to Review Queue';
     const rowsHtml=visible.length?visible.map(tableRow).join(''):`<tr><td colspan="6"><div class="correction-empty"><strong>${emptyTitle}</strong><span>${emptyText}</span><button class="btn" type="button" id="correction-empty-action">${emptyAction}</button></div></td></tr>`;
     const pageStart=Math.max(0,Math.min(current-2,totalPages-5)),pageEnd=Math.min(totalPages,pageStart+5);
-    const pageButtons=Array.from({length:pageEnd-pageStart},(_,index)=>{const number=pageStart+index;return `<button type="button" class="${number===current?'active':''}" data-correction-page="${number}" aria-current="${number===current?'page':'false'}>${number+1}</button>`;}).join('');
+    const pageButtons=Array.from({length:pageEnd-pageStart},(_,index)=>{const number=pageStart+index;return `<button type="button" class="${number===current?'active':''}" data-correction-page="${number}" aria-current="${number===current?'page':'false'}">${number+1}</button>`;}).join('');
     return {html:`<section class="correction-summary-cards" aria-label="Correction summary">${cards.map(([icon,title,value,note,filter])=>`<button type="button" class="correction-summary-card" data-correction-filter="${filter}"><span>${U.icon(icon)}</span><div><strong>${Number(value).toLocaleString()}</strong><b>${esc(title)}</b><small>${esc(note)}</small></div><i aria-hidden="true">›</i></button>`).join('')}</section><section class="correction-table-card"><header><div><h2>Corrections</h2><p>Showing the most recently updated correction records.</p></div><strong>${filtered.length} ${filtered.length===1?'result':'results'}</strong></header><div class="tbl-wrap"><table class="correction-records-table"><thead><tr><th>Answer / Question</th><th>Stage</th><th>Linked Document</th><th>Issue</th><th>Updated</th><th>Action</th></tr></thead><tbody>${rowsHtml}</tbody></table></div><footer class="correction-pager"><span>Showing ${filtered.length?start+1:0}&ndash;${Math.min(start+size,filtered.length)} of ${filtered.length} corrections</span><nav aria-label="Corrections pagination"><button type="button" data-correction-page="${current-1}" ${current===0?'disabled':''}>‹ Previous</button>${pageButtons}<button type="button" data-correction-page="${current+1}" ${current>=totalPages-1?'disabled':''}>Next ›</button></nav><label>Rows per page:<select id="correction-page-size">${[7,10,20,50].map(pageSize=>`<option value="${pageSize}" ${size===pageSize?'selected':''}>${pageSize}</option>`).join('')}</select></label></footer></section>`,mount(host){
       host.querySelector('.correction-summary-cards').after(correctionFilters);
       host.querySelectorAll('[data-correction]').forEach(button=>button.onclick=()=>correction(Number(button.dataset.correction)));
@@ -203,18 +207,25 @@ window.AdminMaintenance = (() => {
   performanceForm.onsubmit=async event=>{event.preventDefault();if(performanceRefreshing)return;performanceRefreshing=true;performanceButton.disabled=true;performanceButton.textContent='Refreshing…';try{await AdminPages.open('performance');}finally{performanceRefreshing=false;performanceButton.disabled=false;performanceButton.innerHTML='↻ Refresh performance';}};
 
   const coveragePage=AdminPages.register('coverage','Knowledge Base Coverage','Review searchable text sections, document readiness, and category coverage.',async search=>{
-    const [stats,documents]=await Promise.all([AdminPages.api('/kb/stats'),AdminPages.api('/kb/documents')]);
-    const summary=kbSummary(stats||{}),docs=Array.isArray(documents)?documents:[];
+    const [stats,documents,indexStatus]=await Promise.all([
+      AdminPages.api('/kb/stats'),
+      AdminPages.api('/kb/documents'),
+      AdminPages.api('/kb/documents/index-status',{cache:'no-store'}).catch(()=>({available:false}))
+    ]);
+    const summary=kbSummary(stats||{}),docs=attachDocumentIndexStatus(Array.isArray(documents)?documents:[],indexStatus);
     const ready=docs.filter(doc=>documentProcessingStatus(doc)==='Ready');
     const processing=docs.filter(doc=>['Pending','Processing','Reading text','Splitting text','Preparing for search','Replacing'].includes(documentProcessingStatus(doc)));
-    const attention=docs.filter(doc=>documentProcessingStatus(doc)==='Failed'||(String(doc.status||'').toLowerCase()==='indexed'&&Number(doc.chunk_count||0)===0));
+    const attention=docs.filter(doc=>{
+      if(documentProcessingStatus(doc)==='Failed')return true;
+      return String(doc.status||'').toLowerCase()==='indexed'&&documentRetrievalEligible(doc)&&documentProcessingStatus(doc)==='Not ready';
+    });
     const query=String(search||'').trim().toLowerCase();
     const visible=docs.filter(doc=>!query||[documentDisplayTitle(doc),doc.category,doc.primary_category,doc.issuing_agency,documentProcessingStatus(doc)].join(' ').toLowerCase().includes(query));
     const categoryCounts=new Map();
     docs.forEach(doc=>{const category=doc.primary_category||doc.category||'Uncategorized';categoryCounts.set(category,(categoryCounts.get(category)||0)+1);});
     const categoryRows=[...categoryCounts.entries()].sort((a,b)=>b[1]-a[1]);
     const statusRows=[['Document search',summary.chunks?`${summary.chunks.toLocaleString()} searchable sections available`:'No searchable sections available'],['Ready documents',`${ready.length.toLocaleString()} of ${docs.length.toLocaleString()}`],['Categories with documents',`${summary.activeCategories||categoryRows.length} active`],['Search model',stats?.chroma?.embedding_model||'Not recorded']];
-    const rows=visible.map(doc=>`<tr><td data-label="Document">${documentTitleHtml(documentDisplayTitle(doc))}<small>${esc(doc.issuing_agency||'Issuing agency not recorded')}</small></td><td data-label="Category">${esc(doc.primary_category||doc.category||'Uncategorized')}</td><td data-label="Status">${U.badge(documentProcessingStatus(doc),documentProcessingStatus(doc)==='Ready'?'green':documentProcessingStatus(doc)==='Failed'?'red':'blue')}</td><td data-label="Searchable Sections">${Number(doc.chunk_count||0).toLocaleString()}</td><td data-label="Updated">${esc(dateLabel(doc.updated_at||doc.last_indexed_at||doc.created_at))}</td><td data-label="Action"><button class="btn btn-sm" type="button" data-coverage-document="${Number(doc.id)}">View</button></td></tr>`).join('');
+    const rows=visible.map(doc=>{const status=documentProcessingStatus(doc);return `<tr><td data-label="Document">${documentTitleHtml(documentDisplayTitle(doc))}<small>${esc(doc.issuing_agency||'Issuing agency not recorded')}</small></td><td data-label="Category">${esc(doc.primary_category||doc.category||'Uncategorized')}</td><td data-label="Status">${U.badge(status,status==='Ready'?'green':status==='Failed'?'red':'blue')}</td><td data-label="Searchable Sections">${documentSearchableChunkCount(doc).toLocaleString()}</td><td data-label="Updated">${esc(dateLabel(doc.updated_at||doc.last_indexed_at||doc.created_at))}</td><td data-label="Action"><button class="btn btn-sm" type="button" data-coverage-document="${Number(doc.id)}">View</button></td></tr>`;}).join('');
     return {html:`<section class="coverage-summary-cards" aria-label="Knowledge Base coverage summary"><article><small>Total Documents</small><strong>${docs.length.toLocaleString()}</strong><span>All saved document records</span></article><article><small>Total Searchable Sections</small><strong>${summary.chunks.toLocaleString()}</strong><span>Text sections ready for retrieval</span></article><article><small>Documents Ready</small><strong>${ready.length.toLocaleString()}</strong><span>Available to support answers</span></article><article><small>Needs Attention</small><strong>${attention.length.toLocaleString()}</strong><span>${processing.length.toLocaleString()} currently processing</span></article></section><section class="coverage-details-grid"><section class="panel"><div class="panel-hdr"><h2 class="panel-title">Document Search Details</h2></div><div class="panel-body">${U.table(['Detail','Current value'],statusRows.map(([label,value])=>[esc(label),esc(value)]),'coverage-status-table')}</div></section><section class="panel"><div class="panel-hdr"><h2 class="panel-title">Documents by Category</h2></div><div class="panel-body">${categoryRows.length?U.bars(categoryRows.map(([label,count])=>({label,count}))):'<p class="empty">No document categories recorded.</p>'}</div></section></section><section class="coverage-documents-card"><header><div><h2>Document Coverage</h2><p>${visible.length===docs.length?`${docs.length.toLocaleString()} document records`:`${visible.length.toLocaleString()} matching document records`}</p></div><span>${summary.chunks.toLocaleString()} total searchable sections</span></header><div class="tbl-wrap"><table class="coverage-documents-table"><thead><tr><th>Document</th><th>Category</th><th>Status</th><th>Searchable Sections</th><th>Updated</th><th>Action</th></tr></thead><tbody>${rows||'<tr><td colspan="6" class="empty">No documents match this search.</td></tr>'}</tbody></table></div></section>`,mount(host){host.querySelectorAll('[data-coverage-document]').forEach(button=>button.onclick=()=>AdminShell.go('knowledge').then(()=>AdminKnowledge.open(Number(button.dataset.coverageDocument))));}};
   });
   coveragePage.classList.add('coverage-reference-page');
