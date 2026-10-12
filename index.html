@@ -3048,6 +3048,11 @@
   <link rel="stylesheet" href="static/css/chat-appearance.css?v=20260911-3"/>
   <link rel="stylesheet" href="static/css/voice.css?v=20260914-composer-6"/>
   <link rel="stylesheet" href="static/css/reference-chat.css?v=20261011-stop-square-1"/>
+  <style>
+    /* Hide source-match status badges in chat replies; keep citations and other UI labels intact. */
+    body.app-ready #app .msg-bubble .source-match-badge,
+    body.app-ready #app .answer-content .source-match-badge{display:none!important;}
+  </style>
 </head>
 <body class="ll-reference">
 <a class="skip-link" href="#msg-input">Skip to chat input</a>
@@ -3399,7 +3404,9 @@
 <script src="static/js/motion.js?v=20261005-response-timer-1"></script>
 <script src="static/js/voice.js?v=20260914-voice-surface-2"></script>
 <script>
-const API = 'https://3.104.175.253/api';
+const API = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)
+  ? 'http://127.0.0.1:8000/api'
+  : 'https://3.104.175.253/api';
 function readStoredJson(key, fallback, isValid = () => true) {
   try {
     const raw = localStorage.getItem(key);
@@ -4121,7 +4128,7 @@ function handleGoogleCallback() {
   const googleError = hash.get('google_error');
   if (googleError) {
     showAuth();
-    document.getElementById('login-err').textContent = decodeURIComponent(googleError);
+    document.getElementById('login-err').textContent = googleError;
     history.replaceState(null, '', window.location.pathname + window.location.search);
     return true;
   }
@@ -4133,6 +4140,7 @@ function handleGoogleCallback() {
     access_token: googleToken,
     user_id: Number(hash.get('google_user_id') || 0),
     username: hash.get('google_username') || 'Google User',
+    display_name: hash.get('google_display_name') || hash.get('google_username') || 'Google User',
     role: hash.get('google_role') || 'user',
     language_preference: hash.get('google_language_preference') || 'auto'
   });
@@ -5557,28 +5565,7 @@ function getConfidenceMatchTier(meta = {}) {
   return 'partial';
 }
 function renderConfidence(meta = {}) {
-  if (meta.clarification_needed || meta.intent === 'needs_clarification' || meta.display_mode === 'clarification') return '';
-  const level = getSourceMatch(meta);
-  if (!level || level === 'not_required') return '';
-  const SOURCE_MATCH_UI = {
-    source_based: { label: null, className: null, icon: null },
-    unverified: { label: 'Unverified test answer', className: 'source-match--partial', icon: 'alert-triangle' },
-    high: { label: 'High confidence match', className: 'source-match--high', icon: 'check-circle' },
-    source: { label: 'Source match', className: 'source-match--source', icon: 'check-circle' },
-    direct: { label: 'Source match', className: 'source-match--source', icon: 'check-circle' },
-    partial: { label: 'Partial source match', className: 'source-match--partial', icon: 'info-circle' },
-    conflicting: { label: 'Conflicting sources', className: 'source-match--conflicting', icon: 'alert-triangle' },
-    provider_unavailable: { label: 'Temporary response issue', className: 'source-match--unavailable', icon: 'clock' },
-    insufficient: { label: 'Insufficient legal source', className: 'source-match--insufficient', icon: 'alert-circle' },
-    not_required: { label: null, className: null, icon: null }
-  };
-  const confidenceTier = ['direct', 'partial', 'insufficient', 'conflicting', 'provider_unavailable'].includes(level) ? getConfidenceMatchTier(meta) : getSavedConfidenceTier(meta);
-  const displayLevel = confidenceTier || level;
-  const ui = SOURCE_MATCH_UI[displayLevel] || { label: 'More information needed', className: 'more', icon: 'info-circle' };
-  if (!ui.label) return '';
-  const score = getBestSourceSimilarity(meta);
-  const scoreDetail = score === null ? '' : ` Similarity: ${score.toFixed(2)}.`;
-  return `<span class="source-match-badge ${ui.className}" data-source-match="${displayLevel}" data-icon="${ui.icon}" title="${escapeHtml((meta.confidence_reason || '') + scoreDetail)}">${ui.label}</span>`;
+  return '';
 }
 function renderFeedback(meta = {}, hasSources = false) {
   const messageId = meta?.message_id || meta?.id;
@@ -6295,6 +6282,6 @@ if (!handleGoogleCallback() && !handlePasswordResetLink() && token && currentUse
 </script>
 <script src="static/js/public.js?v=20260905-2"></script>
 <script>window.LABORLENS_API_URL = API;</script>
-<script type="module" src="static/js/firebase-auth.js?v=20261012-firebase-auth-1"></script>
+<script type="module" src="static/js/firebase-auth.js?v=20261012-review-mobile-popup"></script>
 </body>
 </html>

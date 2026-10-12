@@ -1,5 +1,10 @@
-// The hosted admin uses the shared production API configuration.
-let API = window.LABORLENS_CONFIG?.API_URL || 'https://3.104.175.253/api';
+// ════════════════════════════════════════════════════════════════
+// Local backend API; the laptop-only launcher binds this address directly.
+// ════════════════════════════════════════════════════════════════
+const LOCAL_API_URL = 'https://3.104.175.253/api';
+// ════════════════════════════════════════════════════════════════
+
+let API = window.LABORLENS_CONFIG?.API_URL || LOCAL_API_URL;   // Set immediately — no login input needed
 let token = null, currentUser = null, allUsers = [], faqCache = [];
 let docContentState = { id: null, offset: 0, limit: 25, total: 0 };
 let docObjectUrl = null;

@@ -175,7 +175,8 @@ window.AdminMaintenance = (() => {
   }));
   playgroundPage.querySelector('form').remove();
 
-  const performancePage = AdminPages.register('performance','System Performance','See how long answers take and check system status.',async()=>{
+  let performanceView='home';
+  const performancePage = AdminPages.register('performance','System Performance','Review service health, response times, models, and NLP evaluation.',async()=>{
     const results=await Promise.allSettled([api('/evaluation-summary?days='+adminReportPeriod()),api('/system-health')]);
     const summary=results[0].status==='fulfilled'?results[0].value:null;
     const health=results[1].status==='fulfilled'?results[1].value:null;
@@ -185,7 +186,7 @@ window.AdminMaintenance = (() => {
     const components=Array.isArray(health?.components)?health.components:[],providers=Array.isArray(health?.providers)?health.providers:[];
     const observation=name=>components.find(component=>component.name===name)?.status||'Unavailable / no observation';
     const answerModels=providers.filter(row=>!row.role||row.role==='generation');
-    const ai=!health?'Status unavailable':answerModels.some(row=>row.active_requests>0)?'Generating answers — see active slots below':answerModels.some(row=>row.successes>0)?'Answer generation succeeded — see models below':answerModels.some(row=>row.failures>0)?'Some generation attempts failed — see models below':answerModels.some(row=>row.configured&&row.enabled!==false)?'Configured — no successful drafts recorded':'Not set up';
+    const ai=!health?'Status unavailable':answerModels.some(row=>row.active_requests>0)?'Generating answers':answerModels.some(row=>row.successes>0)?'Answer generation succeeded':answerModels.some(row=>row.failures>0)?'Some generation attempts failed':answerModels.some(row=>row.configured&&row.enabled!==false)?'Configured — no successful drafts recorded':'Not set up';
     const statusTone=value=>/connected|ready|success/i.test(String(value))?'green':/unavailable|error|fail/i.test(String(value))?'red':'blue';
     const serviceRows=[['AI Provider',ai],['Database',observation('Database')],['Knowledge Base',observation('Knowledge Base')]];
     const service=`<section class="performance-service-card"><h2>Service Status</h2>${U.table(['Service','Observation'],serviceRows.map(([name,status])=>[esc(name),U.badge(status,statusTone(status))]),'performance-service-table')}</section>`;
@@ -193,7 +194,31 @@ window.AdminMaintenance = (() => {
     const componentsTable=components.length?U.table(['Component','Observation'],components.map(component=>[esc(component.name),U.badge(component.status,statusTone(component.status))]),'performance-component-table'):'<p class="performance-empty">No component observations recorded.</p>';
     const models=AdminModelReport.render(health);
     const technical=`<details class="performance-technical"><summary>More Details</summary><div class="performance-technical-body">${summary&&p?`<p class="performance-note">Timing samples: ${num(p.samples).toLocaleString()}. ${esc(summary.note||'Recorded response timing statistics are based on query logs.')}</p>`:''}<section class="performance-observations"><h3>Service details</h3>${componentsTable}</section></div></details>`;
-    return service+timing+models+`<p class="performance-health">Last Health Check: <time title="${esc(health?.checked_at||'Unavailable')}">${esc(friendlyTime(health?.checked_at))}</time></p>`+technical;
+    const checked=`<p class="performance-health">Last health check: <time title="${esc(health?.checked_at||'Unavailable')}">${esc(friendlyTime(health?.checked_at))}</time></p>`;
+    const sections=[
+      {id:'services',title:'Service Status',description:'Check the database, knowledge base, and answer service.',icon:'check',content:service+checked+technical},
+      {id:'timing',title:'Response Times',description:'Review average and middle response times from recorded queries.',icon:'clock',content:timing+`<p class="performance-note">Timing samples: ${p?num(p.samples).toLocaleString():'Not recorded'}. ${esc(summary?.note||'Statistics are based on recorded query logs.')}</p>`},
+      {id:'models',title:'AI Models',description:'View model activity, request capacity, and topic training.',icon:'settings',content:models+checked},
+      {id:'nlp',title:'NLP Evaluation',description:'Upload a reviewed dataset, run an evaluation, and explore results.',icon:'chart',content:'<section class="nlp-evaluation" data-nlp-evaluation></section>'}
+    ];
+    return {html:'<div class="performance-workspace"></div>',mount(host){
+      const workspace=host.querySelector('.performance-workspace');
+      function show(view,focus=false){
+        const section=sections.find(item=>item.id===view);
+        performanceView=section?view:'home';
+        if(!section){
+          workspace.innerHTML=`<section class="performance-home" aria-label="Performance sections"><div class="performance-intro"><h2>Performance overview</h2><p>Choose a section to review its details.</p></div><div class="performance-grid">${sections.map(item=>`<button class="performance-nav-card" type="button" data-performance="${item.id}"><span class="performance-nav-icon">${U.icon(item.icon)}</span><span class="performance-nav-copy"><strong>${item.title}</strong><small>${item.description}</small></span><span class="performance-nav-arrow" aria-hidden="true">›</span></button>`).join('')}</div><aside class="performance-snapshot"><strong>About these reports</strong><p>Service and model observations describe this backend worker. Response times use stored query logs. NLP scores come from evaluation runs.</p>${checked}</aside></section>`;
+          workspace.querySelectorAll('[data-performance]').forEach(button=>button.onclick=()=>show(button.dataset.performance,true));
+          if(focus)workspace.querySelector('[data-performance]')?.focus();
+          return;
+        }
+        workspace.innerHTML=`<section class="performance-detail"><button class="performance-back" type="button">← Back to Performance</button><header class="performance-detail-heading"><span class="performance-nav-icon">${U.icon(section.icon)}</span><div><h2 tabindex="-1">${section.title}</h2><p>${section.description}</p></div></header><div class="performance-detail-content">${section.content}</div></section>`;
+        workspace.querySelector('.performance-back').onclick=()=>{show('home');workspace.querySelector(`[data-performance="${view}"]`)?.focus();};
+        if(view==='nlp')AdminNlpEvaluation.mount(workspace);
+        if(focus)workspace.querySelector('.performance-detail-heading h2').focus();
+      }
+      show(performanceView);
+    }};
   });
 
   const performanceForm=performancePage.querySelector('form');

@@ -1,0 +1,19 @@
+#tab-performance .nlp-evaluation{margin:24px 0;padding:20px;border:1px solid #d8e3ef;border-radius:12px;background:#fff;color:#173e6d;min-width:0}
+#tab-performance .nlp-evaluation header{display:flex;justify-content:space-between;align-items:start;gap:12px;flex-wrap:wrap}
+#tab-performance .nlp-evaluation h2{font-size:19px;margin:0 0 8px}
+#tab-performance .nlp-evaluation h3{font-size:16px;margin:16px 0 6px}
+#tab-performance .nlp-evaluation p{font-size:12px;line-height:1.6;margin:8px 0;overflow-wrap:anywhere}
+#tab-performance .nlp-evaluation details{margin:12px 0;padding:12px;background:#f7faff;border:1px solid #e1e9f2;border-radius:8px}
+#tab-performance .nlp-evaluation summary{cursor:pointer;font-weight:600;font-size:13px}
+#tab-performance .nlp-evaluation label{display:flex;flex-direction:column;gap:6px;font-size:12px;margin:8px 0;max-width:100%;min-width:0}
+#tab-performance .nlp-evaluation select,#tab-performance .nlp-evaluation input{max-width:100%;min-width:0;padding:8px;border:1px solid #cbd7e4;border-radius:6px;background:white;color:#173e6d}
+#tab-performance .nlp-upload{padding:12px 0}
+#tab-performance .nlp-actions{display:flex;align-items:end;flex-wrap:wrap;gap:10px;margin:8px 0}
+#tab-performance .nlp-evaluation pre{white-space:pre-wrap;overflow-wrap:anywhere;min-width:150px;max-width:350px;font-size:11px;max-height:240px;overflow:auto}
+#tab-performance .nlp-evaluation code{overflow-wrap:anywhere}
+#tab-performance .nlp-evaluation .tbl-wrap{max-width:100%;overflow:auto;margin:12px 0}
+#tab-performance .nlp-evaluation th,#tab-performance .nlp-evaluation td{padding:10px;text-align:left;vertical-align:top;font-size:12px}
+#tab-performance .nlp-warning{padding:10px;background:#fff3e5;color:#875211}
+#tab-performance .nlp-empty{padding:18px;background:#f7faff}
+#tab-performance [data-status]{padding:8px;background:#eef3f9}
+@media(max-width:600px){#tab-performance .nlp-evaluation{padding:12px}#tab-performance .nlp-actions>label{width:100%}}

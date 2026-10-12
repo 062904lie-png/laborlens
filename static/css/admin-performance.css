@@ -1,0 +1,69 @@
+/* Settings-style navigation and readable report typography. */
+#dashboard #tab-performance {font-family:'DM Sans',system-ui,sans-serif;font-size:15px;line-height:1.6;color:#183b68}
+#dashboard #tab-performance .page-hdr p {font-size:15px;line-height:1.6}
+#dashboard #tab-performance .performance-refresh-bar .btn {font-size:14px}
+#dashboard #tab-performance .performance-detail-content :is(.performance-models,.performance-service-card)>h2 {display:none}
+#dashboard #tab-performance .performance-service-card .tbl-wrap {margin-top:18px}
+#dashboard #tab-performance .performance-intro {margin:8px 0 22px}
+#dashboard #tab-performance .performance-intro h2 {font:700 22px/1.35 'DM Sans',system-ui,sans-serif;margin:0 0 6px;color:#123b74}
+#dashboard #tab-performance .performance-intro p {margin:0;color:#526b86;font-size:15px}
+#dashboard #tab-performance .performance-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+#dashboard #tab-performance .performance-nav-card {display:grid;grid-template-columns:74px minmax(0,1fr) 20px;align-items:center;gap:20px;width:100%;min-height:146px;padding:24px;border:1px solid #d8e3ef;border-radius:12px;background:#fff;color:#183b68;text-align:left;font:inherit;cursor:pointer;transition:background .15s,border-color .15s}
+#dashboard #tab-performance .performance-nav-card:hover {background:#f7faff;border-color:#9cbddd}
+#dashboard #tab-performance :is(.performance-nav-card,.performance-back):focus-visible {outline:3px solid #3276bc;outline-offset:3px}
+#dashboard #tab-performance .performance-nav-icon {display:grid;place-items:center;width:70px;height:70px;border-radius:13px;background:#eef5ff;color:#135aa9;flex-shrink:0}
+#dashboard #tab-performance .performance-nav-icon svg {width:34px;height:34px}
+#dashboard #tab-performance .performance-nav-copy {display:grid;gap:8px;min-width:0}
+#dashboard #tab-performance .performance-nav-copy strong {font-size:18px;line-height:1.35;color:#123b74}
+#dashboard #tab-performance .performance-nav-copy small {font-size:14px;line-height:1.6;color:#526b86}
+#dashboard #tab-performance .performance-nav-arrow {font-size:28px;color:#667f9b}
+#dashboard #tab-performance .performance-snapshot {margin-top:22px;padding:20px 24px;border:1px solid #d8e3ef;border-radius:12px;background:#f7faff}
+#dashboard #tab-performance .performance-snapshot strong {font-size:15px}
+#dashboard #tab-performance .performance-snapshot p {margin:6px 0;font-size:14px;color:#526b86}
+#dashboard #tab-performance .performance-back {display:inline-flex;align-items:center;min-height:44px;margin:0 0 20px;padding:8px 14px;border:1px solid #cbd9e8;border-radius:8px;background:#fff;color:#174e88;font:600 14px/1.5 'DM Sans',system-ui,sans-serif;cursor:pointer}
+#dashboard #tab-performance .performance-detail-heading {display:flex;align-items:center;gap:18px;margin:0 0 24px;padding-bottom:22px;border-bottom:1px solid #d8e3ef}
+#dashboard #tab-performance .performance-detail-heading h2 {margin:0 0 6px;font:700 24px/1.35 'DM Sans',system-ui,sans-serif;color:#123b74}
+#dashboard #tab-performance .performance-detail-heading p {margin:0;font-size:15px;color:#526b86}
+#dashboard #tab-performance .performance-detail-content {min-width:0}
+#dashboard #tab-performance :is(.performance-models,.nlp-evaluation) {margin-top:0}
+#dashboard #tab-performance .performance-service-card>h2 {padding:18px 20px;font-size:19px}
+#dashboard #tab-performance :is(.performance-service-table,.performance-component-table) :is(th,td) {padding:12px;font-size:14px;line-height:1.6;overflow-wrap:anywhere}
+#dashboard #tab-performance :is(.performance-service-table,.performance-component-table) .badge {font-size:13px;white-space:normal}
+#dashboard #tab-performance :is(.performance-health,.performance-note,.performance-empty,.performance-timing>p,.performance-scheduler p,.performance-model-group header p) {font-size:14px;line-height:1.65;margin:12px 0;color:#526b86}
+#dashboard #tab-performance .performance-metrics article {min-height:118px;padding:22px}
+#dashboard #tab-performance .performance-metrics small {font-size:14px}
+#dashboard #tab-performance .performance-metrics strong {font-size:32px;line-height:1.3}
+#dashboard #tab-performance .performance-technical {margin-top:22px}
+#dashboard #tab-performance .performance-technical>summary {min-height:48px;font-size:15px}
+#dashboard #tab-performance .performance-observations h3 {font-size:17px}
+#dashboard #tab-performance .performance-model-group {margin:24px 0}
+#dashboard #tab-performance .performance-model-group h3 {font-size:18px}
+#dashboard #tab-performance .performance-model-list {padding-left:30px}
+#dashboard #tab-performance .performance-model-row {padding:18px 12px;margin:10px 0;border:1px solid #d8e3ef;border-radius:10px;background:white}
+#dashboard #tab-performance .performance-model-line {flex-wrap:wrap;gap:10px}
+#dashboard #tab-performance .performance-model-entry h4 {font-size:16px;line-height:1.5}
+#dashboard #tab-performance :is(.performance-model-provider,.performance-model-status) {font-size:13px;line-height:1.5}
+#dashboard #tab-performance .performance-model-status {padding:5px 9px}
+#dashboard #tab-performance .performance-model-entry dl {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
+#dashboard #tab-performance .performance-model-entry dl>div {display:block;min-width:0}
+#dashboard #tab-performance :is(.performance-model-entry,.performance-model-card,.performance-scheduler) dt {font-size:14px;line-height:1.5;color:#526b86}
+#dashboard #tab-performance .performance-model-entry dd {margin:4px 0 0;font-size:16px;line-height:1.5}
+#dashboard #tab-performance :is(.performance-model-detail,.performance-model-order-note) {font-size:14px!important;line-height:1.65;color:#526b86!important;margin:8px 0}
+#dashboard #tab-performance .nlp-evaluation :is(p,label,summary,th,td) {font-size:14px;line-height:1.65}
+#dashboard #tab-performance .nlp-evaluation :is(input,select,.btn) {font:inherit;font-size:15px;min-height:44px}
+#dashboard #tab-performance .nlp-evaluation pre {font-size:13px;line-height:1.6}
+#dashboard #tab-performance .nlp-evaluation .badge {font-size:13px}
+@media(max-width:900px) {
+  #dashboard #tab-performance .performance-grid {grid-template-columns:1fr}
+}
+@media(max-width:680px) {
+  #dashboard #tab-performance .performance-nav-card {grid-template-columns:52px minmax(0,1fr) 16px;gap:14px;min-height:128px;padding:18px}
+  #dashboard #tab-performance .performance-nav-icon {width:52px;height:52px}
+  #dashboard #tab-performance .performance-nav-icon svg {width:28px;height:28px}
+  #dashboard #tab-performance .performance-detail-heading {align-items:flex-start;gap:14px}
+  #dashboard #tab-performance .performance-detail-heading h2 {font-size:22px}
+  #dashboard #tab-performance .performance-snapshot {padding:18px}
+  #dashboard #tab-performance .performance-model-entry dl {grid-template-columns:repeat(2,minmax(0,1fr))}
+  #dashboard #tab-performance :is(.performance-service-table,.performance-component-table) td:before {font-size:13px}
+  #dashboard #tab-performance .nlp-evaluation :is(input,select) {font-size:16px}
+}
