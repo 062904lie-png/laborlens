@@ -4,7 +4,6 @@ import {
   GoogleAuthProvider,
   getRedirectResult,
   signInWithPopup,
-  signInWithRedirect,
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
 const firebaseConfig = Object.freeze({
@@ -28,7 +27,7 @@ function showError(target, error) {
   const messages = {
     "auth/unauthorized-domain": "This website is not authorized for Firebase sign-in. Add laborlens-lac.vercel.app under Firebase Authentication → Settings → Authorized domains.",
     "auth/operation-not-allowed": "Google sign-in is disabled. Enable Google under Firebase Authentication → Sign-in method.",
-    "auth/popup-blocked": "Your browser blocked the Google sign-in popup. Allow popups for this site and try again.",
+    "auth/popup-blocked": "Your browser blocked the Google sign-in window. Open LaborLens directly in Safari or Chrome and allow popups for this site.",
     "auth/popup-closed-by-user": "The Google sign-in window was closed before sign-in finished.",
     "auth/cancelled-popup-request": "Another Google sign-in window is already open. Finish or close it, then try again.",
     "auth/api-key-not-valid.-please-pass-a-valid-api-key.": "Firebase rejected this web API key. Replace it with the current Web API key from Firebase Project settings → General, and check the key’s API restrictions.",
@@ -90,11 +89,9 @@ window.llFirebaseGoogleSignIn = async (errorTarget = errorTargetForCurrentForm()
 
   setBusy(true);
   try {
-    const useRedirect = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (useRedirect) {
-      await signInWithRedirect(auth, provider);
-      return;
-    }
+    // Use popup auth on phones too. Redirect auth relies on third-party browser storage
+    // when this Vercel site uses the Firebase-hosted authDomain, which modern mobile
+    // browsers block. The popup flow avoids that storage dependency.
     const result = await signInWithPopup(auth, provider);
     await exchangeFirebaseCredential(result.user, errorTarget);
   } catch (error) {
