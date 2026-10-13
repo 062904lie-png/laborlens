@@ -258,18 +258,27 @@ window.AdminMaintenance = (() => {
 
   AdminPages.register('faqs','Common Questions','Create and maintain structured FAQs in English, Filipino and Hiligaynon.',async search=>{
     const rows=await api('/faqs');
-    return {html:'<button class="btn btn-primary" id="faq-create">Add FAQ</button>'+U.table(['Question','Language','Category','Updated','Action'],rows.filter(r=>[r.question,r.answer,r.category].join(' ').toLowerCase().includes(search.toLowerCase())).map(r=>[
-      esc(r.question),esc(languageLabel(r.language)),esc(r.category||'Uncategorized'),esc(dateLabel(r.updated_at)),`<button class="btn btn-sm" data-faq="${Number(r.id)}">Edit</button>`
+    return {html:'<p>Only published FAQs appear in the chat FAQ browser. Changed or unavailable supporting sources require review.</p><button class="btn btn-primary" id="faq-create">Add FAQ</button>'+U.table(['Question','Language','Category','Status','Updated','Action'],rows.filter(r=>[r.question,r.answer,r.category,r.publication_status].join(' ').toLowerCase().includes(search.toLowerCase())).map(r=>[
+      esc(r.question),esc(languageLabel(r.language)),esc(r.category||'Uncategorized'),U.badge(({draft:'Draft',published:'Published',needs_review:'Needs review'})[r.publication_status]||'Draft',r.publication_status==='published'?'green':r.publication_status==='needs_review'?'amber':'gray'),esc(dateLabel(r.updated_at)),`<button class="btn btn-sm" data-faq="${Number(r.id)}">Edit</button>`
     ])),mount(host){host.querySelector('#faq-create').onclick=()=>faqEditor();host.querySelectorAll('[data-faq]').forEach(b=>b.onclick=()=>faqEditor(rows.find(r=>r.id===Number(b.dataset.faq))));}};
   });
-  function faqEditor(row={}) {
+  async function faqEditor(row={}) {
+    let docs;
+    try { docs=await AdminPages.api('/kb/documents'); } catch(error) { message(error);return; }
+    const selected=new Set((row.source_document_ids||[]).map(Number));
     U.drawer(row.id?'Edit FAQ':'Add FAQ',field('faq-question','Question',row.question)+field('faq-answer','Approved answer',row.answer)+
       `<label class="form-group">Category<select id="faq-category"><option value="">Uncategorized</option>${[...new Set([...KB_CATEGORIES,...(row.category?[row.category]:[])])].map(c=>`<option>${esc(c)}</option>`).join('')}</select></label><label class="form-group">Language<select id="faq-language"><option value="en">English</option><option value="fil">Filipino</option><option value="hil">Hiligaynon</option></select></label>`,
       (row.id?'<button class="btn btn-danger" id="faq-delete">Delete FAQ</button>':'')+'<button class="btn btn-primary" id="faq-save">Save FAQ</button>');
+    document.getElementById('doc-modal-body').insertAdjacentHTML('beforeend',
+      `<label class="form-group">Publication status<select id="faq-publication"><option value="draft">Draft</option><option value="published">Published</option><option value="needs_review">Needs review</option></select></label>
+       <fieldset id="faq-sources"><legend>Supporting documents</legend><p>Select the sources you checked. Publishing requires an indexed, active source.</p><div style="max-height:230px;overflow:auto">${docs.map(d=>`<label style="display:flex;gap:8px;margin:8px 0"><input type="checkbox" value="${Number(d.id)}" ${selected.has(Number(d.id))?'checked':''}><span>${esc(documentDisplayTitle(d))} — ${esc(documentProcessingStatus(d))}</span></label>`).join('')||'<p>No documents available. Save as a draft first.</p>'}</div></fieldset>
+       <label class="form-group">Legal citation / relevant sections<textarea id="faq-citation" maxlength="2000">${esc(row.source_citation||'')}</textarea></label>
+       <p>Choose Published only after reviewing the answer against these sources. Saving it as Published confirms your review of their current versions.</p>`);
+    document.getElementById('faq-publication').value=row.publication_status||'draft';
     document.getElementById('faq-category').value=row.category||'';document.getElementById('faq-language').value=row.language||'en';
     document.getElementById('faq-save').onclick=async event=>{
       const b=event.currentTarget,question=document.getElementById('faq-question').value.trim(),answer=document.getElementById('faq-answer').value.trim();if(!question||!answer){toast('Question and answer are required.',true);return;}b.disabled=true;
-      try{await api('/faqs'+(row.id?`/${row.id}`:''),{method:row.id?'PUT':'POST',body:JSON.stringify({question,answer,category:document.getElementById('faq-category').value||null,language:document.getElementById('faq-language').value})});closeDocModal();refresh('faqs');toast('FAQ saved.');}catch(error){message(error);}finally{b.disabled=false;}
+      try{await api('/faqs'+(row.id?`/${row.id}`:''),{method:row.id?'PUT':'POST',body:JSON.stringify({question,answer,category:document.getElementById('faq-category').value||null,language:document.getElementById('faq-language').value,publication_status:document.getElementById('faq-publication').value,source_document_ids:[...document.querySelectorAll('#faq-sources input:checked')].map(input=>Number(input.value)),source_citation:document.getElementById('faq-citation').value.trim()})});closeDocModal();refresh('faqs');toast('FAQ saved.');}catch(error){message(error);}finally{b.disabled=false;}
     };
     if(row.id)document.getElementById('faq-delete').onclick=async event=>{
       if(!confirm('Permanently delete this FAQ? This cannot be undone here.'))return;const b=event.currentTarget;b.disabled=true;

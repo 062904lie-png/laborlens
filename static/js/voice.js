@@ -201,6 +201,12 @@
   function cleanAnswer(text) {
     const marker = '(?:Sources?\\s*\\d+|S\\s*\\d+)(?:\\s*(?:,|;|&|and|[-–])\\s*(?:(?:Sources?|S)\\s*)?\\d+)*';
     return String(text || '')
+      // The chat hides these backend boilerplate lines. Do not read their
+      // generic DOLE referral aloud over a government-specific answer.
+      // Keep actual advice/referrals in the answer body unchanged.
+      .split(/\r?\n/)
+      .filter(line => !/^\s*\*{0,2}(?:this is for (?:educational|informational) purposes only|ito ay para lamang sa impormasyon|para lamang ini sa impormasyon)/i.test(line))
+      .join('\n')
       .replace(new RegExp('\\[' + marker + '\\]\\([^)]*\\)', 'gi'), '')
       .replace(new RegExp('[\\[(]\\s*' + marker + '\\s*[\\])]', 'gi'), '')
       .replace(new RegExp('^\\s*(?:[-*]\\s*)?' + marker + '\\s*:?\\s*$', 'gim'), '')

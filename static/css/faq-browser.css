@@ -1,0 +1,16 @@
+#faq-browser { box-sizing:border-box; width:min(760px,calc(100vw - 24px)); max-height:85dvh; padding:24px; border:1px solid #cbd5e1; border-radius:16px; background:#fff; color:#18304f; font:16px/1.6 system-ui,sans-serif; }
+#faq-browser::backdrop { background:rgb(0 0 0 / 55%); }
+#faq-browser header { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+#faq-browser h2 { margin:0; font-size:24px; }
+#faq-browser button,#faq-browser input,#faq-browser select { font:inherit; color:inherit; }
+#faq-browser button { padding:8px 14px; border:1px solid #cbd5e1; border-radius:8px; background:#f1f5f9; cursor:pointer; }
+#faq-browser .faq-filters { display:grid; grid-template-columns:2fr 1fr 1fr; gap:12px; margin:20px 0; }
+#faq-browser label { display:grid; gap:4px; font-size:14px; }
+#faq-browser input,#faq-browser select { min-width:0; width:100%; box-sizing:border-box; padding:8px; border:1px solid #94a3b8; border-radius:6px; background:#fff; }
+#faq-browser details { border:1px solid #cbd5e1; border-radius:10px; margin:12px 0; padding:14px; }
+#faq-browser summary { cursor:pointer; font-weight:600; overflow-wrap:anywhere; }
+#faq-browser .faq-answer,#faq-browser .faq-citation { white-space:pre-wrap; overflow-wrap:anywhere; }
+#faq-browser .faq-meta { font-size:13px; color:#475569; }
+#faq-browser a { color:#195da8; text-decoration:underline; }
+#faq-browser :focus-visible { outline:3px solid #2563eb; outline-offset:3px; }
+@media(max-width:560px) { #faq-browser .faq-filters { grid-template-columns:1fr; } #faq-browser { padding:16px; } }
