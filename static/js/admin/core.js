@@ -195,7 +195,7 @@ function countByStatus(rows=[], status='indexed') {
 }
 
 function kbSummary(stats={}) {
-  const chunks = Number(stats.chroma?.total_chunks || 0);
+  const chunks = stats.chroma?.total_chunks == null ? null : Number(stats.chroma.total_chunks);
   const docs = stats.documents || [];
   const categories = stats.categories || [];
   const indexedDocs = countByStatus(docs, 'indexed');
@@ -203,18 +203,28 @@ function kbSummary(stats={}) {
   return { chunks, indexedDocs, activeCategories };
 }
 
+const documentIndexObservations = new Map();
 function attachDocumentIndexStatus(documents=[], indexStatus={}) {
   const available=indexStatus?.available===true;
-  const counts=indexStatus?.document_chunk_counts&&typeof indexStatus.document_chunk_counts==='object'
-    ? indexStatus.document_chunk_counts
-    : {};
-  return (Array.isArray(documents)?documents:[]).map(doc=>{
-    const count=Number(counts[String(doc.id)]??0);
-    return {
-      ...doc,
-      vector_index_available:available,
-      vector_chunk_count:available&&Number.isFinite(count)&&count>=0?count:null
-    };
+  const counts=indexStatus?.document_chunk_counts||{};
+  const rows=Array.isArray(documents)?documents:[];
+  const currentIds=new Set(rows.map(doc=>String(doc.id)));
+  for(const id of documentIndexObservations.keys())if(!currentIds.has(id))documentIndexObservations.delete(id);
+  return rows.map(doc=>{
+    const id=String(doc.id);
+    const version=JSON.stringify([doc.index_version,doc.last_indexed_at,doc.chunk_count,doc.status,doc.processing_stage]);
+    const previous=documentIndexObservations.get(id);
+    if(available){
+      const value=Number(counts[id]??0);
+      const observation={version,count:Number.isFinite(value)&&value>=0?value:null};
+      documentIndexObservations.set(id,observation);
+      return {...doc,vector_index_available:observation.count!==null?true:null,vector_chunk_count:observation.count,vector_index_stale:false};
+    }
+    // A failed probe is unknown, not proof that every document lost its index.
+    if(previous?.version===version){
+      return {...doc,vector_index_available:previous.count!==null?true:null,vector_chunk_count:previous.count,vector_index_stale:true};
+    }
+    return {...doc,vector_index_available:null,vector_chunk_count:null,vector_index_stale:true};
   });
 }
 

@@ -33,7 +33,8 @@ function documentProcessingStatus(d, vectorMissing=false) {
     const exactIndexStatus=d.vector_index_available===true;
     const chunkCount=Number(exactIndexStatus?d.vector_chunk_count:d.chunk_count);
     const missingIndexChunks=exactIndexStatus?documentVectorMissing(d):documentVectorMissing(d,vectorMissing);
-    return missingIndexChunks||!documentRetrievalEligible(d)||!Number.isFinite(chunkCount)||chunkCount<=0?'Not ready':'Ready';
+    if(missingIndexChunks||!documentRetrievalEligible(d)||!Number.isFinite(chunkCount)||chunkCount<=0)return 'Not ready';
+    return exactIndexStatus?'Ready':'Indexed';
   }
   if(/chunk/.test(stage))return 'Splitting text';
   if(/extract|ocr|pars/.test(stage))return 'Reading text';
@@ -43,7 +44,7 @@ function documentProcessingStatus(d, vectorMissing=false) {
 }
 function statusBadge(d, vectorMissing=false) {
   const label=documentProcessingStatus(d,vectorMissing);
-  return `<span class="badge badge-${label==='Archived'?'gray':label==='Ready'?'green':label==='Failed'?'red':'amber'}">${esc(label)}</span>`;
+  return `<span class="badge badge-${label==='Archived'?'gray':['Ready','Indexed'].includes(label)?'green':label==='Failed'?'red':'amber'}">${esc(label)}</span>`;
 }
 function legacyStatusBadge(d, vectorMissing=false) {
   const s=(d.status||'pending').toLowerCase();
@@ -74,29 +75,30 @@ function loadDocuments() {
 
 async function refreshDocuments() {
   const tb=document.getElementById('docs-tbody');
-  let searchableChunks=null;
+  let searchableChunks=kbSearchableChunks;
   try {
-    const sr=await apiFetch('/kb/stats');
-    if(sr.ok){
-      const stats=await sr.json();
-      const summary=kbSummary(stats);
-      searchableChunks=summary.chunks;
-      const modelNote=stats.chroma?.embedding_model ? `<span class="status-note">Search model: ${esc(stats.chroma.embedding_model)}</span>` : '';
-      const resetNote=stats.chroma?.last_reset_reason ? `<span class="status-note" style="color:var(--amber);">Document search was reset after an update. Upload the documents again to make them searchable.</span>` : '';
-      document.getElementById('kb-stats').innerHTML=summary.chunks>0
-        ? `<strong>${summary.chunks.toLocaleString()} searchable sections</strong> available across ${summary.activeCategories||1} document ${(summary.activeCategories||1)===1?'category':'categories'}.${modelNote}`
-        : `<strong>No searchable sections yet.</strong> Upload a legal document and wait until it is ready to search.${modelNote}${resetNote}`;
-      document.getElementById('kb-chunks').textContent=summary.chunks.toLocaleString();
-    }
-    const [dr,indexStatusResponse]=await Promise.all([
+    const [sr,dr,indexStatusResponse]=await Promise.all([
+      apiFetch('/kb/stats').catch(()=>null),
       apiFetch('/kb/documents'),
       apiFetch('/kb/documents/index-status',{cache:'no-store'}).catch(()=>null)
     ]);
+    if(sr?.ok){
+      const stats=await sr.json();
+      const summary=kbSummary(stats);
+      if(summary.chunks!==null)searchableChunks=summary.chunks;
+      const modelNote=stats.chroma?.embedding_model ? `<span class="status-note">Search model: ${esc(stats.chroma.embedding_model)}</span>` : '';
+      const resetNote=stats.chroma?.last_reset_reason ? `<span class="status-note" style="color:var(--amber);">Document search was reset after an update. Upload the documents again to make them searchable.</span>` : '';
+      document.getElementById('kb-stats').innerHTML=summary.chunks===null ? '<span role="status">Search status is refreshing. Document records are unchanged.</span>' : summary.chunks>0
+        ? `<strong>${summary.chunks.toLocaleString()} searchable sections</strong> available across ${summary.activeCategories||1} document ${(summary.activeCategories||1)===1?'category':'categories'}.${modelNote}`
+        : `<strong>No searchable sections yet.</strong> Upload a legal document and wait until it is ready to search.${modelNote}${resetNote}`;
+      if(summary.chunks!==null)document.getElementById('kb-chunks').textContent=summary.chunks.toLocaleString();
+    }
     const docs=await dr.json();
     if(!dr.ok) throw new Error(docs.detail||'Failed');
     const indexStatus=indexStatusResponse?.ok?await indexStatusResponse.json().catch(()=>null):null;
+    if(indexStatus?.available!==true)document.getElementById('kb-stats').insertAdjacentHTML('beforeend','<span class="status-note" role="status">Search verification is temporarily delayed; showing recorded document statuses.</span>');
     kbDocumentsCache=attachDocumentIndexStatus(docs,indexStatus||{available:false});
-    const readyCount=kbDocumentsCache.filter(d=>documentProcessingStatus(d)==='Ready').length;
+    const readyCount=kbDocumentsCache.filter(d=>['Ready','Indexed'].includes(documentProcessingStatus(d))).length;
     document.getElementById('kb-docs-count').textContent=readyCount;
     kbSearchableChunks = searchableChunks;
     renderDocumentsTable();
@@ -184,16 +186,21 @@ async function waitForDocumentIndexed(docId,fileName,msg) {
   }
 }
 
+const documentRetryRequests=new Set();
 async function retryDocumentIndex(docId,fileName='Document') {
+  if(documentRetryRequests.has(docId))return;
+  documentRetryRequests.add(docId);
   try {
     const r=await apiFetch(`/kb/documents/${docId}/retry-index`,{method:'POST'});
     const d=await r.json().catch(()=>({}));
     if(!r.ok) throw new Error(d.detail||'Unable to retry document indexing.');
+    const record=kbDocumentsCache.find(doc=>Number(doc.id)===Number(docId));
+    if(record){record.status='processing';record.processing_stage='retry_queued';renderDocumentsTable();}
     toast(`Re-indexing ${fileName} in the background.`);
     loadDocuments();
   } catch(e) {
     toast(e.message,true);
-  }
+  } finally {documentRetryRequests.delete(docId);}
 }
 
 function replacementStatusHtml(job={}, fileName='') {
@@ -375,6 +382,7 @@ async function editDocumentMeta(id) {
     const doc=await r.json();
     if(!r.ok) throw new Error(doc.detail||'Unable to load document metadata.');
     const indexStatus=indexStatusResponse?.ok?await indexStatusResponse.json().catch(()=>null):null;
+    if(indexStatus?.available!==true)document.getElementById('kb-stats').insertAdjacentHTML('beforeend','<span class="status-note" role="status">Search verification is temporarily delayed; showing recorded document statuses.</span>');
     const statusDoc=attachDocumentIndexStatus([doc],indexStatus||{available:false})[0];
     const categoryOptions=(KB_CATEGORIES||[]).map(cat=>`<option value="${esc(cat)}" ${cat===(doc.category||KB_CATEGORIES[0])?'selected':''}>${esc(cat)}</option>`).join('');
     const versionOptions=DOC_VERSION_STATUSES.map(status=>`<option value="${status}" ${status===String(doc.version_status||'active').toLowerCase()?'selected':''}>${status.charAt(0).toUpperCase()+status.slice(1)}</option>`).join('');

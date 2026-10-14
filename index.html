@@ -4291,7 +4291,7 @@ function savedChatLanguage() {
 
 let statusCheckInFlight = false;
 function statusDependencyLabel(value) {
-  return value === 'ok' ? 'Available' : value === 'unavailable' ? 'Unavailable' : 'Unknown';
+  return value === 'ok' ? 'Available' : value === 'unavailable' ? 'Unavailable' : value === 'checking' ? 'Checking' : 'Unknown';
 }
 function setStatusDot(state) {
   const dot = document.querySelector('.tb-status .tb-dot');
@@ -4314,7 +4314,7 @@ async function loadSystemStatus() {
   const apiRoot = API.replace(/\/api\/?$/, '');
   const readJson = async url => {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
+    const timeout = setTimeout(() => controller.abort(), 8000);
     try {
       const response = await fetch(url, {cache:'no-store', signal:controller.signal});
       return {ok:response.ok, data:await response.json().catch(() => ({}))};
@@ -4324,7 +4324,7 @@ async function loadSystemStatus() {
   };
   try {
     const [readyResult, statusResult] = await Promise.allSettled([
-      readJson(`${apiRoot}/ready`),
+      readJson(`${API}/ready`),
       readJson(`${API}/status`)
     ]);
     const readiness = readyResult.status === 'fulfilled' ? readyResult.value.data : {};
@@ -4337,18 +4337,18 @@ async function loadSystemStatus() {
     const allReady = readyResult.status === 'fulfilled' && readyResult.value.ok
       && databaseState === 'ok' && searchState === 'ok';
     const anyUnavailable = databaseState === 'unavailable' || searchState === 'unavailable';
-    const overall = allReady ? 'ready' : anyUnavailable ? 'degraded' : 'unknown';
+    const overall = allReady ? 'ready' : anyUnavailable ? 'degraded' : apiStatus?.api === 'online' ? 'ready' : 'unknown';
     setStatusDot(overall);
     statusText.textContent = allReady ? 'LaborLens Ready'
-      : anyUnavailable ? 'Service degraded' : 'Status unavailable';
+      : anyUnavailable ? 'Service busy' : apiStatus?.api === 'online' ? 'LaborLens Online' : 'Checking connection';
     const databaseEl = document.getElementById('status-database');
     const searchEl = document.getElementById('status-search-index');
     if (databaseEl) databaseEl.textContent = statusDependencyLabel(databaseState);
     if (searchEl) searchEl.textContent = statusDependencyLabel(searchState);
 
     const kb = apiStatus?.knowledge_base || {};
-    const chunkCount = Number(kb.total_chunks);
-    const indexedCount = Number(kb.indexed_documents);
+    const chunkCount = kb.total_chunks == null ? NaN : Number(kb.total_chunks);
+    const indexedCount = kb.indexed_documents == null ? NaN : Number(kb.indexed_documents);
     const chunks = Number.isFinite(chunkCount) && chunkCount >= 0 ? chunkCount : null;
     const indexed = Number.isFinite(indexedCount) && indexedCount >= 0 ? indexedCount : null;
     const lastUpdate = kb.last_document_update
@@ -4364,13 +4364,13 @@ async function loadSystemStatus() {
     const updatedEl = document.getElementById('status-updated');
     if (docsEl) docsEl.textContent = indexed === null ? 'Unknown' : indexed.toLocaleString();
     if (updatedEl) updatedEl.textContent = apiStatus ? lastUpdate : 'Unknown';
-    if (chatSub && apiStatus) {
+    if (chatSub && apiStatus && indexed !== null) {
       chatSub.textContent = `Knowledge base: ${indexed.toLocaleString()} indexed document${indexed===1?'':'s'} | Last update: ${lastUpdate}`;
     }
   } catch (_) {
     statusCache = null;
-    statusText.textContent = 'Service unavailable';
-    setStatusDot('unavailable');
+    statusText.textContent = 'Checking connection';
+    setStatusDot('unknown');
     const databaseEl = document.getElementById('status-database');
     const searchEl = document.getElementById('status-search-index');
     const kbEl = document.getElementById('status-kb');

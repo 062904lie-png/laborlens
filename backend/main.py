@@ -140,6 +140,7 @@ def create_app() -> FastAPI:
     async def health():
         return {"status": "healthy"}
 
+    @app.get("/api/ready")
     @app.get("/ready")
     async def readiness():
         checks = {"database": "ok", "search_index": "ok"}
@@ -151,6 +152,8 @@ def create_app() -> FastAPI:
             )
             if result is None:
                 raise RuntimeError("database readiness query returned no row")
+        except asyncio.TimeoutError:
+            checks["database"] = "checking"
         except Exception as exc:
             checks["database"] = "unavailable"
             logger.warning(
@@ -165,8 +168,10 @@ def create_app() -> FastAPI:
             )
             if stats.get("total_chunks") is None:
                 raise RuntimeError("search index readiness query returned no count")
+        except asyncio.TimeoutError:
+            checks["search_index"] = "checking"
         except Exception as exc:
-            checks["search_index"] = "unavailable"
+            checks["search_index"] = "checking" if str(exc) == "a previous search-index readiness probe is still running" else "unavailable"
             logger.warning(
                 "Readiness check failed | dependency=search_index | error=%s",
                 type(exc).__name__,
@@ -193,7 +198,10 @@ def create_app() -> FastAPI:
             FROM uploaded_documents
             """
         )
-        chroma = get_collection_stats()
+        try:
+            chroma = await asyncio.wait_for(asyncio.to_thread(_readiness_search_index_probe), timeout=READY_CHECK_TIMEOUT_SECONDS)
+        except Exception:
+            chroma = {"total_chunks": None}
         return {
             "api": "online",
             # This endpoint does not make a billable/side-effecting model call,
@@ -204,8 +212,8 @@ def create_app() -> FastAPI:
                 "health": provider_health_snapshot(),
             },
             "knowledge_base": {
-                "status": "available" if (chroma.get("total_chunks") or 0) > 0 else "empty",
-                "total_chunks": chroma.get("total_chunks", 0),
+                "status": "checking" if chroma.get("total_chunks") is None else "available" if chroma["total_chunks"] > 0 else "empty",
+                "total_chunks": chroma.get("total_chunks"),
                 "embedding_model": chroma.get("embedding_model"),
                 "last_reset_reason": chroma.get("last_reset_reason"),
                 **(doc_stats or {}),

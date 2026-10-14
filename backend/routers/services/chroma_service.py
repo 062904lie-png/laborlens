@@ -74,8 +74,9 @@ _cache_generation = 0
 _query_embedding_tasks = {}
 _document_chunk_counts_cache: Optional[tuple[int, Dict[int, int]]] = None
 _document_chunk_counts_cache_lock = threading.Lock()
-EMBEDDING_BATCH_SIZE = 64
-CHROMA_WRITE_BATCH_SIZE = 128
+EMBEDDING_BATCH_SIZE = 8
+CHROMA_WRITE_BATCH_SIZE = 32
+_embedding_inference_lock = threading.Lock()
 
 
 def resolved_chroma_persist_dir() -> str:
@@ -85,7 +86,7 @@ def resolved_chroma_persist_dir() -> str:
     return str(configured.resolve())
 
 
-def invalidate_retrieval_caches() -> None:
+def invalidate_retrieval_caches(*, warm_body_index=True) -> None:
     """Invalidate only document-level caches; never cache user conversations."""
 
     global _cache_generation, _document_chunk_counts_cache
@@ -98,7 +99,8 @@ def invalidate_retrieval_caches() -> None:
     invalidate()
     # The optional LDA model learns from the same stored chunk corpus.
     invalidate_lda_topic_model()
-    schedule_body_text_index()
+    if warm_body_index:
+        schedule_body_text_index()
 
 
 def schedule_body_text_index():
@@ -352,11 +354,13 @@ async def _load_lda_chunk_page(offset: int, limit: int) -> Dict[str, Any]:
 
 def embed_texts(texts: List[str], input_type: str = "passage") -> List[List[float]]:
     prepared = prepare_embedding_texts(texts, input_type)
-    return _embedder.encode(
-        prepared,
-        batch_size=EMBEDDING_BATCH_SIZE,
-        show_progress_bar=False,
-    ).tolist()
+    # Prevent concurrent encoder activation buffers during uploads and chat.
+    with _embedding_inference_lock:
+        return _embedder.encode(
+            prepared,
+            batch_size=EMBEDDING_BATCH_SIZE,
+            show_progress_bar=False,
+        ).tolist()
 
 
 async def add_documents(
@@ -364,7 +368,7 @@ async def add_documents(
     metadatas: List[Dict[str, Any]],
     doc_id: str
 ) -> int:
-    invalidate_retrieval_caches()
+    invalidate_retrieval_caches(warm_body_index=False)
     collection = get_collection()
     if not texts:
         return 0
@@ -1812,7 +1816,7 @@ async def get_document_chunk_ids_by_db_id(doc_db_id: int) -> List[str]:
 
 
 async def update_document_chunk_metadata_by_db_id(doc_db_id: int, patch: Dict[str, Any]) -> int:
-    invalidate_retrieval_caches()
+    invalidate_retrieval_caches(warm_body_index=False)
     collection = get_collection()
     results = collection.get(
         where={"doc_db_id": str(doc_db_id)},
@@ -1846,7 +1850,7 @@ async def delete_document_chunks_by_ids(chunk_ids: List[str]) -> int:
 
 
 async def delete_document_chunks_by_db_id(doc_db_id: int) -> int:
-    invalidate_retrieval_caches()
+    invalidate_retrieval_caches(warm_body_index=False)
     collection = get_collection()
     results = collection.get(where={"doc_db_id": str(doc_db_id)})
     ids = results.get("ids") if results else []

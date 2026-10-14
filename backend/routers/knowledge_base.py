@@ -26,7 +26,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from routers.auth import get_current_user, require_admin
-from routers.services.database import execute_insert, execute_query, execute_one, get_pool
+from routers.services.database import execute_insert, execute_query, execute_one, execute_affected, get_pool
 from routers.services.ingestion_service import (
     extract_original_document_text,
     save_upload,
@@ -64,6 +64,7 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 STALE_PROCESSING_MINUTES = 60
 _rebuild_index_lock = asyncio.Lock()
+_active_ingestion_documents = set()
 VERSION_STATUSES = {
     "active",
     "amended",
@@ -712,6 +713,8 @@ async def repair_stale_processing_documents() -> None:
     )
     for doc in stale_docs:
         doc_id = doc["id"]
+        if doc_id in _active_ingestion_documents:
+            continue
         try:
             chunk_count = await count_document_chunks_by_db_id(doc_id)
         except Exception:
@@ -750,8 +753,14 @@ async def _bg_ingest(
     original_filename: str,
     category: str,
     document_metadata: dict | None = None,
+    reprocess: bool = False,
 ):
+    _active_ingestion_documents.add(doc_id)
+    old_ids = set()
+    retired = False
     try:
+        if reprocess:
+            old_ids = set(await get_document_chunk_ids_by_db_id(doc_id))
         await execute_insert(
             """
             UPDATE uploaded_documents
@@ -760,7 +769,13 @@ async def _bg_ingest(
             """,
             (doc_id,),
         )
-        await ingest_document(filepath, doc_id, original_filename, category, document_metadata)
+        added = await ingest_document(filepath, doc_id, original_filename, category, document_metadata)
+        if reprocess:
+            current_ids = set(await get_document_chunk_ids_by_db_id(doc_id))
+            if added <= 0 or not (current_ids - old_ids):
+                raise ValueError("Reprocessing did not create readable replacement sections.")
+            await delete_document_chunks_by_ids(sorted(old_ids))
+            retired = True
         await execute_insert(
             "UPDATE uploaded_documents SET processing_stage='embedding' WHERE id=%s",
             (doc_id,),
@@ -782,10 +797,25 @@ async def _bg_ingest(
         )
         invalidate_retrieval_caches()
     except Exception as e:
+        if reprocess and old_ids and not retired:
+            try:
+                current_ids = set(await get_document_chunk_ids_by_db_id(doc_id))
+                await delete_document_chunks_by_ids(sorted(current_ids - old_ids))
+                remaining = await count_document_chunks_by_db_id(doc_id)
+                if remaining > 0:
+                    await execute_insert(
+                        "UPDATE uploaded_documents SET status='indexed', processing_stage='ready', chunk_count=%s, error_message=%s WHERE id=%s",
+                        (remaining, ("Reprocessing failed; previous searchable sections retained. " + str(e))[:500], doc_id),
+                    )
+                    return
+            except Exception:
+                logger.exception("Unable to finish reprocessing recovery for document %s", doc_id)
         await execute_insert(
             "UPDATE uploaded_documents SET status='error', processing_stage='error', error_message=%s WHERE id=%s",
             (str(e)[:500], doc_id),
         )
+    finally:
+        _active_ingestion_documents.discard(doc_id)
 
 
 async def _bg_rebuild_index(admin_user_id: int, lock_acquired: bool = False):
@@ -1455,22 +1485,25 @@ async def retry_document_index(
             detail="The saved upload is missing. Upload the document again.",
         )
 
-    await delete_document_chunks_by_db_id(doc_id)
-    await execute_insert(
+    claimed = await execute_affected(
         """
         UPDATE uploaded_documents
         SET status='processing', processing_stage='retry_queued',
-            chunk_count=0, error_message=NULL
-        WHERE id=%s
+            error_message=NULL
+        WHERE id=%s AND status NOT IN ('pending','processing')
         """,
         (doc_id,),
     )
-    await log_kb_admin_action(
-        current_user["id"],
-        "retry_document_index",
-        doc_id,
-        {"original_filename": document.get("original_filename")},
-    )
+    if not claimed:
+        raise HTTPException(409, "This document is already queued or being indexed.")
+    _active_ingestion_documents.add(doc_id)
+    try:
+        await log_kb_admin_action(
+            current_user["id"], "retry_document_index", doc_id,
+            {"original_filename": document.get("original_filename")},
+        )
+    except Exception:
+        logger.exception("Reprocessing queued but audit logging failed for document %s", doc_id)
     background_tasks.add_task(
         _bg_ingest,
         str(upload_path),
@@ -1478,6 +1511,7 @@ async def retry_document_index(
         document.get("original_filename") or document.get("filename"),
         document.get("category") or DEFAULT_KB_CATEGORY,
         document_metadata_from_row(document),
+        True,
     )
     return {
         "status": "processing",
@@ -2134,7 +2168,7 @@ async def _delete_doc_locked(doc_id: int, current_user):
 async def stats(current_user=Depends(get_current_user)):
     await repair_stale_processing_documents()
     return {
-        "chroma":    get_collection_stats(),
+        "chroma":    await asyncio.wait_for(asyncio.to_thread(get_collection_stats), timeout=5),
         "documents": await execute_query(
             "SELECT status, COUNT(*) as count FROM uploaded_documents GROUP BY status"
         ),

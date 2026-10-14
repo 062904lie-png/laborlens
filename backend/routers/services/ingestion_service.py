@@ -14,6 +14,7 @@ import subprocess
 import tempfile
 import threading
 import uuid
+import weakref
 from io import BytesIO, StringIO
 from pathlib import Path
 from typing import List, Tuple, Dict, Optional
@@ -1617,7 +1618,23 @@ def _prepare_document_for_ingestion(
     return doc_id, texts, metadatas
 
 
-async def ingest_document(
+_ingestion_gates = weakref.WeakKeyDictionary()
+
+
+def ingestion_gate():
+    loop = asyncio.get_running_loop()
+    if loop not in _ingestion_gates:
+        _ingestion_gates[loop] = asyncio.Semaphore(1)
+    return _ingestion_gates[loop]
+
+
+async def ingest_document(*args, **kwargs) -> int:
+    # Queue heavy OCR/embedding work without blocking unrelated API requests.
+    async with ingestion_gate():
+        return await _ingest_document_serial(*args, **kwargs)
+
+
+async def _ingest_document_serial(
     filepath: str,
     doc_db_id: int,
     source_name: str = None,
