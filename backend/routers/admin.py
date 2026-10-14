@@ -396,7 +396,7 @@ async def answer_review_detail(message_id: int, current_user=Depends(require_adm
         except ValueError:
             row['sources'] = []
     row['feedback'] = await execute_query(f"""SELECT id,rating,comment,review_status,admin_notes,
-        reviewed_at,created_at,({REPORT_SQL}) AS reported FROM chat_feedback
+        reviewed_at,created_at,({REPORT_SQL}) AS reported FROM chat_feedback cf
         WHERE LEFT(LOWER(TRIM(COALESCE(comment,''))),14) <> 'system review:'
           AND message_id=%s ORDER BY id DESC""", (message_id,))
     # Historical rows have no reliable message-to-provider/timing/trace link.
