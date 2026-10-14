@@ -716,7 +716,7 @@ FOLLOW_UPS = {
         "employment_status":   ["When does probationary become regular?", "What rights do contractual workers have?", "What is project-based employment?"],
         "occupational_safety": ["What are employer OSH obligations?", "How do I report a workplace accident?", "What is the OSH Law?"],
         "holiday_pay":         ["What is double pay on regular holidays?", "Which days are regular vs special holidays?", "Do part-timers get holiday pay?"],
-        "general_inquiry":     ["What are my basic rights as an employee?", "How do I file a complaint with DOLE?", "What benefits am I entitled to?"],
+        "general_inquiry":     ["What are my basic rights as an employee?", "Where can I ask for help with a workplace concern?", "What benefits may apply to my job?"],
     },
     "fil": {
         "wage_inquiry":        ["Paano kinukuwenta ang overtime pay?", "Ano ang night differential?", "Ano ang COLA?"],
@@ -726,7 +726,7 @@ FOLLOW_UPS = {
         "employment_status":   ["Kailan nagiging regular ang probationary?", "Ano ang karapatan ng contractual workers?", "Ano ang project-based employment?"],
         "occupational_safety": ["Ano ang OSH duties ng employer?", "Paano mag-report ng workplace accident?", "Ano ang OSH Law?"],
         "holiday_pay":         ["Ano ang double pay sa regular holiday?", "Alin ang regular at special holidays?", "May holiday pay ba ang part-time?"],
-        "general_inquiry":     ["Ano ang basic rights ko bilang empleyado?", "Paano mag-file ng complaint sa DOLE?", "Anong benefits ang dapat kong matanggap?"],
+        "general_inquiry":     ["Ano ang basic rights ko bilang empleyado?", "Saan ako puwedeng humingi ng tulong sa problema sa trabaho?", "Anong benefits ang maaaring naaangkop sa trabaho ko?"],
     },
     "hil": {
         "wage_inquiry":        ["Paano ginakuwenta ang overtime pay?", "Ano ang night differential?", "Ano ang COLA?"],
@@ -736,67 +736,58 @@ FOLLOW_UPS = {
         "employment_status":   ["San-o nagaka-regular ang probationary?", "Ano ang katungod sang contractual workers?", "Ano ang project-based employment?"],
         "occupational_safety": ["Ano ang OSH duties sang employer?", "Paano mag-report sang workplace accident?", "Ano ang OSH Law?"],
         "holiday_pay":         ["Ano ang double pay sa regular holiday?", "Diin ang regular kag special holidays?", "May holiday pay bala ang part-time?"],
-        "general_inquiry":     ["Ano ang basic rights ko bilang empleyado?", "Paano mag-file sang complaint sa DOLE?", "Ano nga benefits ang dapat ko mabaton?"],
+        "general_inquiry":     ["Ano ang basic rights ko bilang empleyado?", "Sa diin ako puwede mangayo sang bulig sa problema sa obra?", "Ano nga benepisyo ang mahimo mag-aplikar sa obra ko?"],
     },
 }
 
 STATIC_RESPONSES = {
     "en": {
-        "identity": "I'm LaborLens. I help explain Philippine labor law topics using the sources loaded in this system, like wages, leave, benefits, termination, DOLE matters, and worker rights.",
+        "identity": "I'm LaborLens. I help explain Philippine workplace rules for people in both private companies and government agencies, including pay, leave, benefits, job-related concerns, and civil service rules. The rules can differ depending on your job and sector.",
         "capability_question": (
-            "LaborLens is for Philippine labor and employment questions only, so I can’t take on unrelated tasks.\n\n"
+            "I can help you understand Philippine workplace rules, whether you work for a private company or a government agency.\n\n"
             "You can ask about:\n"
-            "- Wages and minimum wage\n"
-            "- 13th-month pay\n"
-            "- Overtime, holiday pay, and night-shift differential\n"
-            "- Maternity, paternity, and other leave benefits\n"
-            "- Regular, probationary, contractual, and project-based employment\n"
-            "- Termination and due process\n"
-            "- Kasambahay rights\n"
-            "- Harassment and discrimination at work\n"
-            "- Workplace safety and health\n\n"
-            "Choose a topic or describe your situation in simple words."
+            "- Pay, overtime, leave, benefits, and retirement\n"
+            "- Employment contracts, government appointments, and job security\n"
+            "- Resignation, dismissal, and workplace complaints\n"
+            "- Workplace safety, harassment, and employee rights\n"
+            "- Private-sector topics such as minimum wage, 13th-month pay, and kasambahay rights\n"
+            "- Government topics such as civil service rules, leave credits, and employee discipline\n\n"
+            "The rules can differ between the two sectors. Choose a topic or tell me about your situation and where you work."
         ),
-        "gratitude": "You're welcome. If you have another labor question, just send it here.",
-        "farewell": "Take care. If a specific labor issue comes up, you can ask me again or contact DOLE or a licensed labor lawyer.",
+        "gratitude": "You're welcome. If you have another question about work in a private company or government agency, just send it here.",
+        "farewell": "Take care. You can come back anytime with a question about work in a private company or government agency.",
     },
     "fil": {
-        "identity": "Ako si LaborLens. Tumulong akong magpaliwanag ng mga usaping Philippine labor law gamit ang mga source na naka-load sa system na ito, tulad ng sahod, leave, benefits, termination, DOLE matters, at worker rights.",
+        "identity": "Ako si LaborLens. Tumutulong akong magpaliwanag ng mga patakaran sa trabaho sa Pilipinas para sa mga nagtatrabaho sa pribadong kumpanya at sa gobyerno. Maaari kang magtanong tungkol sa sahod, leave, benepisyo, problema sa trabaho, at civil service rules. Maaaring magkaiba ang patakaran depende sa trabaho at sektor mo.",
         "capability_question": (
-            "Para lamang sa mga tanong tungkol sa batas-paggawa at trabaho sa Pilipinas ang LaborLens, kaya hindi ako makakagawa ng mga gawaing walang kaugnayan dito.\n\n"
+            "Matutulungan kitang maintindihan ang mga patakaran sa trabaho sa Pilipinas, sa pribadong kumpanya man o sa ahensiya ng gobyerno.\n\n"
             "Maaari kang magtanong tungkol sa:\n"
-            "- Sahod at minimum wage\n"
-            "- 13th-month pay\n"
-            "- Overtime, holiday pay, at night-shift differential\n"
-            "- Maternity, paternity, at iba pang leave benefits\n"
-            "- Regular, probationary, contractual, at project-based employment\n"
-            "- Termination at due process\n"
-            "- Karapatan ng kasambahay\n"
-            "- Harassment at discrimination sa trabaho\n"
-            "- Kaligtasan at kalusugan sa lugar ng trabaho\n\n"
-            "Pumili ng paksa o ilahad ang iyong sitwasyon sa simpleng paraan."
+            "- Sahod, overtime, leave, benepisyo, at pagreretiro\n"
+            "- Kontrata sa trabaho, appointment sa gobyerno, at seguridad sa trabaho\n"
+            "- Pagre-resign, pagkakatanggal, at reklamo sa trabaho\n"
+            "- Kaligtasan, harassment, at karapatan ng empleyado\n"
+            "- Para sa pribadong sektor: minimum wage, 13th-month pay, at karapatan ng kasambahay\n"
+            "- Para sa gobyerno: civil service rules, leave credits, at pagdidisiplina sa empleyado\n\n"
+            "Maaaring magkaiba ang patakaran sa dalawang sektor. Pumili ng paksa o ikuwento ang sitwasyon mo at kung saan ka nagtatrabaho."
         ),
-        "gratitude": "Walang anuman. Kung may iba ka pang labor question, sabihin mo lang.",
-        "farewell": "Ingat. Kung may specific labor issue ka ulit, puwede kang magtanong dito o makipag-ugnayan sa DOLE o sa licensed labor lawyer.",
+        "gratitude": "Walang anuman. Kung may iba ka pang tanong tungkol sa trabaho sa pribadong kumpanya o sa gobyerno, sabihin mo lang.",
+        "farewell": "Ingat. Puwede kang bumalik anumang oras kung may tanong ka tungkol sa trabaho sa pribadong kumpanya o sa gobyerno.",
     },
     "hil": {
-        "identity": "Ako si LaborLens. Nagabulig ako magpaathag sang mga pamangkot sa Philippine labor law gamit ang mga source nga ara sa sini nga system, pareho sang sweldo, leave, benepisyo, termination, DOLE matters, kag kinamatarong sang workers.",
+        "identity": "Ako si LaborLens. Nagabulig ako magpaathag sang mga patakaran sa obra sa Pilipinas para sa mga nagaobra sa pribado nga kompanya kag sa gobyerno. Puwede ka mamangkot parte sa sweldo, leave, benepisyo, problema sa obra, kag civil service rules. Mahimo maglain ang patakaran suno sa imo obra kag sektor.",
         "capability_question": (
-            "Para lang sa mga pamangkot parte sa Philippine labor kag employment ang LaborLens, gani indi ako makabulig sa mga buluhaton nga wala labot diri.\n\n"
+            "Mabuligan ta ikaw nga maintindihan ang mga patakaran sa obra sa Pilipinas, sa pribado nga kompanya man ukon sa ahensya sang gobyerno.\n\n"
             "Puwede ka mamangkot parte sa:\n"
-            "- Sweldo kag minimum wage\n"
-            "- 13th-month pay\n"
-            "- Overtime, holiday pay, kag night-shift differential\n"
-            "- Maternity, paternity, kag iban pa nga leave benefits\n"
-            "- Regular, probationary, contractual, kag project-based employment\n"
-            "- Termination kag due process\n"
-            "- Katungod sang kasambahay\n"
-            "- Harassment kag discrimination sa obra\n"
-            "- Safety kag health sa workplace\n\n"
-            "Pili sang topic ukon isugid ang imo sitwasyon sa simple nga paagi."
+            "- Sweldo, overtime, leave, benepisyo, kag pagretiro\n"
+            "- Kontrata sa obra, appointment sa gobyerno, kag seguridad sa obra\n"
+            "- Pag-resign, pagtanggal, kag reklamo sa obra\n"
+            "- Kaluwasan, harassment, kag katungod sang empleyado\n"
+            "- Para sa pribado nga sektor: minimum wage, 13th-month pay, kag katungod sang kasambahay\n"
+            "- Para sa gobyerno: civil service rules, leave credits, kag pagdisiplina sa empleyado\n\n"
+            "Mahimo maglain ang patakaran sa duha ka sektor. Pili sang topic ukon isugid ang imo sitwasyon kag kon sa diin ka nagaobra."
         ),
-        "gratitude": "Walay sapayan. Kon may iban ka pa nga labor question, isulat lang diri.",
-        "farewell": "Halong. Kon may espesipiko ka liwat nga labor concern, puwede ka kapamangkot diri ukon magpalapit sa DOLE ukon sa licensed labor lawyer.",
+        "gratitude": "Walay sapayan. Kon may iban ka pa nga pamangkot parte sa obra sa pribado nga kompanya ukon sa gobyerno, isulat lang diri.",
+        "farewell": "Halong. Puwede ka magbalik bisan san-o kon may pamangkot ka parte sa obra sa pribado nga kompanya ukon sa gobyerno.",
     },
 }
 

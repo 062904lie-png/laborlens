@@ -3042,18 +3042,18 @@
       body.app-ready .answer-col-main{padding-right:0!important;border-right:0!important;}
     }
   </style>
-  <link rel="stylesheet" href="static/css/workspace.css?v=20261015-responsive-session"/>
-  <link rel="stylesheet" href="static/css/motion.css?v=20261015-responsive-session"/>
-  <link rel="stylesheet" href="static/css/public.css?v=20261015-responsive-session"/>
-  <link rel="stylesheet" href="static/css/chat-appearance.css?v=20261015-responsive-session"/>
-  <link rel="stylesheet" href="static/css/voice.css?v=20261015-responsive-session"/>
-  <link rel="stylesheet" href="static/css/reference-chat.css?v=20261015-responsive-session"/>
+  <link rel="stylesheet" href="static/css/workspace.css?v=20261015-public-private"/>
+  <link rel="stylesheet" href="static/css/motion.css?v=20261015-public-private"/>
+  <link rel="stylesheet" href="static/css/public.css?v=20261015-public-private"/>
+  <link rel="stylesheet" href="static/css/chat-appearance.css?v=20261015-public-private"/>
+  <link rel="stylesheet" href="static/css/voice.css?v=20261015-public-private"/>
+  <link rel="stylesheet" href="static/css/reference-chat.css?v=20261015-public-private"/>
   <style>
     /* Hide source-match status badges in chat replies; keep citations and other UI labels intact. */
     body.app-ready #app .msg-bubble .source-match-badge,
     body.app-ready #app .answer-content .source-match-badge{display:none!important;}
   </style>
-  <link rel="stylesheet" href="static/css/responsive-shell.css?v=20261015-responsive-session"/>
+  <link rel="stylesheet" href="static/css/responsive-shell.css?v=20261015-public-private"/>
 </head>
 <body class="ll-reference">
 <a class="skip-link" href="#msg-input">Skip to chat input</a>
@@ -3405,10 +3405,10 @@
   </div>
 </div>
 
-<script src="static/js/workspace.js?v=20261015-responsive-session"></script>
-<script src="static/js/chat-controls.js?v=20261015-responsive-session"></script>
-<script src="static/js/motion.js?v=20261015-responsive-session"></script>
-<script src="static/js/voice.js?v=20261015-responsive-session"></script>
+<script src="static/js/workspace.js?v=20261015-public-private"></script>
+<script src="static/js/chat-controls.js?v=20261015-public-private"></script>
+<script src="static/js/motion.js?v=20261015-public-private"></script>
+<script src="static/js/voice.js?v=20261015-public-private"></script>
 <script>
 const API = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)
   ? 'http://127.0.0.1:8000/api'
@@ -5738,37 +5738,46 @@ function renderGuidedActions(content='', meta={}) {
     const topics = lang === 'fil'
       ? [
           ['Sahod', 'Ano ang karapatan ko tungkol sa sahod?'],
-          ['13th-Month Pay', 'Paano kinukuwenta ang 13th-month pay?'],
+          ['13th-Month Pay', 'Paano kinukuwenta ang 13th-month pay ng empleyado sa pribadong sektor?'],
           ['Overtime', 'Paano kinukuwenta ang overtime pay?'],
           ['Leave', 'Ano ang leave benefits ng empleyado?'],
           ['Employment Status', 'Ano ang regular at probationary employment?'],
           ['Termination', 'Ano ang due process sa termination?'],
           ['Kasambahay', 'Ano ang karapatan ng kasambahay?'],
           ['Harassment', 'Ano ang puwedeng gawin sa workplace harassment?'],
-          ['Workplace Safety', 'Ano ang employer duties sa workplace safety?']
+          ['Workplace Safety', 'Ano ang employer duties sa workplace safety?'],
+          ['Leave sa Gobyerno', 'Ano ang mga leave benefits ng empleyado ng gobyerno?'],
+          ['Civil Service Rules', 'Ano ang mga patakaran sa appointment ng empleyado ng gobyerno?'],
+          ['Pagreretiro sa Gobyerno', 'Ano ang mga retirement benefits ng empleyado ng gobyerno?']
         ]
       : lang === 'hil'
         ? [
             ['Sweldo', 'Ano ang katungod ko parte sa sweldo?'],
-            ['13th-Month Pay', 'Paano ginakuwenta ang 13th-month pay?'],
+            ['13th-Month Pay', 'Paano ginakuwenta ang 13th-month pay sang empleyado sa pribado nga sektor?'],
             ['Overtime', 'Paano ginakuwenta ang overtime pay?'],
             ['Leave', 'Ano ang leave benefits sang empleyado?'],
             ['Employment Status', 'Ano ang regular kag probationary employment?'],
             ['Termination', 'Ano ang due process sa termination?'],
             ['Kasambahay', 'Ano ang katungod sang kasambahay?'],
             ['Harassment', 'Ano ang mahimo sa workplace harassment?'],
-            ['Workplace Safety', 'Ano ang employer duties sa workplace safety?']
+            ['Workplace Safety', 'Ano ang employer duties sa workplace safety?'],
+            ['Leave sa Gobyerno', 'Ano ang mga leave benefits sang empleyado sang gobyerno?'],
+            ['Civil Service Rules', 'Ano ang mga patakaran sa appointment sang empleyado sang gobyerno?'],
+            ['Pagretiro sa Gobyerno', 'Ano ang mga retirement benefits sang empleyado sang gobyerno?']
           ]
         : [
             ['Wages', 'What are my rights about wages?'],
-            ['13th Month Pay', 'How is 13th month pay computed?'],
+            ['13th Month Pay', 'How is 13th-month pay computed for private-sector employees?'],
             ['Overtime', 'How is overtime pay computed?'],
             ['Leave Benefits', 'What leave benefits may employees have?'],
             ['Employment Status', 'What is regular and probationary employment?'],
             ['Termination', 'What is due process for termination?'],
             ['Kasambahay Rights', 'What are kasambahay rights?'],
             ['Harassment', 'What can a worker do about workplace harassment?'],
-            ['Workplace Safety', 'What are employer duties for workplace safety?']
+            ['Workplace Safety', 'What are employer duties for workplace safety?'],
+            ['Government Leave', 'What leave benefits may government employees have?'],
+            ['Civil Service Rules', 'What rules apply to government employee appointments?'],
+            ['Government Retirement', 'What retirement benefits may government employees have?']
           ];
     return `<div class="guided-actions capability-actions">${topics.map(([label, prompt]) => `<button class="guided-action-btn" onclick="qs('${escapeHtml(prompt).replace(/'/g, "\\'")}')">${escapeHtml(label)}</button>`).join('')}</div>`;
   }
@@ -6326,10 +6335,10 @@ prepareAuthUi();
 prepareChatUi();
 if (!handleGoogleCallback() && !handlePasswordResetLink() && token && currentUser) initApp();
 </script>
-<script src="static/js/public.js?v=20261015-responsive-session"></script>
+<script src="static/js/public.js?v=20261015-public-private"></script>
 <script>window.LABORLENS_API_URL = API;</script>
-<link rel="stylesheet" href="static/css/faq-browser.css?v=20261015-responsive-session">
-<script src="static/js/faq-browser.js?v=20261015-responsive-session"></script>
-<script type="module" src="static/js/firebase-auth.js?v=20261015-responsive-session"></script>
+<link rel="stylesheet" href="static/css/faq-browser.css?v=20261015-public-private">
+<script src="static/js/faq-browser.js?v=20261015-public-private"></script>
+<script type="module" src="static/js/firebase-auth.js?v=20261015-public-private"></script>
 </body>
 </html>
