@@ -2,6 +2,16 @@
 import re
 
 
+def definition_subject(question):
+    """Preserve the complete term being defined, including connective words."""
+    text = str(question or '').split('Current follow-up question:')[-1].strip()
+    match = re.match(r'^(?:what\s+is|define|(?:what\s+is\s+)?the\s+meaning\s+of)\s+'
+                     r'(.{2,180}?)[?.!]*$', text, re.I)
+    if not match:
+        return ''
+    return re.sub(r'^(?:a|an|the)\s+', '', match[1], flags=re.I).strip(' ?.!"“”')
+
+
 def calculation_request(question):
     """Task wording, not a benefit/topic catalog or a legal formula."""
     return bool(re.search(r'\b(?:calculat\w*|comput\w*|formula|how\s+much)\b',

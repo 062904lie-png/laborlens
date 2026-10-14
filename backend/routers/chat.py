@@ -1779,6 +1779,9 @@ def build_source_followup_response(
 ) -> Optional[Dict[str, Any]]:
     if not is_source_followup_request(query):
         return None
+    from routers.services.source_request_routing import legal_basis_explanation_requested
+    if legal_basis_explanation_requested(query):
+        return None
     query_text = query or ""
     is_contextual_request = bool(
         SOURCE_PASSAGE_RE.search(query_text)
@@ -4431,9 +4434,8 @@ def build_source_listing_answer(
     chunks: List[Dict[str, Any]],
 ) -> Optional[Dict[str, Any]]:
     text = query or ""
-    if not re.search(r"\b(which|what|show|give)\b.{0,60}\b(source|sources|uploaded\s+source|legal\s+basis)\b", text, re.IGNORECASE):
-        return None
-    if not re.search(r"\b(supports?|formula|calculation|computed|legal\s+basis)\b", text, re.IGNORECASE):
+    from routers.services.source_request_routing import source_records_requested
+    if not source_records_requested(text):
         return None
     sources = filter_display_sources_for_answer(
         text,

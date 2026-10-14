@@ -2,7 +2,7 @@
 import re
 from functools import lru_cache
 
-from .rag_policy import GENERAL_SECTOR, UNKNOWN_SECTOR, canonical_sector, infer_query_sector
+from .rag_policy import GENERAL_SECTOR, UNKNOWN_SECTOR, canonical_sector, infer_query_sector, reviewed_document_sector
 
 CAREGIVERS = 'caregivers'
 COS_JO = 'government_cos_jo'
@@ -21,10 +21,27 @@ def requested_scope(question):
         return COS_JO
     government = r"(?:government|public(?:[-\s]+sector)?|civil[-\s]+service)"
     private = r"private(?:[-\s]+sector)?"
-    if re.search(rf"\b{government}\b.{{0,60}}\b(?:and|versus|vs\.?|or)\b.{{0,40}}\b{private}\b|"
-                 rf"\b{private}\b.{{0,60}}\b(?:and|versus|vs\.?|or)\b.{{0,40}}\b{government}\b",
-                 current, re.I):
+    # Identify the worker before interpreting a mentioned business/agency.
+    # A public employee's private activity is not a private-sector job; likewise
+    # a private employee mentioning a government office is not a public worker.
+    public_worker = re.search(
+        r'\b(?:government|public|civil[-\s]+service)(?:[-\s]+sector)?\s+'
+        r'(?:employees?|workers?|officials?|officers?|servants?)\b', current, re.I)
+    private_worker = re.search(
+        r'\bprivate(?:[-\s]+sector|\s+company)?\s+(?:employees?|workers?)\b', current, re.I)
+    comparison = re.search(rf"\b{government}\b.{{0,60}}\b(?:and|versus|vs\.?|or)\b.{{0,40}}\b{private}\b|"
+                           rf"\b{private}\b.{{0,60}}\b(?:and|versus|vs\.?|or)\b.{{0,40}}\b{government}\b",
+                           current, re.I)
+    # Conjoined activities of one named worker are not a sector comparison.
+    if comparison and (not public_worker or private_worker or re.search(
+        r'\bprivate[-\s]+(?:sector|employment)\b|\b(?:compare|comparison|versus|vs\.?|differences?)\b',
+        current, re.I)):
         return None
+    if public_worker and not private_worker:
+        from .rag_policy import GOVERNMENT_SECTOR
+        return GOVERNMENT_SECTOR
+    if private_worker and not public_worker:
+        return GENERAL_SECTOR
     if re.search(
         r'\bprivate[-\s]+(?:sector|employment|employee|company|workplace|employer|business)\b'
         r'|\bprivate\s+(?:\w+\s+){0,2}(?:store|shop|workplace|company|business)\b',
@@ -32,7 +49,7 @@ def requested_scope(question):
     ):
         return GENERAL_SECTOR
     if re.search(r'\b(?:government|public[-\s]+sector|civil[-\s]+service)\s+'
-                 r'(?:office|agency|department|employee|worker|employment)\b', current, re.I):
+                 r'(?:offices?|agenc(?:y|ies)|departments?|employees?|workers?|employment)\b', current, re.I):
         from .rag_policy import GOVERNMENT_SECTOR
         return GOVERNMENT_SECTOR
     sector = infer_query_sector(current)
@@ -47,6 +64,9 @@ def source_scope(item):
     entire contents from incidental occupation mentions.
     """
     m = item.get('metadata') or item
+    reviewed = reviewed_document_sector(m)
+    if reviewed:
+        return reviewed
     owner = ' '.join(str(m.get(k) or '') for k in ('document_title', 'source', 'law_number'))
     if re.search(r'\b(?:GSIS|civil service|RACCS|government service insurance)\b', owner, re.I):
         return 'government_employment'

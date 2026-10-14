@@ -3042,17 +3042,18 @@
       body.app-ready .answer-col-main{padding-right:0!important;border-right:0!important;}
     }
   </style>
-  <link rel="stylesheet" href="static/css/workspace.css?v=20260911-2"/>
-  <link rel="stylesheet" href="static/css/motion.css?v=20261005-response-timer-1"/>
-  <link rel="stylesheet" href="static/css/public.css?v=20260905-3"/>
-  <link rel="stylesheet" href="static/css/chat-appearance.css?v=20260911-3"/>
-  <link rel="stylesheet" href="static/css/voice.css?v=20260914-composer-6"/>
-  <link rel="stylesheet" href="static/css/reference-chat.css?v=20261011-stop-square-1"/>
+  <link rel="stylesheet" href="static/css/workspace.css?v=20261015-responsive-session"/>
+  <link rel="stylesheet" href="static/css/motion.css?v=20261015-responsive-session"/>
+  <link rel="stylesheet" href="static/css/public.css?v=20261015-responsive-session"/>
+  <link rel="stylesheet" href="static/css/chat-appearance.css?v=20261015-responsive-session"/>
+  <link rel="stylesheet" href="static/css/voice.css?v=20261015-responsive-session"/>
+  <link rel="stylesheet" href="static/css/reference-chat.css?v=20261015-responsive-session"/>
   <style>
     /* Hide source-match status badges in chat replies; keep citations and other UI labels intact. */
     body.app-ready #app .msg-bubble .source-match-badge,
     body.app-ready #app .answer-content .source-match-badge{display:none!important;}
   </style>
+  <link rel="stylesheet" href="static/css/responsive-shell.css?v=20261015-responsive-session"/>
 </head>
 <body class="ll-reference">
 <a class="skip-link" href="#msg-input">Skip to chat input</a>
@@ -3195,7 +3196,7 @@
       </span>
       <span class="tb-user-chevron" aria-hidden="true">⌄</span>
     </div>
-    <button class="tb-logout" onclick="doLogout()" style="margin-left:8px;">Sign Out</button>
+    <button class="tb-logout" data-session-action onclick="doLogout()" style="margin-left:8px;">Sign Out</button>
   </div>
 
   <button id="sidebar-collapse-handle" type="button" onclick="toggleSidebar()" aria-label="Collapse sidebar" aria-expanded="true" title="Collapse sidebar">«</button>
@@ -3303,7 +3304,7 @@
       <nav class="sidebar-bottom-nav" aria-label="Account navigation">
         <button class="sidebar-nav-btn" id="open-faq-browser" type="button"><span aria-hidden="true">❓</span> Frequently Asked Questions</button>
         <button class="sidebar-nav-btn" type="button" onclick="openSettingsFromSidebar(event)"><span aria-hidden="true">⚙️</span> Settings</button>
-        <button class="sidebar-nav-btn logout" type="button" onclick="doLogout()"><span aria-hidden="true">🚪</span> Logout</button>
+        <button class="sidebar-nav-btn logout" data-session-action type="button" onclick="doLogout()"><span aria-hidden="true">🚪</span> Logout</button>
       </nav>
     </aside>
     <div id="sidebar-overlay" onclick="closeSidebar()"></div>
@@ -3404,10 +3405,10 @@
   </div>
 </div>
 
-<script src="static/js/workspace.js?v=20260906-1"></script>
-<script src="static/js/chat-controls.js?v=20260911-1"></script>
-<script src="static/js/motion.js?v=20261005-response-timer-1"></script>
-<script src="static/js/voice.js?v=20261013-referral-audio-3"></script>
+<script src="static/js/workspace.js?v=20261015-responsive-session"></script>
+<script src="static/js/chat-controls.js?v=20261015-responsive-session"></script>
+<script src="static/js/motion.js?v=20261015-responsive-session"></script>
+<script src="static/js/voice.js?v=20261015-responsive-session"></script>
 <script>
 const API = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)
   ? 'http://127.0.0.1:8000/api'
@@ -4228,7 +4229,39 @@ function expireAuthenticatedSession(requestToken) {
   if (loginError) loginError.textContent = 'Your session expired. Please sign in again to continue.';
   updateSendState();
 }
+function continueGuestToLogin() {
+  if (!isGuest) return false;
+  invalidateChatView();
+  window.LaborLensVoice.finish();
+  closeSettings();
+  document.getElementById('sidebar')?.classList.remove('open');
+  document.getElementById('sidebar-overlay')?.classList.remove('open');
+  // Keep guest history, session and usage keys: signing in is not a quota reset.
+  localStorage.removeItem('ll_guest');
+  isGuest = false;
+  currentUser = null;
+  currentSessionId = null;
+  sessionCache = [];
+  lastAssistantIntent = null;
+  document.getElementById('app')?.classList.remove('visible');
+  document.body.classList.remove('app-ready', 'guest-mode');
+  switchAuthTab('login');
+  showAuth();
+  return true;
+}
+function updateSessionActionUi() {
+  document.querySelectorAll('[data-session-action]').forEach(button => {
+    const label = isGuest ? 'Continue to login' : 'Logout';
+    button.textContent = label;
+    button.setAttribute('aria-label', label);
+    button.title = label;
+    button.classList.toggle('guest-login-action', isGuest);
+    button.onclick = isGuest ? continueGuestToLogin : doLogout;
+  });
+}
 function doLogout() {
+  if (isGuest) return continueGuestToLogin();
+  if (!window.confirm('Log out of LaborLens? Your saved conversations will remain in your account.')) return false;
   invalidateChatView();
   window.LaborLensVoice.finish();
   const prefs = localStorage.getItem('ll_prefs');
@@ -4243,6 +4276,7 @@ function doLogout() {
   if (prefs) localStorage.setItem('ll_prefs', prefs);
   if (lang) localStorage.setItem('ll_lang', lang);
   location.reload();
+  return true;
 }
 function setChatHeaderTitle() {
   const title = document.getElementById('chat-title');
@@ -4261,7 +4295,7 @@ function initApp() {
   document.getElementById('setting-lang').value = savedLang;
   const topbarLang = document.getElementById('topbar-lang');
   if (topbarLang) topbarLang.value = savedLang;
-  document.querySelector('.tb-logout').textContent = isGuest ? 'Sign In' : 'Sign Out';
+  updateSessionActionUi();
   applyPreferences();
   void syncAuthenticatedUser();
   loadSystemStatus();
@@ -6292,10 +6326,10 @@ prepareAuthUi();
 prepareChatUi();
 if (!handleGoogleCallback() && !handlePasswordResetLink() && token && currentUser) initApp();
 </script>
-<script src="static/js/public.js?v=20260905-2"></script>
+<script src="static/js/public.js?v=20261015-responsive-session"></script>
 <script>window.LABORLENS_API_URL = API;</script>
-<link rel="stylesheet" href="static/css/faq-browser.css?v=20261013-1">
-<script src="static/js/faq-browser.js?v=20261013-1"></script>
-<script type="module" src="static/js/firebase-auth.js?v=20261013-update"></script>
+<link rel="stylesheet" href="static/css/faq-browser.css?v=20261015-responsive-session">
+<script src="static/js/faq-browser.js?v=20261015-responsive-session"></script>
+<script type="module" src="static/js/firebase-auth.js?v=20261015-responsive-session"></script>
 </body>
 </html>

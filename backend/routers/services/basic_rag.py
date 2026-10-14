@@ -205,6 +205,17 @@ async def retrieve(query, nlp, history, intent, diagnostics=None, *, request_pla
         lambda: run('conversation_source_lookup', lambda: rehydrate_followup_sources(query, resolved, source_history,
             relation=(request_plan or {}).get('conversation_relation'))),
     ]
+    # A rewritten standalone question is a retrieval hint, not a replacement
+    # for the user's wording. Preserve a literal channel for new-topic requests
+    # so a dropped qualification or named activity cannot disappear entirely.
+    # Short follow-ups still use their resolved conversation context.
+    original_question = str((request_plan or {}).get('latest_question') or query)
+    if (request_plan or {}).get('conversation_relation') == 'new_topic':
+        user_context = original_question
+    if (request_plan or {}).get('conversation_relation') == 'new_topic' and original_question.strip().casefold() != resolved.strip().casefold():
+        original_body = expanded_query(store._collection, store._cache_generation, original_question)
+        discovery.append(lambda: run('original_question_body_search', lambda: store.search_document_text(
+            original_body, n_results=GLOBAL_BODY_CANDIDATES, fast=True)))
     formula_query = calculation_search_query(resolved)
     if formula_query:
         discovery.append(lambda: run('calculation_body_search', lambda: store.search_document_text(
@@ -502,7 +513,11 @@ def build_messages(query, chunks, history, language, profile):
         'Retain eligibility, exceptions, dates and units. Before answering a broad or multi-part request, '
         'check each part against all selected passages and combine complementary rules; do not treat the '
         'top-ranked passage as the whole answer. Cover only dimensions that matter to the question and '
-        'are supported by evidence; never fill missing legal rules from memory. Avoid separate commentary '
+        'are supported by evidence; never fill missing legal rules from memory. '
+        'A question about the legal basis of a topic asks for an explanation of the supporting '
+        'rules and their relevance, not a dump of source records. Combine complementary passages '
+        'when needed. Keep sources in the source cards, not a metadata list in the prose. '
+        'Avoid separate commentary '
         'about retrieval or evidence gaps. When a requested legal point cannot be answered reliably, '
         'refer the user briefly to DOLE or an appropriate established agency. '
         'When passages describe different versions, prefer the applicable newer rule; '

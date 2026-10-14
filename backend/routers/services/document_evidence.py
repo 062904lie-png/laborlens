@@ -111,6 +111,10 @@ def question_candidate_scorer(question):
     phrases = {p.casefold() for request in [question, *requested_points(question)]
                for p in question_focus(request)['subjects']
                if len(issue_terms(p)) >= 2 and len(p.split()) >= 2}
+    from .overview_discovery import definition_subject
+    named_term = definition_subject(question)
+    if len(issue_terms(named_term)) >= 2:
+        phrases.add(named_term.casefold())
     actions = scenario_actions(question)
     acronyms = set(re.findall(r'\b[A-Z]{2,10}\b', question))
     from .remedy_discovery import remedy_requested, procedural_passage
@@ -130,11 +134,14 @@ def question_candidate_scorer(question):
         phrase_match = any(re.search(r'\b' + r'[\s‐‑–-]+'.join(re.escape(w) for w in p.split()) + r'\b',
                                      body, re.I) for p in phrases) or any(
             re.search(r'\b' + re.escape(short) + r'\b', body, re.I) for short in acronyms)
+        definition_match = bool(named_term) and bool(re.search(
+            r'\b' + r'[\s‐‑–-]+'.join(re.escape(word) for word in named_term.split()) + r'\b', body, re.I))
         action_match = any(any(word.startswith(action[:5]) for word in issue_terms(body))
                            for action in actions if len(action) >= 5)
         return (vector + 0.10 * overlap / max(1, len(terms))
                 + (0 if fused else .25 * min(1.0, float(chunk.get('lexical_score') or 0.0)))
                 + (.25 if phrase_match else 0) + (.20 if action_match else 0)
+                + (.30 if definition_match else 0)
                 + (.30 if needs_remedy and procedural_passage(chunk) else 0)
                 + (.35 if needs_formula and re.search(
                     r'\b(?:formula|comput\w*|calculat\w*)\b|\b[A-Za-z]{1,4}\s*=\s*\w+', body, re.I) else 0)
@@ -145,7 +152,7 @@ def question_candidate_scorer(question):
 
 def rank_question_candidates(chunks, question):
     """Local relevance fallback; no fixed articles, topics, or legal quantities."""
-    from .evidence_scope import scope_priority, source_scope, requested_scope
+    from .evidence_scope import source_scope, requested_scope
     score = question_candidate_scorer(question)
     competition = len({source_scope(c) for c in chunks}) > 1
     wanted_scope = requested_scope(question)
@@ -153,8 +160,9 @@ def rank_question_candidates(chunks, question):
         # For explicit sectors, prioritize actual source coverage—not a second
         # lexical completeness threshold that demotes concise formulas lacking
         # incidental words such as "government employee".
-        int(source_scope(c) == wanted_scope) if competition and wanted_scope else
-        scope_priority(question, c) if competition else 0,
+        # Unspecified is not private. An exact government rule must not be
+        # outranked by generic private text purely because no sector was named.
+        int(source_scope(c) == wanted_scope) if competition and wanted_scope else 0,
         requested_task_priority(question, c), score(c)), reverse=True))
     # No-op fallback retains the original list and object bindings. A changed
     # local order still returns every original candidate, never a certificate.

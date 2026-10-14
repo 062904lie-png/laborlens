@@ -1,7 +1,8 @@
 // ════════════════════════════════════════════════════════════════
 // Local backend API; the laptop-only launcher binds this address directly.
 // ════════════════════════════════════════════════════════════════
-const LOCAL_API_URL = 'https://3.104.175.253/api';
+const LOCAL_API_URL = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)
+  ? 'http://127.0.0.1:8000/api' : 'https://3.104.175.253/api';
 // ════════════════════════════════════════════════════════════════
 
 let API = window.LABORLENS_CONFIG?.API_URL || LOCAL_API_URL;   // Set immediately — no login input needed
@@ -556,12 +557,14 @@ async function doLogin() {
   } catch(e) { errEl.textContent = e.message; }
 }
 
-function doLogout() {
+function doLogout(skipConfirmation=false) {
+  if (!skipConfirmation && !window.confirm('Log out of the LaborLens admin panel?')) return false;
   token = null; currentUser = null;
   closeDocModal(); closeAdminNav();
   clearAdminSession();
   showLogin();
   document.getElementById('l-pass').value = '';
+  return true;
 }
 
 function initDashboard() {

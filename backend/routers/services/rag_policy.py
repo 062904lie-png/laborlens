@@ -712,7 +712,21 @@ def canonical_sector(value: str) -> str:
     return text or GENERAL_SECTOR
 
 
+def reviewed_document_sector(metadata: Optional[Dict[str, Any]]) -> str:
+    value = _norm((metadata or {}).get('document_sector'))
+    normalized = canonical_sector(value)
+    known = {GENERAL_SECTOR, GOVERNMENT_SECTOR, HOSPITAL_SECTOR, DOMESTIC_SECTOR,
+             MANAGERIAL_SECTOR, MANAGERIAL_STAFF_SECTOR, FIELD_SECTOR,
+             NIGHT_WORKERS_SECTOR, MINOR_WORKERS_SECTOR, OVERSEAS_WORKERS_SECTOR}
+    return normalized if value and normalized in known else ''
+
+
 def infer_sector(text: str, metadata: Optional[Dict[str, Any]] = None) -> str:
+    # Reviewed owner coverage is stronger than incidental words in a fragment.
+    # Only accept known labels; this is metadata, not an invented legal rule.
+    owner_sector = reviewed_document_sector(metadata)
+    if owner_sector:
+        return owner_sector
     combined = f"{text or ''} {_metadata_text(metadata or {})}"
     existing = _norm((metadata or {}).get("sector"))
     if (metadata or {}).get("primary_category", (metadata or {}).get("category")) == "Civil Service / Government Employment":
@@ -2024,6 +2038,12 @@ def prepare_chunks_for_indexing(
     metadatas: List[Dict[str, Any]] = []
     for text, metadata in chunks:
         merged = {**(metadata or {}), **(extra_metadata or {})}
+        if extra_metadata and (extra_metadata.get('primary_category') or extra_metadata.get('category')):
+            # Extraction defaults must not override the category saved on upload.
+            merged.update(category_metadata(
+                extra_metadata.get('primary_category') or extra_metadata['category'],
+                secondary_categories_from_metadata(extra_metadata),
+            ))
         enriched = enrich_chunk_metadata(text, merged)
         texts.append(build_chunk_context_text(text, enriched))
         metadatas.append(enriched)

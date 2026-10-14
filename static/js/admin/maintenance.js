@@ -286,6 +286,6 @@ window.AdminMaintenance = (() => {
     };
   }
   const logout=doLogout;
-  doLogout=function(){playgroundEpoch++;testContext=null;history=[];playgroundResult=null;playgroundPage.querySelector('.page-results').replaceChildren();return logout();};
+  doLogout=function(skipConfirmation=false){if(!logout(skipConfirmation))return false;playgroundEpoch++;testContext=null;history=[];playgroundResult=null;playgroundPage.querySelector('.page-results').replaceChildren();return true;};
   return {correction};
 })();

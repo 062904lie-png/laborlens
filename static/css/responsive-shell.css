@@ -1,0 +1,57 @@
+/* Shared final layout safeguards. Tables scroll locally; pages never widen. */
+html { max-width:100%; }
+body { margin:0; min-width:0; }
+*, *::before, *::after { box-sizing:border-box; }
+img, video, canvas { max-width:100%; }
+body.app-ready #app { width:100%; min-width:0; }
+body.app-ready #app :is(#chat-area,#msgs,.msg-bubble,.answer-content,.source-links,.source-link-item) { min-width:0; max-width:100%; }
+body.app-ready #app :is(.answer-content,.source-link-meta,.source-link-note,.source-link-title,.source-original-url) { overflow-wrap:anywhere; }
+body.app-ready #app .answer-content :is(pre,.table-wrap) { max-width:100%; overflow-x:auto; }
+body.app-ready #app .answer-content table { display:block; max-width:100%; overflow-x:auto; }
+body.app-ready #app .guest-login-action { color:var(--chat-link,#ffd24b)!important; }
+#dashboard :is(#main,.content-inner,.panel,.panel-body,.page-results,.page-hdr,.page-filters,.stat-grid,.two-col) { min-width:0; max-width:100%; }
+#dashboard .tbl-wrap { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; }
+#dashboard :is(.panel-hdr,.page-hdr,.page-filters,.modal-foot) { flex-wrap:wrap; }
+#dashboard :is(input,select,textarea) { min-width:0; max-width:100%; }
+#dashboard :is(.detail-tabs,.page-tabs) { max-width:100%; overflow-x:auto; }
+#dashboard :is(.doc-title,.document-title,.err-msg,.source-link,.page-description) { overflow-wrap:anywhere; }
+#doc-modal .modal-card { width:min(1100px,calc(100vw - 24px)); max-width:calc(100vw - 24px); max-height:calc(100dvh - 24px); }
+#doc-modal .modal-body { min-width:0; overflow:auto; }
+@media(max-width:900px) {
+  body.app-ready.ll-reference #app.visible { height:100dvh!important; max-height:100dvh!important; }
+  body.app-ready.ll-reference #app #topbar { min-width:0; }
+  body.app-ready.ll-reference #app #msgs { overscroll-behavior-y:contain; }
+  body.app-ready.ll-reference #app #input-zone { margin-bottom:max(8px,env(safe-area-inset-bottom))!important; }
+  #dashboard #main { padding:16px!important; }
+  #dashboard .admin-global-search { flex:1 1 160px; min-width:0; max-width:100%; }
+  #dashboard .admin-global-search input { width:100%; min-width:0; }
+}
+@media(max-width:600px) {
+  :is(input,select,textarea) { font-size:16px!important; }
+  body.app-ready.ll-reference #app #topbar { gap:6px!important; padding:0 8px!important; }
+  body.app-ready.ll-reference #app #input-zone { margin-left:8px!important; margin-right:8px!important; padding:8px!important; }
+  body.app-ready.ll-reference #app .input-wrap { min-width:0; }
+  body.app-ready.ll-reference #app #msg-input { min-width:0; width:100%; }
+  body.app-ready.ll-reference #app :is(#send-btn,#mic-btn,.answer-action-btn) { min-width:44px; min-height:44px; }
+  body.app-ready.ll-reference #app .answer-actions { flex-wrap:wrap; }
+  body.app-ready.ll-reference #app .source-links { grid-template-columns:minmax(0,1fr)!important; }
+  body.app-ready.ll-reference #app .disclaimer { gap:4px!important; padding:0!important; }
+  body.app-ready.ll-reference #app :is(.settings-panel,#profile-modal .modal) { max-width:calc(100vw - 16px)!important; }
+  #dashboard #topbar { gap:8px!important; padding:8px 12px!important; flex-wrap:wrap; height:auto!important; min-height:64px; }
+  #dashboard #topbar :is(.tb-name,.tb-label,.tb-status) { display:none!important; }
+  #dashboard .admin-global-search { order:4; flex:1 0 100%; width:100%; }
+  #dashboard .tb-user-chip { margin-left:auto; max-width:45%; min-width:0; }
+  #dashboard #tb-user { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  #dashboard :is(.stat-grid,.two-col,.three-col,.form-grid,.coverage-summary-cards) { grid-template-columns:minmax(0,1fr)!important; }
+  #dashboard :is(.page-hdr,.panel-hdr) { gap:10px; }
+  #dashboard .content-inner { padding:0!important; }
+  #dashboard .btn { min-height:40px; white-space:normal; }
+  #dashboard .page-filters > * { max-width:100%; }
+  #doc-modal .modal-card { max-height:calc(100dvh - 16px); width:calc(100vw - 16px); }
+}
+@media(max-height:500px) and (max-width:900px) {
+  body.app-ready.ll-reference #app.visible { grid-template-rows:48px minmax(0,1fr)!important; }
+  body.app-ready.ll-reference #app #topbar { height:48px!important; min-height:48px!important; }
+  body.app-ready.ll-reference #app .disclaimer { display:none!important; }
+  body.app-ready.ll-reference #app #msg-input { max-height:80px!important; }
+}
