@@ -3042,18 +3042,18 @@
       body.app-ready .answer-col-main{padding-right:0!important;border-right:0!important;}
     }
   </style>
-  <link rel="stylesheet" href="static/css/workspace.css?v=20261015-public-private"/>
-  <link rel="stylesheet" href="static/css/motion.css?v=20261015-public-private"/>
-  <link rel="stylesheet" href="static/css/public.css?v=20261015-public-private"/>
-  <link rel="stylesheet" href="static/css/chat-appearance.css?v=20261015-public-private"/>
-  <link rel="stylesheet" href="static/css/voice.css?v=20261015-public-private"/>
-  <link rel="stylesheet" href="static/css/reference-chat.css?v=20261015-public-private"/>
+  <link rel="stylesheet" href="static/css/workspace.css?v=20261015-review-delete"/>
+  <link rel="stylesheet" href="static/css/motion.css?v=20261015-review-delete"/>
+  <link rel="stylesheet" href="static/css/public.css?v=20261015-review-delete"/>
+  <link rel="stylesheet" href="static/css/chat-appearance.css?v=20261015-review-delete"/>
+  <link rel="stylesheet" href="static/css/voice.css?v=20261015-review-delete"/>
+  <link rel="stylesheet" href="static/css/reference-chat.css?v=20261015-review-delete"/>
   <style>
     /* Hide source-match status badges in chat replies; keep citations and other UI labels intact. */
     body.app-ready #app .msg-bubble .source-match-badge,
     body.app-ready #app .answer-content .source-match-badge{display:none!important;}
   </style>
-  <link rel="stylesheet" href="static/css/responsive-shell.css?v=20261015-public-private"/>
+  <link rel="stylesheet" href="static/css/responsive-shell.css?v=20261015-review-delete"/>
 </head>
 <body class="ll-reference">
 <a class="skip-link" href="#msg-input">Skip to chat input</a>
@@ -3405,10 +3405,11 @@
   </div>
 </div>
 
-<script src="static/js/workspace.js?v=20261015-public-private"></script>
-<script src="static/js/chat-controls.js?v=20261015-public-private"></script>
-<script src="static/js/motion.js?v=20261015-public-private"></script>
-<script src="static/js/voice.js?v=20261015-public-private"></script>
+<script src="static/js/workspace.js?v=20261015-review-delete"></script>
+<script src="static/js/chat-controls.js?v=20261015-review-delete"></script>
+<script src="static/js/motion.js?v=20261015-review-delete"></script>
+<script src="static/js/voice.js?v=20261015-review-delete"></script>
+<script src="static/js/chat-review-sync.js?v=20261015-review-delete"></script>
 <script>
 const API = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)
   ? 'http://127.0.0.1:8000/api'
@@ -5061,6 +5062,7 @@ async function deleteChat(id) {
     return;
   }
   if (requestToken !== token) return;
+  window.LaborLensChatChanges?.notifyDeleted();
   removePinnedSession(id);
   if (String(currentSessionId) === String(id)) {
     currentSessionId = null;
@@ -5095,6 +5097,7 @@ async function clearAllChats() {
     return;
   }
   if (requestToken !== token) return;
+  window.LaborLensChatChanges?.notifyDeleted();
   localStorage.removeItem(pinnedSessionsStorageKey());
   currentSessionId = null;
   clearStoredActiveSession();
@@ -6335,10 +6338,10 @@ prepareAuthUi();
 prepareChatUi();
 if (!handleGoogleCallback() && !handlePasswordResetLink() && token && currentUser) initApp();
 </script>
-<script src="static/js/public.js?v=20261015-public-private"></script>
+<script src="static/js/public.js?v=20261015-review-delete"></script>
 <script>window.LABORLENS_API_URL = API;</script>
-<link rel="stylesheet" href="static/css/faq-browser.css?v=20261015-public-private">
-<script src="static/js/faq-browser.js?v=20261015-public-private"></script>
-<script type="module" src="static/js/firebase-auth.js?v=20261015-public-private"></script>
+<link rel="stylesheet" href="static/css/faq-browser.css?v=20261015-review-delete">
+<script src="static/js/faq-browser.js?v=20261015-review-delete"></script>
+<script type="module" src="static/js/firebase-auth.js?v=20261015-review-delete"></script>
 </body>
 </html>

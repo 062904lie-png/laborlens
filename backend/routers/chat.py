@@ -5836,10 +5836,21 @@ async def submit_feedback(req: FeedbackRequest, current_user=Depends(get_current
 
 @router.delete("/sessions/all")
 async def delete_all_sessions(current_user=Depends(get_current_user)):
-    await execute_insert(
-        "DELETE FROM chat_sessions WHERE user_id=%s",
-        (current_user["id"],),
-    )
+    pool = await get_pool()
+    async with pool.acquire() as connection:
+        await connection.begin()
+        try:
+            async with connection.cursor() as cursor:
+                await cursor.execute("SELECT id FROM chat_sessions WHERE user_id=%s FOR UPDATE", (current_user['id'],))
+                await cursor.fetchall()
+                # Explicit cleanup also covers older installations and logs
+                # containing question copies without a session foreign key.
+                for table in ('query_logs', 'chat_messages', 'chat_sessions'):
+                    await cursor.execute(f"DELETE FROM {table} WHERE user_id=%s", (current_user['id'],))
+            await connection.commit()
+        except Exception:
+            await connection.rollback()
+            raise
     return {"message": "All sessions deleted"}
 
 

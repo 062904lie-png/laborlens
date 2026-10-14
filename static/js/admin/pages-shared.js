@@ -2,7 +2,7 @@
 window.AdminPages=(()=>{
   const pages={};
   const table=(headers,rows)=>`<div class="tbl-wrap"><table><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.length?rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join(''):`<tr><td colspan="${headers.length}" class="empty">No matching records.</td></tr>`}</tbody></table></div>`;
-  async function api(path,opts={}){const r=await apiFetch(path,opts);if(!r.ok)throw Error('Unable to load or update this page. Check your session and backend.');return r.json();}
+  async function api(path,opts={}){const r=await apiFetch(path,{cache:'no-store',...opts});if(!r.ok){const error=Error('Unable to load or update this page. Check your session and backend.');error.status=r.status;throw error;}return r.json();}
   function register(id,title,description,loader){
     const page=document.createElement('section');page.id=`tab-${id}`;page.className='workbench-tab';
     page.innerHTML=`<div class="page-hdr"><div class="page-hdr-left"><h1>${esc(title)}</h1><p>${esc(description)}</p></div></div><form class="workbench-filters"><label>Search<input type="search" maxlength="200"/></label><button type="submit" class="btn btn-primary">Search / Refresh</button></form><div class="page-results"></div>`;

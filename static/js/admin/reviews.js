@@ -4,7 +4,8 @@ window.AdminReviews=(()=>{
  const sourceLabels=new Set(['High confidence match','Source match','Partial source match','Insufficient legal source','Conflicting sources','Temporary response issue','Not Required']);
  const unresolvedLabels=new Set(['Insufficient legal source','Conflicting sources','Temporary response issue','Unverified test answer']);
  const noRetrievalIntents=new Set(['greeting','small_talk','identity','identity_question','capability_question','gratitude','thanks','farewell','goodbye','acknowledgement']);
- let active='needs_review',offset=0,version=0,detailVersion=0,summary={};
+ let active='needs_review',offset=0,version=0,detailVersion=0,summary={},loadingCount=0,reviewMessageId=null,lastFilterState=null;
+ const filterState=()=>JSON.stringify([...$('review-filters').querySelectorAll('input,select')].map(field=>[field.id,field.value]));
 
  function sourceMatchLabel(row={}){
   if(row.intent==='needs_clarification')return 'Awaiting user response';
@@ -60,8 +61,10 @@ window.AdminReviews=(()=>{
   $('review-pager').querySelectorAll('[data-review-offset]').forEach(button=>button.onclick=()=>{if(button.disabled)return;offset=Number(button.dataset.reviewOffset);load();});
   $('review-page-size').onchange=event=>{localStorage.setItem('laborlens_admin_page_size',event.target.value);offset=0;load();};
  }
- async function load(){
-  const v=++version,limit=Number($('review-page-size')?.value||adminPageSize());$('review-rows').innerHTML='<div class="loading">Loading review queue...</div>';
+ async function load({background=false}={}){
+  if(background&&loadingCount)return;
+  const v=++version,requestToken=token,limit=Number($('review-page-size')?.value||adminPageSize());
+  if(!background){lastFilterState=filterState();$('review-rows').innerHTML='<div class="loading">Loading review queue...</div>';}
   const dateFrom=$('review-from').value,dateTo=$('review-to').value;
   $('review-from').removeAttribute('aria-invalid');$('review-to').removeAttribute('aria-invalid');
   if(dateFrom&&dateTo&&dateFrom>dateTo){
@@ -78,16 +81,17 @@ window.AdminReviews=(()=>{
   if(issue==='other_needed')p.set('other_issue','true');
   if(dateFrom)p.set('date_from',dateFrom);
   if(dateTo)p.set('date_to',dateTo);
+  loadingCount++;
   try{
    const [data,s,conversations]=await Promise.all([api('/admin/answer-reviews?'+p),api('/admin/review-summary'),api('/admin/conversations?limit=1').catch(()=>null)]);
-   if(v!==version)return;summary=s;
+   if(v!==version||requestToken!==token)return;summary=s;
    if(offset>=data.total&&offset){offset=0;return load();}
    renderSummary(s,conversations);
    if(!data.items.length){$('review-rows').innerHTML='<div class="review-empty"><strong>No answers match your current filters.</strong><button class="btn" type="button" id="review-reset-empty">Reset Filters</button></div>';$('review-reset-empty').onclick=()=>$('review-filters').reset();$('review-pager').innerHTML='';return;}
    $('review-rows').innerHTML=U.table(['Question','Topic','Language','Issue','Date','Action'],data.items.map(row=>[esc(row.question||'Not recorded'),esc(row.topic_label||'Topic Not Yet Identified'),esc(languageLabel(row.language)),issueBadge(row),esc(dateLabel(row.created_at)),`<button class="btn btn-sm btn-primary" data-review="${Number(row.id)}">Review</button>`]),'review-mobile-cards');
    $('review-rows').querySelectorAll('[data-review]').forEach(button=>button.onclick=()=>open(Number(button.dataset.review)));
    renderPager(data.total,limit);
-  }catch(error){if(v===version){$('review-summary-cards').innerHTML='';$('review-rows').innerHTML='<div class="err-msg">Review queue could not be loaded. <button class="btn" type="button" id="retry-reviews">Retry</button></div>';$('retry-reviews').onclick=load;$('review-pager').innerHTML='';}}
+  }catch(error){if(v===version&&requestToken===token&&!background){$('review-summary-cards').innerHTML='';$('review-rows').innerHTML='<div class="err-msg">Review queue could not be loaded. <button class="btn" type="button" id="retry-reviews">Retry</button></div>';$('retry-reviews').onclick=load;$('review-pager').innerHTML='';}}finally{loadingCount--;}
  }
 
  function setFilter(filter='all'){
@@ -122,11 +126,12 @@ window.AdminReviews=(()=>{
  }
 
  async function open(id){
+  reviewMessageId=id;
   const v=++detailVersion,opener=document.activeElement;U.drawer('Review Details','<div class="loading">Loading review...</div>');
   const modal=$('doc-modal'),closeButton=modal.querySelector('.modal-hdr button');
   $('doc-modal-sub').textContent='Review this answer, check the sources, and take the appropriate action.';
   closeButton.className='review-drawer-close';closeButton.textContent='×';closeButton.setAttribute('aria-label','Close review details');
-  const closeReview=()=>{closeDocModal();opener?.focus();};closeButton.onclick=closeReview;
+  const closeReview=()=>{reviewMessageId=null;closeDocModal();opener?.focus();};closeButton.onclick=closeReview;
   try{
    const row=await api(`/admin/answer-reviews/${id}`);
    if(v!==detailVersion||!$('doc-modal').classList.contains('show'))return;
@@ -158,9 +163,21 @@ window.AdminReviews=(()=>{
    $('full-context').onclick=()=>fullContext(row.session_id,0,v);
    const contextPanel=$('nearby-context').closest('details');let contextLoaded=false;
    contextPanel.ontoggle=async()=>{if(!contextPanel.open||contextLoaded)return;contextLoaded=true;try{const context=await api(`/admin/answer-reviews/${id}/context`);if(v!==detailVersion)return;$('nearby-context').className='';$('nearby-context').innerHTML=contextHTML(context.items,id);bindContext($('nearby-context'));}catch(error){if(v===detailVersion)$('nearby-context').textContent='Unable to load nearby messages. Try reopening this review.';}};
-  }catch(error){if(v===detailVersion)$('doc-modal-body').innerHTML='<div class="err-msg">Unable to load review details.</div>';}
+  }catch(error){if(v===detailVersion)$('doc-modal-body').innerHTML=error.status===404?'<p role="status">This conversation was deleted or is no longer available for review.</p>':'<div class="err-msg">Unable to load review details.</div>';}
  }
  async function fullContext(session,start,v){const host=$('full-context-output');host.innerHTML='<div class="loading">Loading conversation context...</div>';try{const data=await api(`/admin/conversation-review/${encodeURIComponent(session)}?offset=${start}&limit=25`);if(v!==detailVersion)return;host.innerHTML=contextHTML(data.items)+`<div class="workbench-pager" id="context-pager"></div>`;bindContext(host);U.pager($('context-pager'),start,data.total,next=>fullContext(session,next,v));}catch(error){if(v===detailVersion)host.textContent='Unable to load full context.';}}
  async function filterTopic(category,filters={}){$('review-filters').reset();active='all';offset=0;$('review-category').value=category;$('review-language').value=filters.language||'';$('review-from').value=filters.date_from||'';$('review-to').value=filters.date_to||'';return load();}
- return {load,setFilter,open,filterTopic,setSearch(value){$('review-search').value=value;offset=0;active='all';}};
+ async function refresh(){
+  if(!token||document.visibilityState!=='visible'||!$('dashboard').classList.contains('visible'))return;
+  const id=reviewMessageId,modal=$('doc-modal');
+  if(id&&modal.classList.contains('show')&&$('doc-modal-title').textContent==='Review Details'){
+   try{await api(`/admin/answer-reviews/${id}`);}
+   catch(error){if(error.status===404&&reviewMessageId===id&&modal.classList.contains('show')&&$('doc-modal-title').textContent==='Review Details'){
+    detailVersion++;reviewMessageId=null;$('doc-modal-body').innerHTML='<p role="status">This conversation was deleted or is no longer available for review.</p>';$('doc-modal-foot').replaceChildren();
+   }}
+  }
+  // Refresh saved filters only; never apply an unfinished search or overwrite notes.
+  if(page.classList.contains('tab-active')&&!loadingCount&&lastFilterState===filterState())await load({background:true});
+ }
+ return {load,setFilter,open,filterTopic,refresh,setSearch(value){$('review-search').value=value;offset=0;active='all';}};
 })();

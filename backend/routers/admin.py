@@ -317,7 +317,7 @@ async def answer_reviews(
     joins = """FROM chat_messages cm
         LEFT JOIN chat_messages um ON um.id=(SELECT MAX(prev.id) FROM chat_messages prev
             WHERE prev.session_id=cm.session_id AND prev.role='user' AND prev.id<cm.id)
-        LEFT JOIN chat_sessions cs ON cs.id=cm.session_id"""
+        JOIN chat_sessions cs ON cs.id=cm.session_id AND cs.user_id=cm.user_id AND cs.is_active=1"""
     where = ' AND '.join(conditions)
     total = await execute_one(f'SELECT COUNT(*) AS total {joins} WHERE {where}', tuple(params))
     rows = await execute_query(f"""SELECT cm.id,cm.session_id,cm.language,cm.intent,
@@ -355,12 +355,16 @@ async def review_summary(current_user=Depends(require_admin)):
         COALESCE(SUM(EXISTS(SELECT 1 FROM chat_feedback cf WHERE cf.message_id=cm.id AND {REPORT_SQL})),0) AS reported,
         COALESCE(SUM(EXISTS(SELECT 1 FROM chat_feedback f WHERE f.message_id=cm.id AND f.rating='no' AND LEFT(LOWER(TRIM(COALESCE(f.comment,''))),14) <> 'system review:')),0) AS not_helpful,
         COALESCE(SUM(EXISTS(SELECT 1 FROM chat_feedback f WHERE f.message_id=cm.id AND f.rating='yes')),0) AS helpful
-        FROM chat_messages cm WHERE cm.role='assistant'""")
+        FROM chat_messages cm JOIN chat_sessions cs
+          ON cs.id=cm.session_id AND cs.user_id=cm.user_id AND cs.is_active=1
+        WHERE cm.role='assistant'""")
 
 
 @router.get('/answer-reviews/{message_id}/context')
 async def answer_review_context(message_id: int, current_user=Depends(require_admin)):
-    anchor=await execute_one("SELECT id,session_id FROM chat_messages WHERE id=%s AND role='assistant'",(message_id,))
+    anchor=await execute_one("""SELECT cm.id,cm.session_id FROM chat_messages cm
+        JOIN chat_sessions cs ON cs.id=cm.session_id AND cs.user_id=cm.user_id AND cs.is_active=1
+        WHERE cm.id=%s AND cm.role='assistant'""",(message_id,))
     if not anchor:
         raise HTTPException(404,'Answer not found')
     before=await execute_query("""SELECT id,role,content,language,created_at FROM chat_messages
@@ -381,7 +385,9 @@ async def answer_review_detail(message_id: int, current_user=Depends(require_adm
         {REVIEW_STATUS_SQL} AS admin_review_status,{CLOSED_CORRECTION_SQL} AS correction_closed,cm.admin_review_note,cm.admin_reviewed_by,cm.admin_reviewed_at,
         (SELECT prev.content FROM chat_messages prev WHERE prev.session_id=cm.session_id
           AND prev.role='user' AND prev.id<cm.id ORDER BY prev.id DESC LIMIT 1) AS question
-        FROM chat_messages cm WHERE cm.id=%s AND cm.role='assistant'""", (message_id,))
+        FROM chat_messages cm JOIN chat_sessions cs
+          ON cs.id=cm.session_id AND cs.user_id=cm.user_id AND cs.is_active=1
+        WHERE cm.id=%s AND cm.role='assistant'""", (message_id,))
     if not row:
         raise HTTPException(404, 'Answer not found')
     if isinstance(row.get('sources'), str):
@@ -412,7 +418,9 @@ async def conversation_review(session_id: str, offset: int = Query(0, ge=0), lim
 
 @router.put('/answer-reviews/{message_id}')
 async def save_answer_review(message_id: int, payload: AnswerReviewUpdate, current_user=Depends(require_admin)):
-    if not await execute_one("SELECT id FROM chat_messages WHERE id=%s AND role='assistant'", (message_id,)):
+    if not await execute_one("""SELECT cm.id FROM chat_messages cm JOIN chat_sessions cs
+        ON cs.id=cm.session_id AND cs.user_id=cm.user_id AND cs.is_active=1
+        WHERE cm.id=%s AND cm.role='assistant'""", (message_id,)):
         raise HTTPException(404, 'Answer not found')
     fields_set = getattr(payload, 'model_fields_set', getattr(payload, '__fields_set__', set()))
     if 'query_status' in fields_set:
@@ -430,7 +438,9 @@ async def save_answer_review(message_id: int, payload: AnswerReviewUpdate, curre
 @router.put('/answer-reviews/{message_id}/query-status')
 async def save_answer_query_status(message_id: int, payload: AnswerQueryStatusUpdate,
                                    current_user=Depends(require_admin)):
-    if not await execute_one("SELECT id FROM chat_messages WHERE id=%s AND role='assistant'", (message_id,)):
+    if not await execute_one("""SELECT cm.id FROM chat_messages cm JOIN chat_sessions cs
+        ON cs.id=cm.session_id AND cs.user_id=cm.user_id AND cs.is_active=1
+        WHERE cm.id=%s AND cm.role='assistant'""", (message_id,)):
         raise HTTPException(404, 'Answer not found')
     await execute_insert("""UPDATE chat_messages SET admin_query_status=%s,
         admin_reviewed_by=%s,admin_reviewed_at=UTC_TIMESTAMP() WHERE id=%s""",
