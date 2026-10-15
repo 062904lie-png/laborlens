@@ -77,6 +77,13 @@ INDUSTRY_PATTERNS = (
     ("hospitality", r"\b(hotel|restaurant|hospitality)\b"),
 )
 
+GOVERNMENT_INSTITUTION_TYPE_PATTERNS = (
+    ('NGA', r'\b(?:NGA|national government (?:agency|office|department)|department of (?:education|health|agriculture|social welfare|public works|transportation)|government department)\b'),
+    ('LGU', r'\b(?:LGU|local government unit|city government|municipal(?:ity| government)|provincial government|barangay government)\b'),
+    ('SUC', r'\b(?:SUC|state university|state college|state university and college)\b'),
+    ('GOCC', r'\b(?:GOCC|government[- ]owned and controlled corporation|government corporation)\b'),
+)
+
 AGENCY_PATTERNS = (
     ("SSS", r"\bsss|social\s+security\s+system\b"),
     ("PhilHealth", r"\bphilhealth\b"),
@@ -376,6 +383,9 @@ def extract_user_facts(
     sector = infer_query_sector(employment_text)
     if sector:
         facts["sector"] = sector
+    institution_type = _first_match(employment_text, GOVERNMENT_INSTITUTION_TYPE_PATTERNS)
+    if institution_type:
+        facts['government_institution_type'] = institution_type
 
     if preferred_language:
         facts["preferred_language"] = preferred_language

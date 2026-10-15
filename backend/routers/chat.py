@@ -3478,7 +3478,8 @@ def known_worker_facts_from_history(history: Optional[List[Dict[str, Any]]] = No
     for turn in history or []:
         if turn.get('role') == 'user':
             state = merge_conversation_state(state, str(turn.get('content') or ''))
-    return {key: state[key] for key in ('sector', 'worker_type', 'employment_status') if state.get(key)}
+    return {key: state[key] for key in ('sector', 'worker_type', 'employment_status',
+                                        'government_institution_type') if state.get(key)}
 
 
 def clarification_repeats_known_sector(question: str, known_facts: Optional[Dict[str, Any]]) -> bool:
@@ -4659,7 +4660,8 @@ async def run_guest_message(req: GuestChatRequest, request: Request, *, sandbox:
     clarification_decision = None
     if history:
         clarification_decision = await decide_clarification(req.message, nlp, intent, language, history, req.language,
-            {key: conversation_state[key] for key in ('sector', 'worker_type', 'employment_status') if conversation_state.get(key)})
+            {key: conversation_state[key] for key in ('sector', 'worker_type', 'employment_status',
+                'government_institution_type') if conversation_state.get(key)})
         language = clarification_decision['language']
         if clarification_decision['request_plan'].get('conversation_relation') == 'follow_up':
             intent = clarification_decision['intent']
@@ -4745,7 +4747,8 @@ async def run_guest_message(req: GuestChatRequest, request: Request, *, sandbox:
         )
 
     clarification_decision = clarification_decision or await decide_clarification(req.message, nlp, intent, language, history, req.language,
-        {key: conversation_state[key] for key in ('sector', 'worker_type', 'employment_status') if conversation_state.get(key)})
+        {key: conversation_state[key] for key in ('sector', 'worker_type', 'employment_status',
+            'government_institution_type') if conversation_state.get(key)})
     language = clarification_decision['language']
     thirteenth_calculation_result = await build_thirteenth_month_calculation_response(
         req.message,
