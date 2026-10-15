@@ -17,6 +17,17 @@ continues the user's current subject or starts a new one, before writing the sea
 conversation_relation: follow_up or new_topic. References such as 'it', 'this',
 requests to show a calculation, and replies to questions can continue a subject
 in any language. A standalone different subject starts a new topic.
+response_language: en, fil, or hil. In auto mode identify the latest user's
+language from their own words, not the assistant's language or English search
+rewrite. Hiligaynon/Ilonggo is distinct from Filipino/Tagalog: wording such as
+'kag', 'sang', 'akon', 'indi', 'gid', and 'ginatrabahuan' is Hiligaynon, not
+Tagalog. Consider these in sentence context rather than isolated shared words.
+The payload response_language is a fallback, not a language lock in auto mode.
+For ambiguous
+short replies or numbers retain response_language from the payload. If
+language_mode is explicit, retain that selected language. Write question in
+the resulting language. Read the entire supplied conversation before resolving
+references, including returning to an earlier subject after an intervening topic.
 context_start: index of the earliest relevant USER turn in the supplied conversation
 for this subject; -1 for a new topic. Exclude older unrelated subjects and their facts.
 answer_kind: explanation, illustrative_calculation, or personal_calculation.
@@ -111,7 +122,8 @@ _BREAK_STATUS_RE = re.compile(r"\b(?:paid|unpaid|bayad|wala\s+bayad|hindi\s+baya
 
 SCHEMA = {'type': 'object', 'additionalProperties': False, 'properties': {
     'conversation_relation': {'type': 'string', 'enum': ['follow_up', 'new_topic']},
-    'context_start': {'type': 'integer', 'minimum': -1, 'maximum': 19},
+    'context_start': {'type': 'integer', 'minimum': -1, 'maximum': 49},
+    'response_language': {'type': 'string', 'enum': ['en', 'fil', 'hil']},
     'answer_kind': {'type': 'string', 'enum': ['explanation', 'illustrative_calculation', 'personal_calculation']},
     'retrieval_query': {'type': 'string'},
     'topic_hints': {'type': 'array', 'items': {'type': 'string'}, 'maxItems': 4},
@@ -119,7 +131,7 @@ SCHEMA = {'type': 'object', 'additionalProperties': False, 'properties': {
     'needs_clarification': {'type': 'boolean'},
     'missing_facts': {'type': 'array', 'items': {'type': 'string'}, 'maxItems': 3},
     'question': {'type': 'string'},
-}, 'required': ['conversation_relation', 'context_start', 'answer_kind', 'retrieval_query', 'topic_hints', 'has_topic', 'needs_clarification', 'missing_facts', 'question']}
+}, 'required': ['conversation_relation', 'context_start', 'response_language', 'answer_kind', 'retrieval_query', 'topic_hints', 'has_topic', 'needs_clarification', 'missing_facts', 'question']}
 
 
 def conversation_window(query, history):
@@ -131,11 +143,13 @@ def conversation_window(query, history):
     turns = [dict(m) for m in list(history or []) if m.get('role') in {'user', 'assistant'}]
     if turns and turns[-1]['role'] == 'user' and str(turns[-1].get('content') or '') == query:
         turns.pop()
-    turns = turns[-20:]
+    turns = turns[-50:]
     from .answer_sources import clean_tracking
     for turn in turns:
-        turn['content'] = clean_tracking(str(turn.get('content') or ''))[:1200]
-    while sum(len(t['content']) for t in turns) > 8000:
+        content = clean_tracking(str(turn.get('content') or ''))
+        # Preserve the closing question as well as the opening subject.
+        turn['content'] = content if len(content) <= 2400 else content[:1600] + '\n[Middle omitted]\n' + content[-780:]
+    while sum(len(t['content']) for t in turns) > 32000:
         turns.pop(0)
     return turns
 
@@ -153,9 +167,10 @@ def history_for_plan(query, history, plan):
     return turns
 
 
-def conversation_payload(query, history, language):
+def conversation_payload(query, history, language, language_mode='explicit'):
     turns = [{'role': m['role'], 'content': m['content']} for m in conversation_window(query, history)]
-    return {'response_language': language, 'conversation': turns, 'latest_question': query[:4000]}
+    return {'response_language': language, 'language_mode': language_mode,
+            'conversation': turns, 'latest_question': query[:4000]}
 
 
 def ensure_elapsed_time_inputs(plan, query, history, language):
@@ -242,6 +257,11 @@ def validate_plan(value, payload):
     if not isinstance(value, dict) or any(type(value.get(k)) is not bool
             for k in ('has_topic', 'needs_clarification')):
         raise ValueError('Invalid intake flags')
+    response_language = value.get('response_language', payload['response_language'])
+    if response_language not in {'en', 'fil', 'hil'}:
+        raise ValueError('Invalid response language')
+    if payload.get('language_mode') == 'explicit' and response_language != payload['response_language']:
+        raise ValueError('Explicit response language must be retained')
     relation, start = value.get('conversation_relation'), value.get('context_start')
     if relation not in {'follow_up', 'new_topic'} or type(start) is not int:
         raise ValueError('Invalid conversation relation')
@@ -281,13 +301,13 @@ def validate_plan(value, payload):
         raise ValueError('Topic hints contain invented numeric facts')
 
 
-async def plan_request(query, history, language):
+async def plan_request(query, history, language, language_mode='explicit'):
     """At most two wire attempts within five seconds, then fail soft to retrieval.
 
     No global history/answer cache: each caller supplies only its owned session.
     Provider quotas, cancellation and diagnostics use the existing query pool.
     """
-    payload = conversation_payload(query, history, language)
+    payload = conversation_payload(query, history, language, language_mode)
     started = time.perf_counter()
     token = model_pools.verification_required.set(False)
     try:

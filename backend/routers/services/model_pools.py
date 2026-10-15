@@ -819,6 +819,9 @@ async def _json_task(instruction, payload, role, token_limit, validate=None, *, 
     estimate = task_request_tokens(instruction, wire, schema, token_limit)
     request_budget = int(getattr(settings, 'LABORLENS_VERIFY_REQUEST_TOKEN_BUDGET', 12000)
                          if role == 'verify' else getattr(settings, 'LABORLENS_RERANK_REQUEST_TOKEN_BUDGET', 6500))
+    if role == 'query':
+        # Intake includes conversation history, unlike passage ranking.
+        request_budget = int(getattr(settings, 'LABORLENS_QUERY_REQUEST_TOKEN_BUDGET', 16000))
     if estimate > request_budget:
         record_event(role, 'model_task_skipped', level='warning', details={
             'role': role, 'reason': 'input_budget', 'estimated_tokens': estimate, 'request_budget': request_budget})

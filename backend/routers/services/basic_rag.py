@@ -556,7 +556,9 @@ def build_messages(query, chunks, history, language, profile):
     plan = (profile or {}).get('request_understanding') or {}
     for message in history_for_plan(plan.get('latest_question') or query, history, plan):
         if message.get('role') in {'user', 'assistant'}:
-            content = compact_history_content(clean_tracking(message.get('content') or ''))
+            # Already bounded by the same conversation window used by intake.
+            # A second prefix-only truncation loses the closing clarification.
+            content = clean_tracking(message.get('content') or '')
             if content:
                 messages.append({'role': message['role'], 'content': content})
     # Canonical identities follow the provider's actual, possibly budget-trimmed

@@ -73,6 +73,7 @@ class Settings(BaseSettings):
     LABORLENS_RERANK_TIMEOUT_SECONDS: float = 24.0
     LABORLENS_RERANK_ATTEMPT_SECONDS: float = 10.0
     LABORLENS_RERANK_REQUEST_TOKEN_BUDGET: int = 6500
+    LABORLENS_QUERY_REQUEST_TOKEN_BUDGET: int = 16000
     LABORLENS_RERANK_PASSAGE_CHAR_LIMIT: int = 900
     # Optional ranking (including batches/backups) must not monopolize quota.
     LABORLENS_RERANK_MAX_MODEL_CALLS: int = 5

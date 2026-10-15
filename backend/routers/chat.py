@@ -1172,6 +1172,7 @@ def choose_response_language(
     requested_language: Optional[str],
     user_language: Optional[str],
     conversation_language: Optional[str] = None,
+    current_message: str = "",
 ) -> str:
     """
     Honor an explicit UI language selection. In Auto-detect mode, retain the
@@ -1184,6 +1185,10 @@ def choose_response_language(
     if requested in SUPPORTED_LANGUAGES:
         return requested
     if requested == "auto":
+        # Keep context for brief answers/numbers, but allow a substantive
+        # message to switch language even if semantic intake is unavailable.
+        if len(re.findall(r'[^\W\d_]+', current_message, re.UNICODE)) >= 4 and detected_language in SUPPORTED_LANGUAGES:
+            return detected_language
         if previous in SUPPORTED_LANGUAGES:
             return previous
         if detected_language in SUPPORTED_LANGUAGES:
@@ -2847,7 +2852,7 @@ async def load_session_memory(session_id: str, user_id: int) -> tuple[str, Dict[
 async def load_recent_chat_history(
     session_id: str,
     user_id: int,
-    limit: int = 20,
+    limit: int = 50,
 ) -> List[Dict[str, Any]]:
     """Load history only when both the session and authenticated owner match."""
     safe_limit = max(1, min(int(limit), 50))
@@ -3472,6 +3477,7 @@ async def decide_clarification(
     intent: str,
     language: str,
     history: Optional[List[Dict[str, Any]]] = None,
+    requested_language: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Understand first, then retrieve even when a partial answer needs a fact.
 
@@ -3496,8 +3502,11 @@ async def decide_clarification(
         resolved_nlp = await asyncio.to_thread(preprocess_query, resolved_query)
     resolved_intent = str(resolved_nlp.get("intent") or intent)
     profile = classify_legal_query(resolved_query, resolved_nlp)
-    plan = await plan_request(query, history, language)
+    language_mode = 'explicit' if requested_language in SUPPORTED_LANGUAGES else 'auto'
+    plan = await plan_request(query, history, language, language_mode=language_mode)
     if plan:
+        if language_mode == 'auto' and plan.get('response_language') in SUPPORTED_LANGUAGES:
+            language = plan['response_language']
         # The semantic plan, not an earlier heuristic rewrite, controls all
         # downstream topic classification, retrieval and generation.
         resolved_query = plan['retrieval_query'] or query
@@ -3550,6 +3559,7 @@ async def decide_clarification(
         "intent": resolved_intent,
         "profile": profile,
         "request_plan": plan,
+        "language": language,
     }
     return decision
 
@@ -4548,6 +4558,7 @@ async def run_guest_message(req: GuestChatRequest, request: Request, *, sandbox:
         requested_language=req.language,
         user_language=None,
         conversation_language=latest_assistant_language_from_history(req.history),
+        current_message=req.message,
     )
     action = detect_conversation_action(req.message)
     intent = "translation_request" if action == "translation_request" else normalize_static_intent(
@@ -4575,7 +4586,7 @@ async def run_guest_message(req: GuestChatRequest, request: Request, *, sandbox:
             "sources": parse_sources_payload(msg.get("sources")),
             "intent": msg.get("intent"),
         }
-        for msg in req.history[-20:]
+        for msg in req.history[-50:]
         if msg.get("role") in {"user", "assistant"} and msg.get("content")
     ]
     contextual_follow_up = is_contextual_follow_up(req.message, nlp, history)
@@ -4618,7 +4629,16 @@ async def run_guest_message(req: GuestChatRequest, request: Request, *, sandbox:
             confidence_reason=translation_result["confidence_reason"],
         )
 
-    static_answer = (
+    clarification_decision = None
+    if history:
+        clarification_decision = await decide_clarification(req.message, nlp, intent, language, history, req.language)
+        language = clarification_decision['language']
+        if clarification_decision['request_plan'].get('conversation_relation') == 'follow_up':
+            intent = clarification_decision['intent']
+            nlp = clarification_decision['nlp']
+    semantic_followup = bool(clarification_decision and
+        clarification_decision['request_plan'].get('conversation_relation') == 'follow_up')
+    static_answer = None if semantic_followup else (
         await generate_conversational_reply(req.message, history, language, intent)
         if intent in MODEL_GENERATED_CONVERSATION_INTENTS
         else get_static_response(intent, language, req.message)
@@ -4696,7 +4716,8 @@ async def run_guest_message(req: GuestChatRequest, request: Request, *, sandbox:
             confidence_reason=source_followup["source_reason"],
         )
 
-    clarification_decision = await decide_clarification(req.message, nlp, intent, language, history)
+    clarification_decision = clarification_decision or await decide_clarification(req.message, nlp, intent, language, history, req.language)
+    language = clarification_decision['language']
     thirteenth_calculation_result = await build_thirteenth_month_calculation_response(
         req.message,
         nlp,
@@ -4943,6 +4964,7 @@ async def send_message(req: ChatRequest, current_user=Depends(get_current_user))
         requested_language=req.language,
         user_language=current_user.get("language_preference"),
         conversation_language=previous_response_language,
+        current_message=req.message,
     )
     action = detect_conversation_action(req.message)
     intent = "translation_request" if action == "translation_request" else normalize_static_intent(
@@ -5043,8 +5065,19 @@ async def send_message(req: ChatRequest, current_user=Depends(get_current_user))
     )
     title_hint = title_from_state_or_message(req.message, updated_state)
 
-    if intent in MODEL_GENERATED_CONVERSATION_INTENTS:
-        conversation_history = await load_recent_chat_history(session_id, current_user["id"])
+    conversation_history = await load_recent_chat_history(session_id, current_user["id"])
+    clarification_decision = None
+    if conversation_history:
+        clarification_decision = await decide_clarification(req.message, nlp, intent, language, conversation_history, req.language)
+        language = clarification_decision['language']
+        if clarification_decision['request_plan'].get('conversation_relation') == 'follow_up':
+            intent = clarification_decision['intent']
+            nlp = clarification_decision['nlp']
+    semantic_followup = bool(clarification_decision and
+        clarification_decision['request_plan'].get('conversation_relation') == 'follow_up')
+    if semantic_followup:
+        static_answer = None
+    elif intent in MODEL_GENERATED_CONVERSATION_INTENTS:
         static_answer = await generate_conversational_reply(
             req.message,
             conversation_history,
@@ -5215,7 +5248,8 @@ async def send_message(req: ChatRequest, current_user=Depends(get_current_user))
             confidence_reason=confidence_reason,
         )
 
-    clarification_decision = await decide_clarification(req.message, nlp, intent, language, history)
+    clarification_decision = clarification_decision or await decide_clarification(req.message, nlp, intent, language, history, req.language)
+    language = clarification_decision['language']
     thirteenth_calculation_result = await build_thirteenth_month_calculation_response(
         req.message,
         nlp,
