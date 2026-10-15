@@ -12,6 +12,12 @@ This remains bounded recent context, not unlimited lifetime conversation memory.
 Query interpretation has its own 16,000-token request allowance so the ranking
 budget does not silently skip longer conversation interpretation.
 
+The same conversation's saved sector, worker type, and employment status now
+reach intake and answer generation as user facts. If the model still asks which
+sector when one is already known, the backend drops that redundant question and
+continues with the known scope. Guest chats recover these facts only from their
+own supplied conversation history. A user correction updates the fact.
+
 The same interpretation call selects English, Filipino, or Hiligaynon in Auto
 mode from the user's words, including a language switch after a previous reply.
 Explicit UI language selections remain authoritative. A substantive message can

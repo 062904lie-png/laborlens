@@ -249,6 +249,29 @@ class PlanningTests(unittest.IsolatedAsyncioTestCase):
                 'general_inquiry', 'en', [], 'en')
         self.assertEqual(result['language'], 'en')
 
+    async def test_known_government_sector_prevents_repeated_sector_question(self):
+        history = [{'role': 'user', 'content': 'I am a regular government employee.'},
+                   {'role': 'assistant', 'content': 'What leave benefit do you mean?'}]
+        value = dict(plan('Government employee leave benefits'),
+                     needs_clarification=True, missing_facts=['employment sector'],
+                     question='Are you a private-sector or government employee?')
+        with patch.object(intake, 'plan_request', AsyncMock(return_value=value)) as planner:
+            result = await chat.decide_clarification('What leave benefits apply to me?', {},
+                'leave_benefits', 'en', history, 'en',
+                {'sector': 'government_employment', 'employment_status': 'regular'})
+        self.assertFalse(result['request_plan']['needs_clarification'])
+        self.assertEqual(result['request_plan']['question'], '')
+        self.assertIn('Known sector: government_employment', result['request_plan']['user_context'])
+        self.assertEqual(planner.await_args.kwargs['known_user_facts']['employment_status'], 'regular')
+
+    async def test_conversation_history_recovers_regular_government_worker_fact(self):
+        facts = chat.known_worker_facts_from_history([
+            {'role':'user','content':'I am a regular government employee.'},
+            {'role':'assistant','content':'Are you in the private or public sector?'},
+        ])
+        self.assertEqual(facts.get('sector'), 'government_employment')
+        self.assertEqual(facts.get('employment_status'), 'regular')
+
     async def test_no_subject_asks_before_search(self):
         value = dict(plan('', 'What workplace question would you like help with?', ['topic']), has_topic=False)
         with patch.object(intake, 'plan_request', AsyncMock(return_value=value)):

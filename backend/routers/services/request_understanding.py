@@ -28,6 +28,11 @@ short replies or numbers retain response_language from the payload. If
 language_mode is explicit, retain that selected language. Write question in
 the resulting language. Read the entire supplied conversation before resolving
 references, including returning to an earlier subject after an intervening topic.
+known_user_facts: user-provided facts scoped to this same conversation. Use a
+relevant known fact, such as government/private sector or regular employment
+status, instead of asking for it again. The user's latest explicit correction
+replaces a known fact. Do not ask for a sector unless none is known or the user
+indicates a change. These facts are not legal evidence and establish no legal rule.
 context_start: index of the earliest relevant USER turn in the supplied conversation
 for this subject; -1 for a new topic. Exclude older unrelated subjects and their facts.
 answer_kind: explanation, illustrative_calculation, or personal_calculation.
@@ -167,9 +172,10 @@ def history_for_plan(query, history, plan):
     return turns
 
 
-def conversation_payload(query, history, language, language_mode='explicit'):
+def conversation_payload(query, history, language, language_mode='explicit', known_user_facts=None):
     turns = [{'role': m['role'], 'content': m['content']} for m in conversation_window(query, history)]
     return {'response_language': language, 'language_mode': language_mode,
+            'known_user_facts': dict(known_user_facts or {}),
             'conversation': turns, 'latest_question': query[:4000]}
 
 
@@ -295,19 +301,20 @@ def validate_plan(value, payload):
     relevant = payload['conversation'][start:] if relation == 'follow_up' else []
     user_text = payload['latest_question'] + ' ' + ' '.join(
         t['content'] for t in relevant if t['role'] == 'user')
+    user_text += ' ' + ' '.join(str(v) for v in payload.get('known_user_facts', {}).values())
     if numbers(value['retrieval_query']) - numbers(user_text):
         raise ValueError('Rewrite invented numeric facts')
     if any(numbers(hint) - numbers(user_text) for hint in hints):
         raise ValueError('Topic hints contain invented numeric facts')
 
 
-async def plan_request(query, history, language, language_mode='explicit'):
+async def plan_request(query, history, language, language_mode='explicit', known_user_facts=None):
     """At most two wire attempts within five seconds, then fail soft to retrieval.
 
     No global history/answer cache: each caller supplies only its owned session.
     Provider quotas, cancellation and diagnostics use the existing query pool.
     """
-    payload = conversation_payload(query, history, language, language_mode)
+    payload = conversation_payload(query, history, language, language_mode, known_user_facts)
     started = time.perf_counter()
     token = model_pools.verification_required.set(False)
     try:

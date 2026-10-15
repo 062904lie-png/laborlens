@@ -3471,6 +3471,25 @@ def get_contextual_clarification_questions(
     return [question]
 
 
+def known_worker_facts_from_history(history: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
+    """Recover only user-stated work scope from this conversation's own history."""
+    from routers.services.conversation_memory import merge_conversation_state
+    state: Dict[str, Any] = {}
+    for turn in history or []:
+        if turn.get('role') == 'user':
+            state = merge_conversation_state(state, str(turn.get('content') or ''))
+    return {key: state[key] for key in ('sector', 'worker_type', 'employment_status') if state.get(key)}
+
+
+def clarification_repeats_known_sector(question: str, known_facts: Optional[Dict[str, Any]]) -> bool:
+    if not (known_facts or {}).get('sector'):
+        return False
+    return bool(re.search(
+        r'\b(?:which|what)\s+(?:employment\s+)?sector\b|\bwhich\s+(?:type\s+of\s+)?(?:employer|employment)\b|'
+        r'\b(?:private[- ]sector|government employee|public sector|government or private|private or government)\b.{0,70}\?',
+        str(question or ''), re.I))
+
+
 async def decide_clarification(
     query: str,
     nlp: Dict[str, Any],
@@ -3478,6 +3497,7 @@ async def decide_clarification(
     language: str,
     history: Optional[List[Dict[str, Any]]] = None,
     requested_language: Optional[str] = None,
+    known_user_facts: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Understand first, then retrieve even when a partial answer needs a fact.
 
@@ -3503,16 +3523,23 @@ async def decide_clarification(
     resolved_intent = str(resolved_nlp.get("intent") or intent)
     profile = classify_legal_query(resolved_query, resolved_nlp)
     language_mode = 'explicit' if requested_language in SUPPORTED_LANGUAGES else 'auto'
-    plan = await plan_request(query, history, language, language_mode=language_mode)
+    plan = await plan_request(query, history, language, language_mode=language_mode,
+                              known_user_facts=known_user_facts)
     if plan:
         if language_mode == 'auto' and plan.get('response_language') in SUPPORTED_LANGUAGES:
             language = plan['response_language']
+        if plan.get('needs_clarification') and clarification_repeats_known_sector(
+                plan.get('question', ''), known_user_facts):
+            plan = dict(plan, needs_clarification=False, question='', missing_facts=[])
         # The semantic plan, not an earlier heuristic rewrite, controls all
         # downstream topic classification, retrieval and generation.
         resolved_query = plan['retrieval_query'] or query
         relevant = history_for_plan(query, history, plan)
         user_context = '\n'.join(str(m.get('content') or '') for m in relevant if m['role'] == 'user')
-        plan = dict(plan, user_context=(user_context + '\n' + query).strip(), latest_question=query)
+        known_text = '\n'.join(f"Known {key.replace('_', ' ')}: {value}"
+                                for key, value in (known_user_facts or {}).items())
+        plan = dict(plan, user_context='\n'.join(part for part in
+            (user_context, query, known_text) if part).strip(), latest_question=query)
         resolved_nlp = await asyncio.to_thread(preprocess_query, resolved_query, topic_hints=plan.get('topic_hints'))
         resolved_intent = str(resolved_nlp.get('intent') or intent)
         profile = classify_legal_query(resolved_query, resolved_nlp)
@@ -4631,7 +4658,8 @@ async def run_guest_message(req: GuestChatRequest, request: Request, *, sandbox:
 
     clarification_decision = None
     if history:
-        clarification_decision = await decide_clarification(req.message, nlp, intent, language, history, req.language)
+        clarification_decision = await decide_clarification(req.message, nlp, intent, language, history, req.language,
+            {key: conversation_state[key] for key in ('sector', 'worker_type', 'employment_status') if conversation_state.get(key)})
         language = clarification_decision['language']
         if clarification_decision['request_plan'].get('conversation_relation') == 'follow_up':
             intent = clarification_decision['intent']
@@ -4716,7 +4744,8 @@ async def run_guest_message(req: GuestChatRequest, request: Request, *, sandbox:
             confidence_reason=source_followup["source_reason"],
         )
 
-    clarification_decision = clarification_decision or await decide_clarification(req.message, nlp, intent, language, history, req.language)
+    clarification_decision = clarification_decision or await decide_clarification(req.message, nlp, intent, language, history, req.language,
+        {key: conversation_state[key] for key in ('sector', 'worker_type', 'employment_status') if conversation_state.get(key)})
     language = clarification_decision['language']
     thirteenth_calculation_result = await build_thirteenth_month_calculation_response(
         req.message,
@@ -5068,7 +5097,9 @@ async def send_message(req: ChatRequest, current_user=Depends(get_current_user))
     conversation_history = await load_recent_chat_history(session_id, current_user["id"])
     clarification_decision = None
     if conversation_history:
-        clarification_decision = await decide_clarification(req.message, nlp, intent, language, conversation_history, req.language)
+        known_user_facts = known_worker_facts_from_history(conversation_history)
+        clarification_decision = await decide_clarification(req.message, nlp, intent, language,
+            conversation_history, req.language, known_user_facts)
         language = clarification_decision['language']
         if clarification_decision['request_plan'].get('conversation_relation') == 'follow_up':
             intent = clarification_decision['intent']
@@ -5248,7 +5279,10 @@ async def send_message(req: ChatRequest, current_user=Depends(get_current_user))
             confidence_reason=confidence_reason,
         )
 
-    clarification_decision = clarification_decision or await decide_clarification(req.message, nlp, intent, language, history, req.language)
+    if clarification_decision is None:
+        known_user_facts = known_worker_facts_from_history(history)
+        clarification_decision = await decide_clarification(req.message, nlp, intent, language,
+            history, req.language, known_user_facts)
     language = clarification_decision['language']
     thirteenth_calculation_result = await build_thirteenth_month_calculation_response(
         req.message,
