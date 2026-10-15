@@ -33,14 +33,6 @@ relevant known fact, such as government/private sector or regular employment
 status, instead of asking for it again. The user's latest explicit correction
 replaces a known fact. Do not ask for a sector unless none is known or the user
 indicates a change. These facts are not legal evidence and establish no legal rule.
-For government questions, retain a government institution name and type the user
-has supplied. Types include national government agencies (NGA), local government
-units (LGU), state universities and colleges (SUC), and government-owned or
-controlled corporations (GOCC). Do not transfer a rule between these types. If
-the institution or type can change the answer and is unknown, ask one focused
-question for its name or type. Preserve named CSC issuance and date terms in the
-search when relevant. Do not claim an issuance covers an institution unless its
-coverage is established by the source.
 context_start: index of the earliest relevant USER turn in the supplied conversation
 for this subject; -1 for a new topic. Exclude older unrelated subjects and their facts.
 answer_kind: explanation, illustrative_calculation, or personal_calculation.
