@@ -156,7 +156,6 @@
 #doc-modal .modal-body{padding:24px;background:#fff}
 #doc-modal .modal-foot{display:flex;flex-wrap:wrap;gap:8px;padding:16px 24px;background:#f7f9fc;border-top:1px solid #e0e7ef}
 #doc-modal .review-answer{background:#f4f7fb;border:1px solid #e0e7ef;border-radius:10px;padding:18px;line-height:1.8}
-#dashboard[data-density=compact] td,#dashboard[data-density=compact] th{padding:8px 12px}
 @media(max-width:1000px){#dashboard .content-inner{padding:24px 20px}#dashboard .analytics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:680px){#dashboard .content-inner{padding:20px 14px 36px}#admin-section-header h1,#dashboard #tab-overview h1{font-size:24px}#admin-section-tabs{width:100%}#admin-section-tabs button{flex:1 1 auto;padding:8px 10px;font-size:12px}#dashboard .workbench-filters{padding:14px;gap:12px}#dashboard .workbench-filters>label{flex:1 1 130px}#dashboard .workbench-filters>button{flex:1 1 100px}#dashboard .analytics-grid{grid-template-columns:1fr}#dashboard .panel-body{padding:16px}#dashboard .stat-card{padding:14px;min-height:100px}#dashboard .stat-val{font-size:23px}#doc-modal .modal-body,#doc-modal .modal-hdr{padding:18px}#doc-modal .modal-foot{padding:14px 18px}#dashboard .admin-technical{padding-left:12px;padding-right:12px}}
 

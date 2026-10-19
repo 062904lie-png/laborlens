@@ -20,6 +20,6 @@ Retired controllers faqs.js, unresolved.js, system-health.js, conversations.js, 
 
 Legacy conversations/reported-answers hashes open Answer Reviews; source-review/legal-source-review open the Knowledge Base attention filter; performance/system-health open Reports → Performance. The reports hash now opens Reports → Overview. Other prior page IDs open the corresponding tab. Conversation endpoints and stored sessions are untouched.
 
-Backend additions are in backend/routers/admin.py: bounded review/context and feedback/audit pagination, review counts, real stored-event analytics. Configuration remains allowlisted/read-only; browser table density is editable. Administrator API authorization, masked identities, escaped text, safe source links, and audited review/access writes remain enforced.
+Backend additions are in backend/routers/admin.py: bounded review/context and feedback/audit pagination, review counts, real stored-event analytics. Configuration remains allowlisted/read-only. Administrator API authorization, masked identities, escaped text, safe source links, and audited review/access writes remain enforced.
 
 Run tests/ui/admin_final_test.cjs, tests/ui/admin_panel_test.cjs and backend/tests/test_admin_workbench.py. tests/ui/admin_fixture_server.js is an isolated localhost-only fixture, never a production data source. Full implementation notes: docs/admin-final-implementation.md.

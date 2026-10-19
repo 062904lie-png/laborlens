@@ -524,9 +524,6 @@
     .guest-note{margin-top:8px;text-align:center;font-size:12px;color:#667085;line-height:1.45;}
     .guest-banner{margin:0 0 14px;padding:12px 14px;border:1px solid #bfdbfe;background:#eff6ff;color:#1e3a8a;border-radius:8px;font-size:13px;line-height:1.5;}
     .guest-banner strong{color:#10233f;}
-    body.compact-messages #msgs{gap:12px;padding-top:18px;padding-bottom:130px;}
-    body.compact-messages .msg-bubble{padding:10px 13px;line-height:1.55;}
-    body.compact-messages .welcome-state{padding:22px 20px;}
     .msg-time{display:none;margin-top:6px;font-size:11px;color:#98a2b3;}
     .user .msg-time{text-align:right;color:rgba(255,255,255,.55);}
     body.show-timestamps .msg-time{display:block;}
@@ -687,8 +684,6 @@
     }
     #send-btn:hover{background:#082563!important;transform:translateY(-1px)!important;}
     .disclaimer{width:min(980px,100%);font-size:11px!important;color:#667085!important;margin:9px auto 0!important;}
-    body.compact-messages #msgs{gap:10px!important;padding-bottom:130px!important;}
-    body.compact-messages .msg-bubble{padding:11px 13px!important;line-height:1.55!important;}
     @media(max-width:900px){
       .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
       .chat-head-tools{display:none;}
@@ -3249,10 +3244,6 @@
           <button class="toggle" id="toggle-sound" onclick="togglePreference('sound')"></button>
         </div>
         <div class="sp-toggle-row">
-          <span class="sp-option-icon" aria-hidden="true">▤</span><div><div class="sp-toggle-label">Compact Messages</div><div class="sp-toggle-sub">Reduce spacing between messages.</div></div>
-          <button class="toggle" id="toggle-compact" onclick="togglePreference('compact')"></button>
-        </div>
-        <div class="sp-toggle-row">
           <span class="sp-option-icon" aria-hidden="true">◷</span><div><div class="sp-toggle-label">Show Timestamps</div><div class="sp-toggle-sub">Display time on each message.</div></div>
           <button class="toggle" id="toggle-timestamps" onclick="togglePreference('timestamps')"></button>
         </div>
@@ -3451,7 +3442,6 @@ const DEFAULT_PREFS = Object.freeze({
   autoRead:false,
   voiceURI:'',
   sound:false,
-  compact:false,
   timestamps:false,
   theme:'dark',
   fontSize:'medium'
@@ -3462,7 +3452,6 @@ function normalizePreferences(value={}) {
     sound:!!prefs.sound,
     autoRead:prefs.autoRead === true,
     voiceURI:typeof prefs.voiceURI === 'string' ? prefs.voiceURI.slice(0, 500) : '',
-    compact:!!prefs.compact,
     timestamps:!!prefs.timestamps,
     theme:prefs.theme === 'light' ? 'light' : 'dark',
     fontSize:['small','medium','large'].includes(prefs.fontSize) ? prefs.fontSize : 'medium'
@@ -3481,16 +3470,14 @@ function savePrefs(prefs) {
 function applyPreferences() {
   const prefs = getPrefs();
   window.LaborLensVoice?.setPreferredVoice(prefs.voiceURI);
-  ['sound','compact','timestamps','autoRead'].forEach(name => {
+  ['sound','timestamps','autoRead'].forEach(name => {
     const control = document.getElementById('toggle-' + name);
     control?.setAttribute('aria-pressed', String(!!prefs[name]));
-    control?.setAttribute('aria-label', {sound:'Sound notifications',compact:'Compact messages',timestamps:'Show timestamps',autoRead:'Read answers automatically'}[name]);
+    control?.setAttribute('aria-label', {sound:'Sound notifications',timestamps:'Show timestamps',autoRead:'Read answers automatically'}[name]);
   });
   document.getElementById('toggle-sound')?.classList.toggle('on', !!prefs.sound);
   document.getElementById('toggle-autoRead')?.classList.toggle('on', prefs.autoRead);
-  document.getElementById('toggle-compact')?.classList.toggle('on', !!prefs.compact);
   document.getElementById('toggle-timestamps')?.classList.toggle('on', !!prefs.timestamps);
-  document.body.classList.toggle('compact-messages', !!prefs.compact);
   document.body.classList.toggle('show-timestamps', !!prefs.timestamps);
   const isDark = prefs.theme === 'dark';
   document.body.classList.toggle('theme-dark', isDark);

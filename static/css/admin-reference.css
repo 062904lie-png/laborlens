@@ -90,7 +90,6 @@
 .detail-tabs button.active,.detail-tabs button[aria-selected=true]{color:#0055ee;border-bottom-color:#0055ee}
 .review-drawer .modal-card{width:380px;font-size:13px}.review-drawer .modal-body{padding:16px}.review-drawer h3{font-size:15px;margin:12px 0}.review-drawer .review-answer{font-size:13px;line-height:1.7}.review-drawer .tbl-wrap{overflow-x:auto}.review-drawer table{font-size:12px}.review-drawer td{padding:8px;overflow-wrap:anywhere}.review-drawer .modal-foot{padding:12px;gap:8px}.review-drawer .form-group{display:block;margin:12px 0}.review-drawer .form-group select,.review-drawer .form-group textarea{display:block;width:100%;margin-top:6px}.review-actions{display:flex;flex-wrap:wrap;gap:6px}
 .context-message{padding:12px;margin:10px 0;background:#f5f6f8;border:1px solid #e1e7f0;border-radius:8px}.context-message.assistant{background:#eff7ff}.context-message.current{border-color:#0766ee}.context-message p{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7;margin-top:8px}.context-message small{display:block;color:#637995;font-size:11px}
-#dashboard[data-density=compact] td{padding:6px 9px}
 #dashboard .workbench-filters label{min-width:105px;font-size:12px}
 #dashboard .admin-doc-table{min-width:900px}
 @media(min-width:1600px){#tab-overview>.stat-grid{grid-template-columns:repeat(8,minmax(0,1fr))}}
