@@ -2549,6 +2549,7 @@
       border:0!important;background:transparent!important;color:var(--workspace-ink)!important;justify-content:flex-start!important;
       font-family:var(--sans)!important;cursor:pointer!important;
     }
+    body.app-ready .tb-user-chip:focus-visible{outline:3px solid rgba(37,99,235,.45)!important;outline-offset:3px!important;}
     body.app-ready .tb-avatar{width:50px!important;height:50px!important;background:linear-gradient(145deg,#ffc842,#f2a516)!important;color:#10234c!important;font-size:17px!important;}
     body.app-ready .tb-user-copy{display:grid!important;gap:2px!important;text-align:left!important;line-height:1.1!important;}
     body.app-ready .tb-uname{display:block!important;max-width:110px!important;color:var(--workspace-ink)!important;font-size:clamp(15px,1.02vw,17px)!important;font-weight:800!important;}
@@ -3188,14 +3189,14 @@
       </select>
     </label>
     <button class="tb-icon-btn" title="Settings" onclick="toggleSettings()" style="margin-left:8px;" id="settings-btn" aria-label="Open settings" aria-expanded="false">⚙️</button>
-    <div class="tb-user-chip" style="margin-left:8px;">
-      <div class="tb-avatar" id="tb-avatar">U</div>
+    <button class="tb-user-chip" id="account-menu-btn" type="button" style="margin-left:8px;" onclick="openChatSettings()" aria-label="Open your account settings" aria-controls="settings-panel" aria-haspopup="dialog" aria-expanded="false">
+      <span class="tb-avatar" id="tb-avatar">U</span>
       <span class="tb-user-copy">
         <span class="tb-uname" id="tb-uname">User</span>
         <small>Account</small>
       </span>
       <span class="tb-user-chevron" aria-hidden="true">⌄</span>
-    </div>
+    </button>
     <button class="tb-logout" data-session-action onclick="doLogout()" style="margin-left:8px;">Sign Out</button>
   </div>
 
@@ -3931,6 +3932,7 @@ function updateUserIdentityUi() {
     avatar.textContent = getUserInitial();
   });
   updateProfileSummary();
+  updateProfileSettingsUi();
 }
 async function syncAuthenticatedUser() {
   if (isGuest || !token) return null;
@@ -4423,6 +4425,7 @@ function closeSettings() {
   document.getElementById('settings-panel')?.classList.remove('open');
   document.getElementById('settings-overlay')?.classList.remove('open');
   document.getElementById('settings-btn')?.setAttribute('aria-expanded', 'false');
+  document.getElementById('account-menu-btn')?.setAttribute('aria-expanded', 'false');
   document.querySelectorAll('#topbar, #body, #sidebar-collapse-handle').forEach(el => { el.inert = false; });
   const target = settingsReturnFocus?.getClientRects().length ? settingsReturnFocus : document.getElementById('hamburger');
   target?.focus();
@@ -4434,6 +4437,7 @@ function openChatSettings() {
   panel.classList.add('open');
   document.getElementById('settings-overlay')?.classList.add('open');
   document.getElementById('settings-btn')?.setAttribute('aria-expanded', 'true');
+  document.getElementById('account-menu-btn')?.setAttribute('aria-expanded', 'true');
   document.querySelectorAll('#topbar, #body, #sidebar-collapse-handle').forEach(el => { el.inert = true; });
   panel.querySelector('.sp-close')?.focus();
   void syncAuthenticatedUser();
